@@ -1,0 +1,31 @@
+{
+  "name": "scancontact-bd",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Bangladesh-focused QR private contact platform MVP.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @scancontact/api",
+    "dev:api": "npm run dev --workspace @scancontact/api",
+    "dev:web": "npm run dev --workspace @scancontact/web",
+    "dev:worker": "npm run dev --workspace @scancontact/worker",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "prisma:generate": "npm run prisma:generate --workspace @scancontact/api",
+    "prisma:migrate": "npm run prisma:migrate --workspace @scancontact/api --",
+    "seed": "npm run seed --workspace @scancontact/api"
+  },
+  "overrides": {
+    "postcss": "8.5.10",
+    "next@15.5.15": {
+      "postcss": "8.5.10"
+    }
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  }
+}

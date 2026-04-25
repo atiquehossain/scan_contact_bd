@@ -1,0 +1,949 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Language {
+  EN
+  BN
+}
+
+enum UserStatus {
+  ACTIVE
+  LOCKED
+  SUSPENDED
+  DELETED
+}
+
+enum OtpPurpose {
+  LOGIN
+  REGISTER
+  PIN_RESET
+}
+
+enum OtpStatus {
+  PENDING
+  VERIFIED
+  EXPIRED
+  LOCKED
+}
+
+enum SessionStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+enum RoleName {
+  SUPER_ADMIN
+  SUPPORT_ADMIN
+  ORDER_MANAGER
+  RESELLER_MANAGER
+  SOCIETY_MANAGER
+  FINANCE_MANAGER
+  CONTENT_MANAGER
+  USER
+  RESELLER
+  SOCIETY_ADMIN
+  GUARD
+  RESIDENT
+}
+
+enum QrTagType {
+  CAR
+  MOTORBIKE
+  DELIVERY_BIKE
+  LOST_ITEM
+  BUSINESS_CARD
+  APARTMENT_PARKING
+  SHOP
+  OTHER
+}
+
+enum QrTagStatus {
+  DRAFT
+  PENDING_ACTIVATION
+  ACTIVE
+  DISABLED
+  LOST
+  TRANSFERRED
+  DELETED
+}
+
+enum PrivacyMode {
+  PRIVATE_CONTACT_ONLY
+  SHOW_NAME_ONLY
+  SHOW_BUSINESS_INFO
+  PHONE_VISIBLE_BY_OWNER_CHOICE
+}
+
+enum ContactReason {
+  VEHICLE_BLOCKING
+  LIGHT_ON
+  VEHICLE_DAMAGED
+  FOUND_ITEM
+  DELIVERY_CONTACT
+  BUSINESS_INQUIRY
+  OTHER
+}
+
+enum ContactRequestStatus {
+  UNREAD
+  READ
+  DELETED
+  BLOCKED
+}
+
+enum ContactMessageSender {
+  SCANNER
+  OWNER
+  SYSTEM
+}
+
+enum NotificationType {
+  QR_SCANNED
+  CONTACT_REQUEST
+  ABUSE_REPORT
+  ORDER_CREATED
+  ORDER_UPDATED
+  PAYMENT_STATUS_CHANGED
+  RESELLER_COMMISSION
+  SOCIETY_VISITOR_ENTRY
+  SOCIETY_VISITOR_EXIT
+  ACCOUNT_SECURITY
+}
+
+enum ProductType {
+  CAR_STICKER
+  BIKE_STICKER
+  DELIVERY_RIDER_STICKER
+  LOST_AND_FOUND_STICKER
+  APARTMENT_PARKING_QR
+  BUSINESS_QR_CARD
+  NFC_CARD
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  PROCESSING
+  PRINTED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  COD_PENDING
+  COD_COLLECTED
+}
+
+enum PaymentMethod {
+  COD
+  BKASH
+  NAGAD
+  ROCKET
+  SSLCOMMERZ
+  MANUAL
+}
+
+enum ResellerStatus {
+  APPLIED
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum PayoutStatus {
+  REQUESTED
+  APPROVED
+  PAID
+  REJECTED
+}
+
+enum SocietyMemberRole {
+  SOCIETY_ADMIN
+  GUARD
+  RESIDENT
+}
+
+enum VisitorStatus {
+  ENTERED
+  EXITED
+  CANCELLED
+}
+
+enum AbuseReportStatus {
+  OPEN
+  REVIEWING
+  RESOLVED
+  DISMISSED
+}
+
+enum CmsStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum FileVisibility {
+  PRIVATE
+  SIGNED_ONLY
+  PUBLIC
+}
+
+model User {
+  id                      String                @id @default(cuid())
+  phone                   String                @unique
+  email                   String?               @unique
+  fullName                String?
+  passwordHash            String?
+  pinHash                 String?
+  language                Language              @default(EN)
+  status                  UserStatus            @default(ACTIVE)
+  phoneVerifiedAt         DateTime?
+  lastLoginAt             DateTime?
+  profile                 UserProfile?
+  otps                    AuthOtp[]
+  sessions                Session[]
+  deviceTokens            DeviceToken[]
+  userRoles               UserRole[]
+  ownedTags               QrTag[]               @relation("OwnedTags")
+  createdTags             QrTag[]               @relation("CreatedTags")
+  contactRequests         ContactRequest[]      @relation("OwnerContactRequests")
+  notifications           Notification[]
+  emergencyContacts       EmergencyContact[]
+  cart                    Cart?
+  orders                  Order[]
+  resellerProfile         Reseller?
+  resellerCustomers       ResellerCustomer[]
+  societyMemberships      SocietyMember[]
+  enteredVisitorLogs      VisitorLog[]          @relation("VisitorEnteredBy")
+  exitedVisitorLogs       VisitorLog[]          @relation("VisitorExitedBy")
+  auditLogs               AuditLog[]            @relation("AuditActor")
+  consentLogs             ConsentLog[]
+  deletionRequests        DataDeletionRequest[]
+  uploads                 FileUpload[]
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+  deletedAt               DateTime?
+
+  @@index([phone])
+  @@index([email])
+  @@index([status])
+}
+
+model UserProfile {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  city                 String?
+  district             String?
+  address              String?
+  photoFileId          String?
+  notificationSettings Json     @default("{}")
+  privacySettings      Json     @default("{}")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  deletedAt            DateTime?
+}
+
+model AuthOtp {
+  id          String     @id @default(cuid())
+  userId      String?
+  user        User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  phone       String
+  purpose     OtpPurpose @default(LOGIN)
+  otpHash     String
+  provider    String
+  messageId   String?
+  requestIp   String?
+  attempts    Int        @default(0)
+  maxAttempts Int        @default(5)
+  expiresAt   DateTime
+  status      OtpStatus  @default(PENDING)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([phone, purpose, status])
+  @@index([expiresAt])
+}
+
+model Session {
+  id               String        @id @default(cuid())
+  userId           String
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokenHash String        @unique
+  familyId         String
+  userAgent        String?
+  ipAddress        String?
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  status           SessionStatus @default(ACTIVE)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([userId, status])
+  @@index([familyId])
+}
+
+model DeviceToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique
+  platform  String
+  provider  String    @default("noop")
+  enabled   Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([userId, enabled])
+}
+
+model Role {
+  id              String           @id @default(cuid())
+  name            RoleName         @unique
+  description     String?
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model Permission {
+  id              String           @id @default(cuid())
+  key             String           @unique
+  description     String?
+  rolePermissions RolePermission[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model RolePermission {
+  id           String     @id @default(cuid())
+  roleId       String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permissionId String
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([roleId, permissionId])
+}
+
+model UserRole {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roleId    String
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+}
+
+model QrTag {
+  id              String              @id @default(cuid())
+  publicSlug      String              @unique
+  ownerId         String?
+  owner           User?               @relation("OwnedTags", fields: [ownerId], references: [id], onDelete: SetNull)
+  createdById     String?
+  createdBy       User?               @relation("CreatedTags", fields: [createdById], references: [id], onDelete: SetNull)
+  resellerId      String?
+  reseller        Reseller?           @relation(fields: [resellerId], references: [id], onDelete: SetNull)
+  societyId       String?
+  society         Society?            @relation(fields: [societyId], references: [id], onDelete: SetNull)
+  type            QrTagType
+  label           String
+  vehicleNumber   String?
+  itemName        String?
+  status          QrTagStatus         @default(ACTIVE)
+  privacyMode     PrivacyMode         @default(PRIVATE_CONTACT_ONLY)
+  activationCode  String?
+  batchCode       String?
+  businessProfile Json                @default("{}")
+  scanCount       Int                 @default(0)
+  lastScannedAt   DateTime?
+  contactSetting  TagContactSetting?
+  scanEvents      ScanEvent[]
+  contactRequests ContactRequest[]
+  abuseReports    AbuseReport[]
+  societyVehicles SocietyVehicle[]
+  parkingSlots    ParkingSlot[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  deletedAt       DateTime?
+
+  @@index([ownerId, status])
+  @@index([publicSlug])
+  @@index([batchCode])
+}
+
+model TagContactSetting {
+  id                String   @id @default(cuid())
+  qrTagId           String   @unique
+  qrTag             QrTag    @relation(fields: [qrTagId], references: [id], onDelete: Cascade)
+  allowContactForm  Boolean  @default(true)
+  allowWhatsapp     Boolean  @default(false)
+  allowSms          Boolean  @default(false)
+  phoneVisible      Boolean  @default(false)
+  showName          Boolean  @default(false)
+  showEmergency     Boolean  @default(false)
+  whatsappPhone     String?
+  smsPhone          String?
+  quietHours        Json     @default("{}")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model ScanEvent {
+  id            String   @id @default(cuid())
+  qrTagId       String
+  qrTag         QrTag    @relation(fields: [qrTagId], references: [id], onDelete: Cascade)
+  ipHash        String?
+  userAgentHash String?
+  referrer      String?
+  country       String?
+  city          String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([qrTagId, createdAt])
+}
+
+model ContactRequest {
+  id             String               @id @default(cuid())
+  qrTagId        String
+  qrTag          QrTag                @relation(fields: [qrTagId], references: [id], onDelete: Cascade)
+  ownerId        String
+  owner          User                 @relation("OwnerContactRequests", fields: [ownerId], references: [id], onDelete: Cascade)
+  reason         ContactReason
+  message        String
+  scannerName    String?
+  scannerContact String?
+  scannerIpHash  String?
+  replyToken     String?              @unique
+  status         ContactRequestStatus @default(UNREAD)
+  readAt         DateTime?
+  messages       ContactMessage[]
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  deletedAt      DateTime?
+
+  @@index([ownerId, status])
+  @@index([qrTagId, createdAt])
+}
+
+model ContactMessage {
+  id               String               @id @default(cuid())
+  contactRequestId String
+  contactRequest   ContactRequest       @relation(fields: [contactRequestId], references: [id], onDelete: Cascade)
+  sender           ContactMessageSender
+  senderName       String?
+  senderUserId     String?
+  body             String
+  senderIpHash     String?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  deletedAt        DateTime?
+
+  @@index([contactRequestId, createdAt])
+  @@index([senderUserId])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  body      String
+  data      Json             @default("{}")
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  deletedAt DateTime?
+
+  @@index([userId, readAt, createdAt])
+}
+
+model EmergencyContact {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String
+  phone           String
+  relation        String?
+  visibleOnPublic Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  @@index([userId])
+}
+
+model Product {
+  id            String           @id @default(cuid())
+  slug          String           @unique
+  type          ProductType
+  name          String
+  description   String
+  priceBdt      Int
+  active        Boolean          @default(true)
+  metadata      Json             @default("{}")
+  variants      ProductVariant[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  deletedAt     DateTime?
+
+  @@index([type, active])
+}
+
+model ProductVariant {
+  id        String      @id @default(cuid())
+  productId String
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name      String
+  sku       String      @unique
+  priceBdt  Int
+  active    Boolean     @default(true)
+  cartItems CartItem[]
+  orderItems OrderItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  deletedAt DateTime?
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+}
+
+model CartItem {
+  id               String          @id @default(cuid())
+  cartId           String
+  cart             Cart            @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId        String
+  product          Product         @relation(fields: [productId], references: [id])
+  productVariantId String?
+  productVariant   ProductVariant? @relation(fields: [productVariantId], references: [id])
+  quantity         Int             @default(1)
+  unitPriceBdt     Int
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@unique([cartId, productId, productVariantId])
+}
+
+model Order {
+  id                 String        @id @default(cuid())
+  orderNumber        String        @unique
+  userId             String?
+  user               User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  resellerId         String?
+  reseller           Reseller?     @relation(fields: [resellerId], references: [id], onDelete: SetNull)
+  status             OrderStatus   @default(PENDING)
+  paymentStatus      PaymentStatus @default(COD_PENDING)
+  paymentMethod      PaymentMethod @default(COD)
+  subtotalBdt        Int
+  deliveryFeeBdt     Int           @default(80)
+  totalBdt           Int
+  customerName       String
+  customerPhone      String
+  deliveryAddress    String
+  deliveryCity       String?
+  deliveryDistrict   String?
+  notes              String?
+  items              OrderItem[]
+  payments           Payment[]
+  shipments          Shipment[]
+  commissions        ResellerCommission[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  deletedAt          DateTime?
+
+  @@index([userId, status])
+  @@index([status, createdAt])
+}
+
+model OrderItem {
+  id               String          @id @default(cuid())
+  orderId          String
+  order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId        String
+  product          Product         @relation(fields: [productId], references: [id])
+  productVariantId String?
+  productVariant   ProductVariant? @relation(fields: [productVariantId], references: [id])
+  name             String
+  quantity         Int
+  unitPriceBdt     Int
+  totalBdt         Int
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  orderId       String
+  order         Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider      String
+  method        PaymentMethod
+  status        PaymentStatus @default(PENDING)
+  amountBdt     Int
+  providerRef   String?
+  metadata      Json          @default("{}")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  deletedAt     DateTime?
+
+  @@index([provider, status])
+}
+
+model Shipment {
+  id             String    @id @default(cuid())
+  orderId        String
+  order          Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  courierName    String?
+  trackingNumber String?
+  status         String    @default("pending")
+  shippedAt      DateTime?
+  deliveredAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+}
+
+model Reseller {
+  id             String                @id @default(cuid())
+  userId         String                @unique
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName   String
+  status         ResellerStatus        @default(APPLIED)
+  territoryCity  String?
+  commissionRate Decimal               @default(10.0) @db.Decimal(5, 2)
+  tags           QrTag[]
+  customers      ResellerCustomer[]
+  orders         Order[]
+  commissions    ResellerCommission[]
+  payouts        Payout[]
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  deletedAt      DateTime?
+
+  @@index([status, territoryCity])
+}
+
+model ResellerCustomer {
+  id         String    @id @default(cuid())
+  resellerId String
+  reseller   Reseller  @relation(fields: [resellerId], references: [id], onDelete: Cascade)
+  userId     String?
+  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name       String
+  phone      String
+  city       String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  @@index([resellerId])
+}
+
+model ResellerCommission {
+  id          String        @id @default(cuid())
+  resellerId  String
+  reseller    Reseller      @relation(fields: [resellerId], references: [id], onDelete: Cascade)
+  orderId     String?
+  order       Order?        @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  amountBdt   Int
+  status      PayoutStatus  @default(REQUESTED)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+
+  @@index([resellerId, status])
+}
+
+model Payout {
+  id          String       @id @default(cuid())
+  resellerId  String
+  reseller    Reseller     @relation(fields: [resellerId], references: [id], onDelete: Cascade)
+  amountBdt   Int
+  status      PayoutStatus @default(REQUESTED)
+  payoutMethod String?
+  notes       String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+}
+
+model Society {
+  id            String           @id @default(cuid())
+  name          String
+  address       String
+  city          String?
+  district      String?
+  emergencyPhone String?
+  members       SocietyMember[]
+  units         SocietyUnit[]
+  vehicles      SocietyVehicle[]
+  parkingSlots  ParkingSlot[]
+  visitorLogs   VisitorLog[]
+  qrTags        QrTag[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  deletedAt     DateTime?
+
+  @@index([city, district])
+}
+
+model SocietyMember {
+  id        String            @id @default(cuid())
+  societyId String
+  society   Society           @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  unitId    String?
+  unit      SocietyUnit?      @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  role      SocietyMemberRole
+  name      String
+  phone     String
+  vehicles  SocietyVehicle[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  deletedAt DateTime?
+
+  @@index([societyId, role])
+}
+
+model SocietyUnit {
+  id        String          @id @default(cuid())
+  societyId String
+  society   Society         @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  building  String?
+  floor     String?
+  unitNo    String
+  members   SocietyMember[]
+  vehicles  SocietyVehicle[]
+  visitorLogs VisitorLog[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  deletedAt DateTime?
+
+  @@unique([societyId, unitNo])
+}
+
+model SocietyVehicle {
+  id            String        @id @default(cuid())
+  societyId     String
+  society       Society       @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  memberId      String?
+  member        SocietyMember? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+  unitId        String?
+  unit          SocietyUnit?  @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  qrTagId       String?
+  qrTag         QrTag?        @relation(fields: [qrTagId], references: [id], onDelete: SetNull)
+  vehicleNumber String
+  vehicleType   String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  deletedAt     DateTime?
+
+  @@index([societyId, vehicleNumber])
+}
+
+model ParkingSlot {
+  id        String    @id @default(cuid())
+  societyId String
+  society   Society   @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  qrTagId   String?
+  qrTag     QrTag?    @relation(fields: [qrTagId], references: [id], onDelete: SetNull)
+  label     String
+  status    String    @default("available")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([societyId, label])
+}
+
+model VisitorLog {
+  id              String        @id @default(cuid())
+  societyId       String
+  society         Society       @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  unitId          String?
+  unit            SocietyUnit?  @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  visitorName     String
+  visitorPhone    String?
+  vehicleNumber   String?
+  purpose         String?
+  status          VisitorStatus @default(ENTERED)
+  enteredByUserId String?
+  enteredBy       User?         @relation("VisitorEnteredBy", fields: [enteredByUserId], references: [id], onDelete: SetNull)
+  exitedByUserId  String?
+  exitedBy        User?         @relation("VisitorExitedBy", fields: [exitedByUserId], references: [id], onDelete: SetNull)
+  entryAt         DateTime      @default(now())
+  exitAt          DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  deletedAt       DateTime?
+
+  @@index([societyId, status, entryAt])
+}
+
+model AbuseReport {
+  id              String            @id @default(cuid())
+  qrTagId          String?
+  qrTag            QrTag?            @relation(fields: [qrTagId], references: [id], onDelete: SetNull)
+  contactRequestId String?
+  reporterContact  String?
+  reason           String
+  details          String?
+  status           AbuseReportStatus @default(OPEN)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  deletedAt        DateTime?
+
+  @@index([status, createdAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+  action     String
+  entityType String
+  entityId   String?
+  ipAddress  String?
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([actorId, createdAt])
+  @@index([entityType, entityId])
+}
+
+model CmsPage {
+  id        String    @id @default(cuid())
+  slug      String
+  locale    Language  @default(EN)
+  title     String
+  body      String
+  status    CmsStatus @default(PUBLISHED)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([slug, locale])
+  @@index([status])
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ConsentLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  consentType String
+  version     String
+  granted     Boolean
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId, consentType])
+}
+
+model DataDeletionRequest {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    String    @default("requested")
+  reason    String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([userId, status])
+}
+
+model FileUpload {
+  id            String         @id @default(cuid())
+  userId        String?
+  user          User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  bucket        String?
+  objectKey     String
+  originalName  String
+  mimeType      String
+  sizeBytes     Int
+  visibility    FileVisibility @default(PRIVATE)
+  malwareStatus String         @default("pending")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+
+  @@index([userId, visibility])
+}
+
+model BackupLog {
+  id        String    @id @default(cuid())
+  type      String
+  status    String
+  location  String?
+  message   String?
+  startedAt DateTime  @default(now())
+  finishedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model District {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  division  String?
+  cities    City[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model City {
+  id         String    @id @default(cuid())
+  districtId String?
+  district   District? @relation(fields: [districtId], references: [id], onDelete: SetNull)
+  name       String    @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  @@index([districtId])
+}
