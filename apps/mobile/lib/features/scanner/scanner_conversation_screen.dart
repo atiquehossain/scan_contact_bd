@@ -116,8 +116,17 @@ class _ScannerConversationScreenState
       if (nextLastId != null && nextLastId != previousLastId) {
         scrollToBottom();
       }
-    } catch (_) {
-      // Keep the existing thread visible. The next poll or retry can recover.
+    } catch (err) {
+      final message = apiErrorMessage(err);
+      if (message.toLowerCase().contains('expired') ||
+          message.toLowerCase().contains('no longer available')) {
+        if (mounted && conversation != null) {
+          setState(() {
+            conversation = conversation!.copyWith(status: 'EXPIRED');
+            error = message;
+          });
+        }
+      }
     } finally {
       refreshing = false;
     }
@@ -125,7 +134,7 @@ class _ScannerConversationScreenState
 
   Future<void> send({ScannerMessage? retry}) async {
     final text = retry?.body ?? controller.text.trim();
-    if (text.isEmpty || sending) return;
+    if (text.isEmpty || sending || conversation?.canReply == false) return;
     final localId =
         retry?.id ?? 'local-${DateTime.now().microsecondsSinceEpoch}';
     if (retry == null) {
@@ -164,7 +173,8 @@ class _ScannerConversationScreenState
             .toList(),
       );
       scrollToBottom();
-    } catch (_) {
+    } catch (err) {
+      final message = apiErrorMessage(err);
       setState(
         () => messages = messages
             .map(
@@ -173,10 +183,17 @@ class _ScannerConversationScreenState
             )
             .toList(),
       );
+      if (message.toLowerCase().contains('expired') ||
+          message.toLowerCase().contains('no longer available')) {
+        setState(() {
+          conversation = conversation?.copyWith(status: 'EXPIRED');
+          error = message;
+        });
+      }
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not send message. Try again.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
       }
     } finally {
       if (mounted) setState(() => sending = false);
@@ -196,6 +213,7 @@ class _ScannerConversationScreenState
 
   @override
   Widget build(BuildContext context) {
+    final isReadOnly = conversation != null && !conversation!.canReply;
     return Scaffold(
       appBar: AppBar(title: Text(conversation?.tagLabel ?? 'Private thread')),
       body: loading
@@ -229,6 +247,42 @@ class _ScannerConversationScreenState
                         message:
                             'This conversation keeps phone numbers hidden unless someone writes one manually.',
                       ),
+                      if (isReadOnly || error != null) ...[
+                        const SizedBox(height: 8),
+                        Card(
+                          color: Theme.of(context).colorScheme.errorContainer,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.timer_off_outlined,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onErrorContainer,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    error ??
+                                        'This conversation expired. Please scan the QR again to send a new message.',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onErrorContainer,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -257,15 +311,21 @@ class _ScannerConversationScreenState
                             controller: controller,
                             minLines: 1,
                             maxLines: 4,
-                            decoration: const InputDecoration(
-                              labelText: 'Write a private message',
+                            enabled: !isReadOnly,
+                            decoration: InputDecoration(
+                              labelText: isReadOnly
+                                  ? 'Conversation expired'
+                                  : 'Write a private message',
                             ),
                             onChanged: (_) => setState(() {}),
                           ),
                         ),
                         const SizedBox(width: 8),
                         FilledButton(
-                          onPressed: controller.text.trim().isEmpty || sending
+                          onPressed:
+                              isReadOnly ||
+                                  controller.text.trim().isEmpty ||
+                                  sending
                               ? null
                               : send,
                           child: sending

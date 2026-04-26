@@ -135,7 +135,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
 
   Future<void> send({ChatMessage? retry}) async {
     final text = retry?.message ?? controller.text.trim();
-    if (text.isEmpty || sending) return;
+    if (text.isEmpty || sending || request?.canReply == false) return;
     final localId =
         retry?.id ?? 'local-${DateTime.now().microsecondsSinceEpoch}';
     if (retry == null) {
@@ -178,7 +178,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
           context,
         ).showSnackBar(const SnackBar(content: Text('Reply sent')));
       }
-    } catch (_) {
+    } catch (err) {
+      final message = apiErrorMessage(err);
       setState(
         () => messages = messages
             .map(
@@ -187,10 +188,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
             )
             .toList(),
       );
+      if (message.toLowerCase().contains('expired')) {
+        unawaited(load());
+      }
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not send reply. Try again.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
       }
     } finally {
       if (mounted) setState(() => sending = false);
@@ -199,6 +203,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isReadOnly = request != null && !request!.canReply;
+    final expiredCopy = request?.isDeleted == true
+        ? 'This conversation was deleted according to the 10-day privacy policy.'
+        : 'This conversation has expired. The scanner must scan the QR again to start a new chat.';
     return Scaffold(
       appBar: AppBar(title: Text(request?.tagLabel ?? 'Private chat')),
       body: loading
@@ -223,6 +231,41 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                       const PrivacyNoticeCard(
                         message: 'Your phone number is hidden.',
                       ),
+                      if (isReadOnly) ...[
+                        const SizedBox(height: 8),
+                        Card(
+                          color: Theme.of(context).colorScheme.errorContainer,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.timer_off_outlined,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onErrorContainer,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    expiredCopy,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onErrorContainer,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -254,8 +297,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                             controller: controller,
                             minLines: 1,
                             maxLines: 4,
-                            decoration: const InputDecoration(
-                              labelText: 'Reply privately',
+                            enabled: !isReadOnly,
+                            decoration: InputDecoration(
+                              labelText: isReadOnly
+                                  ? 'Conversation expired'
+                                  : 'Reply privately',
                             ),
                             onChanged: (_) => setState(() {}),
                           ),
@@ -264,7 +310,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                         Semantics(
                           label: 'Send private reply',
                           child: FilledButton(
-                            onPressed: controller.text.trim().isEmpty || sending
+                            onPressed:
+                                isReadOnly ||
+                                    controller.text.trim().isEmpty ||
+                                    sending
                                 ? null
                                 : send,
                             child: sending

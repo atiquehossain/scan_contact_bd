@@ -13,6 +13,13 @@ const reasons = [
   ["OTHER", "Other"]
 ];
 
+type SavedConversation = {
+  id: string;
+  token: string;
+  url: string;
+  expiresAt?: string | null;
+};
+
 function friendlyType(type?: string) {
   if (!type) return "Private QR contact";
   return type
@@ -62,7 +69,8 @@ export function ScanClient({ slug: initialSlug }: { slug?: string }) {
   const [reportReason, setReportReason] = useState("");
   const [reportDetails, setReportDetails] = useState("");
   const [reporting, setReporting] = useState(false);
-  const [conversation, setConversation] = useState<{ id: string; token: string; url: string } | null>(null);
+  const [conversation, setConversation] = useState<SavedConversation | null>(null);
+  const [validatingSavedConversation, setValidatingSavedConversation] = useState(false);
   const safetyHost = useMemo(() => {
     if (typeof window === "undefined") return "scancontactbd.com";
     return window.location.hostname || "scancontactbd.com";
@@ -85,15 +93,54 @@ export function ScanClient({ slug: initialSlug }: { slug?: string }) {
       .catch((error) => setStatus(error instanceof Error ? error.message : "QR tag could not be loaded."))
       .finally(() => setLoadingTag(false));
     fetch(`${API_BASE}/t/${slug}/scan`, { method: "POST" }).catch(() => undefined);
-    const saved = window.localStorage.getItem(`scancontact:conversation:${slug}`);
-    if (saved) {
-      try {
-        setConversation(JSON.parse(saved));
-      } catch {
-        window.localStorage.removeItem(`scancontact:conversation:${slug}`);
-      }
-    }
+    validateSavedConversation(slug);
   }, [slug]);
+
+  async function validateSavedConversation(publicSlug: string) {
+    const storageKey = `scancontact:conversation:${publicSlug}`;
+    const saved = window.localStorage.getItem(storageKey);
+    if (!saved) return;
+    let parsed: SavedConversation;
+    try {
+      parsed = JSON.parse(saved) as SavedConversation;
+    } catch {
+      window.localStorage.removeItem(storageKey);
+      return;
+    }
+    if (!parsed.id || !parsed.token) {
+      window.localStorage.removeItem(storageKey);
+      return;
+    }
+    if (parsed.expiresAt && new Date(parsed.expiresAt).getTime() < Date.now()) {
+      window.localStorage.removeItem(storageKey);
+      return;
+    }
+    setValidatingSavedConversation(true);
+    try {
+      const data = await apiFetch<{ conversationId: string; expiresAt?: string | null; status: string }>(
+        `/public/contact-requests/${encodeURIComponent(parsed.id)}/validate?token=${encodeURIComponent(parsed.token)}`,
+        {},
+        ""
+      );
+      if (data.status === "OPEN") {
+        const nextConversation = { ...parsed, expiresAt: data.expiresAt ?? parsed.expiresAt };
+        setConversation(nextConversation);
+        window.localStorage.setItem(storageKey, JSON.stringify(nextConversation));
+      } else {
+        window.localStorage.removeItem(storageKey);
+      }
+    } catch {
+      window.localStorage.removeItem(storageKey);
+    } finally {
+      setValidatingSavedConversation(false);
+    }
+  }
+
+  function startNewMessage() {
+    if (slug) window.localStorage.removeItem(`scancontact:conversation:${slug}`);
+    setConversation(null);
+    setStatus("");
+  }
 
   function validate() {
     const nextErrors: typeof errors = {};
@@ -114,7 +161,7 @@ export function ScanClient({ slug: initialSlug }: { slug?: string }) {
     setStatus("");
     setErrors({});
     try {
-      const data = await apiFetch<{ contactRequestId: string; conversationToken: string; conversationUrl: string }>(
+      const data = await apiFetch<{ contactRequestId: string; conversationToken: string; conversationUrl: string; expiresAt?: string | null }>(
         `/t/${slug}/contact`,
         {
           method: "POST",
@@ -122,7 +169,7 @@ export function ScanClient({ slug: initialSlug }: { slug?: string }) {
         },
         ""
       );
-      const nextConversation = { id: data.contactRequestId, token: data.conversationToken, url: data.conversationUrl };
+      const nextConversation = { id: data.contactRequestId, token: data.conversationToken, url: data.conversationUrl, expiresAt: data.expiresAt };
       setConversation(nextConversation);
       window.localStorage.setItem(`scancontact:conversation:${slug}`, JSON.stringify(nextConversation));
       setStatus("Message sent privately. The owner can reply from their owner app.");
@@ -206,6 +253,36 @@ export function ScanClient({ slug: initialSlug }: { slug?: string }) {
           </div>
         ) : null}
 
+        {validatingSavedConversation ? (
+          <div className="mt-5">
+            <LoadingState label="Checking for an active conversation..." />
+          </div>
+        ) : null}
+
+        {conversation ? (
+          <section className="mt-5 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[#f8fbf9] p-4">
+            <h2 className="text-base font-black text-[var(--color-ink)]">You already have an active conversation.</h2>
+            <p className="mt-1 text-sm text-[var(--color-muted)]">Continue the private chat, or start a new message if this is a different issue.</p>
+            {conversation.expiresAt ? (
+              <p className="mt-2 text-xs font-bold text-[var(--color-muted)]">Active until {new Date(conversation.expiresAt).toLocaleString()}</p>
+            ) : null}
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              <a className="focus-ring inline-flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--color-primary)] px-4 py-3 text-sm font-bold text-white" href={conversation.url}>
+                <ExternalLink aria-hidden size={16} />
+                Continue chat
+              </a>
+              <button
+                type="button"
+                className="focus-ring inline-flex min-h-12 items-center justify-center rounded-[var(--radius-button)] border border-[var(--color-border)] bg-white px-4 py-3 text-sm font-bold text-[var(--color-primary)]"
+                onClick={startNewMessage}
+              >
+                Start new message
+              </button>
+            </div>
+          </section>
+        ) : null}
+
+        {!conversation ? (
         <div className="mt-5 grid gap-4">
           <fieldset aria-describedby="scan-reason-error">
             <legend className="text-sm font-black text-[var(--color-ink)]">
@@ -250,13 +327,8 @@ export function ScanClient({ slug: initialSlug }: { slug?: string }) {
             Send request privately
           </Button>
 
-          {conversation ? (
-            <a className="focus-ring inline-flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[var(--color-border)] bg-white px-4 py-3 text-sm font-bold text-[var(--color-primary)]" href={conversation.url}>
-              <ExternalLink aria-hidden size={16} />
-              Continue conversation
-            </a>
-          ) : null}
         </div>
+        ) : null}
 
         {contactLinks.length ? (
           <section className="mt-6 border-t border-[var(--color-border)] pt-5">

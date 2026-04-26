@@ -35,7 +35,7 @@ export async function apiFetch<T>(path: string, options: RequestInit = {}, token
   const contentType = response.headers.get("content-type") || "";
   const data = text ? (contentType.includes("application/json") ? JSON.parse(text) : { error: text }) : {};
   if (!response.ok) {
-    throw new Error(data.error || "Request failed");
+    throw new Error(data.message || data.error || "Request failed");
   }
   return data as T;
 }

@@ -18,6 +18,7 @@ type ContactThread = {
   tagLabel: string;
   reason: string;
   status: string;
+  expiresAt?: string | null;
 };
 
 export function PublicConversation({
@@ -33,6 +34,7 @@ export function PublicConversation({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [body, setBody] = useState("");
   const [status, setStatus] = useState("");
+  const [unavailable, setUnavailable] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
 
@@ -44,14 +46,21 @@ export function PublicConversation({
     );
     setThread(data.contactRequest);
     setMessages(data.messages);
+    setUnavailable(data.contactRequest.status !== "OPEN");
     setLoading(false);
   }
 
   useEffect(() => {
-    load().catch((error) => setStatus(error instanceof Error ? error.message : "Unable to load conversation"));
-    const timer = window.setInterval(() => load().catch(() => undefined), 1500);
+    load().catch((error) => {
+      setUnavailable(true);
+      setLoading(false);
+      setStatus(error instanceof Error ? error.message : "Unable to load conversation");
+    });
+    const timer = window.setInterval(() => {
+      if (!unavailable) load().catch(() => undefined);
+    }, 1500);
     return () => window.clearInterval(timer);
-  }, [contactRequestId, token]);
+  }, [contactRequestId, token, unavailable]);
 
   async function sendMessage() {
     if (body.trim().length < 1) return;
@@ -70,6 +79,9 @@ export function PublicConversation({
       await load();
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Message could not be sent.");
+      if (error instanceof Error && error.message.toLowerCase().includes("expired")) {
+        setUnavailable(true);
+      }
     } finally {
       setSending(false);
     }
@@ -86,8 +98,8 @@ export function PublicConversation({
           {thread ? <p className="mt-1 text-sm text-[var(--color-muted)]">{thread.tagLabel} | {thread.reason}</p> : null}
           {thread ? (
             <div className="mt-2">
-              <StatusBadge tone={thread.status === "UNREAD" ? "warning" : "success"}>
-                {thread.status === "UNREAD" ? "Delivered to owner app" : "Owner replied or seen"}
+              <StatusBadge tone={thread.status === "OPEN" ? "success" : "warning"}>
+                {thread.status === "OPEN" ? "Active private chat" : "Expired"}
               </StatusBadge>
             </div>
           ) : null}
@@ -96,6 +108,11 @@ export function PublicConversation({
       <div className="mt-4">
         <InlineAlert tone="info">This conversation keeps phone numbers hidden unless someone chooses to share them.</InlineAlert>
       </div>
+      {unavailable ? (
+        <div className="mt-3">
+          <InlineAlert tone="warning">This conversation expired. Please scan the QR again to send a new message.</InlineAlert>
+        </div>
+      ) : null}
       {loading ? (
         <div className="mt-4">
           <LoadingState label="Validating conversation token..." />
@@ -122,10 +139,11 @@ export function PublicConversation({
             id="public-conversation-reply"
             value={body}
             onChange={(event) => setBody(event.target.value)}
+            disabled={unavailable}
             className="focus-ring min-h-24 rounded-[var(--radius-button)] border border-[var(--color-border)] px-3 py-3 font-normal"
           />
         </label>
-        <Button onClick={sendMessage} loading={sending}>
+        <Button onClick={sendMessage} loading={sending} disabled={unavailable || body.trim().length < 1}>
           <Send aria-hidden size={18} />
           Send reply
         </Button>

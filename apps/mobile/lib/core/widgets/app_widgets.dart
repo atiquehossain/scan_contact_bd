@@ -244,6 +244,20 @@ class RequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final statusLabel = request.isExpired
+        ? 'Expired'
+        : request.isUnread
+        ? 'Unread'
+        : request.canReply
+        ? 'Open'
+        : 'Closed';
+    final statusIcon = request.isExpired
+        ? Icons.timer_off_outlined
+        : request.isUnread
+        ? Icons.markunread
+        : request.canReply
+        ? Icons.chat_bubble_outline
+        : Icons.lock_outline;
     return Card(
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -263,10 +277,7 @@ class RequestCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  StatusChip(
-                    label: request.isUnread ? 'Unread' : 'Read',
-                    icon: request.isUnread ? Icons.markunread : Icons.done,
-                  ),
+                  StatusChip(label: statusLabel, icon: statusIcon),
                 ],
               ),
               const SizedBox(height: 6),

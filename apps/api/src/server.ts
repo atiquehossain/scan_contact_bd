@@ -40,6 +40,16 @@ import {
 } from "./lib/security.js";
 import { DevLogOtpProvider, ManualCodProvider, OtpProvider, PaymentProvider, PlaceholderPaymentProvider, SmsGatewayOtpProvider } from "./lib/providers.js";
 import { prisma } from "./lib/prisma.js";
+import {
+  conversationExpiredResponse,
+  conversationUnavailableResponse,
+  expiredConversationPatch,
+  hashConversationToken,
+  isConversationExpired,
+  isConversationReplyAllowed,
+  nextConversationDeleteAt,
+  nextConversationExpiry
+} from "./lib/conversation.js";
 
 type AuthUser = {
   id: string;
@@ -69,7 +79,18 @@ app.use(
   })
 );
 app.use(express.json({ limit: "1mb" }));
-app.use(morgan(isProduction ? "combined" : "dev"));
+morgan.token("safe-url", (req) => {
+  const expressReq = req as Request;
+  const url = expressReq.originalUrl || expressReq.url || "";
+  return url.replace(/([?&]token=)[^&]+/gi, "$1[redacted]");
+});
+app.use(
+  morgan(
+    isProduction
+      ? ':remote-addr - :remote-user [:date[clf]] ":method :safe-url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
+      : ":method :safe-url :status :response-time ms - :res[content-length]"
+  )
+);
 app.use(
   cors({
     origin(origin, callback) {
@@ -280,6 +301,78 @@ async function sendOwnerPush(userId: string, payload: OwnerPushPayload) {
       }
     })
   );
+}
+
+type ConversationLifecycleRecord = {
+  id: string;
+  status: ContactRequestStatus;
+  expiresAt: Date | null;
+  expiredAt: Date | null;
+  deleteAt: Date | null;
+};
+
+async function expireConversationIfNeeded<T extends ConversationLifecycleRecord>(
+  contactRequest: T,
+  now = new Date()
+) {
+  if (!isConversationExpired(contactRequest, now)) {
+    return { contactRequest, expired: false };
+  }
+  const patch = expiredConversationPatch(contactRequest, now);
+  const updated = await prisma.contactRequest.update({
+    where: { id: contactRequest.id },
+    data: patch
+  });
+  return {
+    contactRequest: { ...contactRequest, ...updated },
+    expired: true
+  };
+}
+
+async function expireInactiveConversationsForOwner(ownerId: string) {
+  await prisma.$executeRaw`
+    UPDATE "ContactRequest"
+    SET
+      "status" = 'EXPIRED'::"ContactRequestStatus",
+      "expiredAt" = COALESCE("expiredAt", "expiresAt", NOW()),
+      "deleteAt" = COALESCE("deleteAt", COALESCE("expiredAt", "expiresAt", NOW()) + INTERVAL '10 days')
+    WHERE "ownerId" = ${ownerId}
+      AND "status" = 'OPEN'::"ContactRequestStatus"
+      AND "expiresAt" IS NOT NULL
+      AND "expiresAt" < NOW()
+      AND "deletedAt" IS NULL
+  `;
+}
+
+function sendConversationExpired(res: Response) {
+  return res.status(410).json(conversationExpiredResponse);
+}
+
+function sendConversationUnavailable(res: Response) {
+  return res.status(404).json(conversationUnavailableResponse);
+}
+
+async function validateScannerConversation(id: string, token: string) {
+  const tokenHash = hashConversationToken(token);
+  const contactRequest = await prisma.contactRequest.findFirst({
+    where: { id, replyTokenHash: tokenHash, deletedAt: null },
+    include: {
+      qrTag: true,
+      messages: {
+        where: { deletedAt: null },
+        orderBy: { createdAt: "asc" }
+      }
+    }
+  });
+  if (!contactRequest) return { result: "unavailable" as const, contactRequest: null };
+  const lifecycle = await expireConversationIfNeeded(contactRequest);
+  if (lifecycle.expired || lifecycle.contactRequest.status === ContactRequestStatus.EXPIRED) {
+    return { result: "expired" as const, contactRequest: lifecycle.contactRequest };
+  }
+  if (lifecycle.contactRequest.status !== ContactRequestStatus.OPEN) {
+    return { result: "unavailable" as const, contactRequest: lifecycle.contactRequest };
+  }
+  return { result: "active" as const, contactRequest: lifecycle.contactRequest };
 }
 
 async function userRoles(userId: string): Promise<RoleName[]> {
@@ -528,6 +621,12 @@ function ownerRequestDto(request: {
   message: string;
   scannerName: string | null;
   status: ContactRequestStatus;
+  readAt: Date | null;
+  lastActivityAt: Date | null;
+  expiresAt: Date | null;
+  expiredAt: Date | null;
+  closedAt: Date | null;
+  deleteAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
   qrTag: { id: string; label: string } | null;
@@ -541,8 +640,14 @@ function ownerRequestDto(request: {
     scannerName: request.scannerName,
     createdAt: request.createdAt,
     updatedAt: request.updatedAt,
-    isUnread: request.status === ContactRequestStatus.UNREAD,
-    status: request.status === ContactRequestStatus.DELETED ? "closed" : request.status === ContactRequestStatus.BLOCKED ? "blocked" : "open"
+    lastActivityAt: request.lastActivityAt,
+    expiresAt: request.expiresAt,
+    expiredAt: request.expiredAt,
+    closedAt: request.closedAt,
+    deleteAt: request.deleteAt,
+    isUnread: request.status === ContactRequestStatus.OPEN && !request.readAt,
+    status: request.status.toLowerCase(),
+    canReply: isConversationReplyAllowed(request)
   };
 }
 
@@ -1463,6 +1568,8 @@ app.post(
     if (!tag.ownerId) return res.status(409).json({ error: "QR tag is not claimed yet" });
     if (tag.contactSetting && !tag.contactSetting.allowContactForm) return res.status(403).json({ error: "Contact form is disabled" });
     const replyToken = randomToken(24);
+    const now = new Date();
+    const expiresAt = nextConversationExpiry(now);
     const contactRequest = await prisma.contactRequest.create({
       data: {
         qrTagId: tag.id,
@@ -1472,7 +1579,11 @@ app.post(
         scannerName: input.scannerName,
         scannerContact: input.scannerContact,
         scannerIpHash: hashNetworkValue(req.ip),
-        replyToken,
+        replyTokenHash: hashConversationToken(replyToken),
+        status: ContactRequestStatus.OPEN,
+        readAt: null,
+        lastActivityAt: now,
+        expiresAt,
         messages: {
           create: {
             sender: ContactMessageSender.SCANNER,
@@ -1517,6 +1628,7 @@ app.post(
       ok: true,
       contactRequestId: contactRequest.id,
       conversationToken: replyToken,
+      expiresAt,
       conversationUrl: `${env.appUrl.replace(/\/$/, "")}/c/${contactRequest.id}?token=${replyToken}`
     });
   })
@@ -1525,18 +1637,12 @@ app.post(
 app.get(
   "/public/contact-requests/:id/messages",
   asyncRoute(async (req, res) => {
-    const token = z.string().min(20).parse(req.query.token);
-    const contactRequest = await prisma.contactRequest.findFirst({
-      where: { id: req.params.id, replyToken: token, deletedAt: null },
-      include: {
-        qrTag: true,
-        messages: {
-          where: { deletedAt: null },
-          orderBy: { createdAt: "asc" }
-        }
-      }
-    });
-    if (!contactRequest) return res.status(404).json({ error: "Conversation not found" });
+    const token = typeof req.query.token === "string" ? req.query.token : "";
+    if (token.length < 20) return sendConversationUnavailable(res);
+    const validation = await validateScannerConversation(req.params.id, token);
+    if (validation.result === "expired") return sendConversationExpired(res);
+    if (validation.result !== "active" || !validation.contactRequest) return sendConversationUnavailable(res);
+    const contactRequest = validation.contactRequest;
     debugLog("public.contact.messages", {
       contactRequestId: shortId(contactRequest.id),
       tagId: shortId(contactRequest.qrTagId),
@@ -1548,9 +1654,27 @@ app.get(
         reason: contactRequest.reason,
         status: contactRequest.status,
         tagLabel: contactRequest.qrTag.label,
-        createdAt: contactRequest.createdAt
+        createdAt: contactRequest.createdAt,
+        expiresAt: contactRequest.expiresAt
       },
       messages: contactRequest.messages.map(publicMessageDto)
+    });
+  })
+);
+
+app.get(
+  "/public/contact-requests/:id/validate",
+  asyncRoute(async (req, res) => {
+    const token = typeof req.query.token === "string" ? req.query.token : "";
+    if (token.length < 20) return sendConversationUnavailable(res);
+    const validation = await validateScannerConversation(req.params.id, token);
+    if (validation.result === "expired") return sendConversationExpired(res);
+    if (validation.result !== "active" || !validation.contactRequest) return sendConversationUnavailable(res);
+    res.json({
+      ok: true,
+      conversationId: validation.contactRequest.id,
+      expiresAt: validation.contactRequest.expiresAt,
+      status: validation.contactRequest.status
     });
   })
 );
@@ -1560,11 +1684,12 @@ app.post(
   publicContactLimiter,
   asyncRoute(async (req, res) => {
     const input = parseBody(publicChatMessageSchema, req);
-    const contactRequest = await prisma.contactRequest.findFirst({
-      where: { id: req.params.id, replyToken: input.token, deletedAt: null },
-      include: { qrTag: true }
-    });
-    if (!contactRequest) return res.status(404).json({ error: "Conversation not found" });
+    const validation = await validateScannerConversation(req.params.id, input.token);
+    if (validation.result === "expired") return sendConversationExpired(res);
+    if (validation.result !== "active" || !validation.contactRequest) return sendConversationUnavailable(res);
+    const contactRequest = validation.contactRequest;
+    const now = new Date();
+    const expiresAt = nextConversationExpiry(now);
     const message = await prisma.contactMessage.create({
       data: {
         contactRequestId: contactRequest.id,
@@ -1576,7 +1701,12 @@ app.post(
     });
     await prisma.contactRequest.update({
       where: { id: contactRequest.id },
-      data: { status: ContactRequestStatus.UNREAD }
+      data: {
+        status: ContactRequestStatus.OPEN,
+        readAt: null,
+        lastActivityAt: now,
+        expiresAt
+      }
     });
     const notification = await prisma.notification.create({
       data: {
@@ -1637,6 +1767,7 @@ app.get(
   "/contact-requests",
   requireAuth,
   asyncRoute(async (req: AuthedRequest, res) => {
+    await expireInactiveConversationsForOwner(req.user!.id);
     const requests = await prisma.contactRequest.findMany({
       where: { ownerId: req.user!.id, deletedAt: null },
       include: { qrTag: true, messages: { where: { deletedAt: null }, orderBy: { createdAt: "asc" } } },
@@ -1652,9 +1783,14 @@ app.patch(
   requireAuth,
   asyncRoute(async (req: AuthedRequest, res) => {
     const input = z.object({ status: z.nativeEnum(ContactRequestStatus) }).parse(req.body);
+    const now = new Date();
     const request = await prisma.contactRequest.updateMany({
       where: { id: req.params.id, ownerId: req.user!.id },
-      data: { status: input.status, readAt: input.status === ContactRequestStatus.READ ? new Date() : undefined }
+      data: {
+        status: input.status,
+        closedAt: input.status === ContactRequestStatus.CLOSED ? now : undefined,
+        deleteAt: input.status === ContactRequestStatus.CLOSED ? nextConversationDeleteAt(now) : undefined
+      }
     });
     res.json({ ok: request.count > 0 });
   })
@@ -1675,7 +1811,8 @@ app.get(
       }
     });
     if (!contactRequest) return res.status(404).json({ error: "Contact request not found" });
-    res.json({ contactRequest, messages: contactRequest.messages });
+    const lifecycle = await expireConversationIfNeeded(contactRequest);
+    res.json({ contactRequest: lifecycle.contactRequest, messages: contactRequest.messages });
   })
 );
 
@@ -1688,6 +1825,15 @@ app.post(
       where: { id: req.params.id, ownerId: req.user!.id, deletedAt: null }
     });
     if (!contactRequest) return res.status(404).json({ error: "Contact request not found" });
+    const lifecycle = await expireConversationIfNeeded(contactRequest);
+    if (!isConversationReplyAllowed(lifecycle.contactRequest)) {
+      return res.status(410).json({
+        code: "CONVERSATION_EXPIRED",
+        message: "This conversation has expired. The scanner must scan the QR again to start a new chat."
+      });
+    }
+    const now = new Date();
+    const expiresAt = nextConversationExpiry(now);
     const message = await prisma.contactMessage.create({
       data: {
         contactRequestId: contactRequest.id,
@@ -1699,7 +1845,12 @@ app.post(
     });
     await prisma.contactRequest.update({
       where: { id: contactRequest.id },
-      data: { status: ContactRequestStatus.READ, readAt: new Date() }
+      data: {
+        status: ContactRequestStatus.OPEN,
+        readAt: new Date(),
+        lastActivityAt: now,
+        expiresAt
+      }
     });
     res.status(201).json({ message });
   })
@@ -1957,15 +2108,16 @@ app.get(
   "/owner/dashboard",
   requireAuth,
   asyncRoute(async (req: AuthedRequest, res) => {
+    await expireInactiveConversationsForOwner(req.user!.id);
     const [tags, requests, unreadRequestCount, unreadNotifications, latestOrder] = await Promise.all([
       prisma.qrTag.findMany({ where: { ownerId: req.user!.id, deletedAt: null }, orderBy: { createdAt: "desc" } }),
       prisma.contactRequest.findMany({
         where: { ownerId: req.user!.id, deletedAt: null },
         include: { qrTag: { select: { id: true, label: true } } },
-        orderBy: [{ status: "desc" }, { createdAt: "desc" }],
+        orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
         take: 3
       }),
-      prisma.contactRequest.count({ where: { ownerId: req.user!.id, deletedAt: null, status: ContactRequestStatus.UNREAD } }),
+      prisma.contactRequest.count({ where: { ownerId: req.user!.id, deletedAt: null, status: ContactRequestStatus.OPEN, readAt: null } }),
       prisma.notification.count({ where: { userId: req.user!.id, readAt: null, deletedAt: null } }),
       prisma.order.findFirst({ where: { userId: req.user!.id, deletedAt: null }, include: { items: true }, orderBy: { createdAt: "desc" } })
     ]);
@@ -2007,19 +2159,20 @@ app.get(
   "/owner/contact-requests",
   requireAuth,
   asyncRoute(async (req: AuthedRequest, res) => {
+    await expireInactiveConversationsForOwner(req.user!.id);
     const filter = z.enum(["all", "unread", "open", "closed"]).default("all").parse(req.query.filter || "all");
     const statusWhere =
       filter === "unread"
-        ? { status: ContactRequestStatus.UNREAD }
+        ? { status: ContactRequestStatus.OPEN, readAt: null }
         : filter === "closed"
-          ? { status: { in: [ContactRequestStatus.DELETED, ContactRequestStatus.BLOCKED] } }
+          ? { status: { in: [ContactRequestStatus.EXPIRED, ContactRequestStatus.CLOSED] } }
           : filter === "open"
-            ? { status: { in: [ContactRequestStatus.UNREAD, ContactRequestStatus.READ] } }
+            ? { status: ContactRequestStatus.OPEN }
             : {};
     const requests = await prisma.contactRequest.findMany({
       where: { ownerId: req.user!.id, deletedAt: null, ...statusWhere },
       include: { qrTag: { select: { id: true, label: true } } },
-      orderBy: [{ status: "desc" }, { createdAt: "desc" }],
+      orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
       take: 100
     });
     debugLog("owner.contactRequests", { ownerId: shortId(req.user!.id), phone: maskPhone(req.user!.phone), filter, count: requests.length });
@@ -2036,12 +2189,13 @@ app.get(
       include: { qrTag: { select: { id: true, label: true } }, messages: { where: { deletedAt: null }, orderBy: { createdAt: "asc" } } }
     });
     if (!contactRequest) return res.status(404).json({ error: "Contact request not found" });
+    const lifecycle = await expireConversationIfNeeded(contactRequest);
     debugLog("owner.contactRequest.messages", {
       ownerId: shortId(req.user!.id),
       requestId: shortId(req.params.id),
       messageCount: contactRequest.messages.length
     });
-    res.json({ request: ownerRequestDto(contactRequest), messages: contactRequest.messages.map(ownerMessageDto) });
+    res.json({ request: ownerRequestDto(lifecycle.contactRequest), messages: contactRequest.messages.map(ownerMessageDto) });
   })
 );
 
@@ -2052,6 +2206,15 @@ app.post(
     const input = z.object({ message: z.string().trim().min(1).max(500) }).parse(req.body);
     const contactRequest = await prisma.contactRequest.findFirst({ where: { id: req.params.id, ownerId: req.user!.id, deletedAt: null }, include: { qrTag: true } });
     if (!contactRequest) return res.status(404).json({ error: "Contact request not found" });
+    const lifecycle = await expireConversationIfNeeded(contactRequest);
+    if (!isConversationReplyAllowed(lifecycle.contactRequest)) {
+      return res.status(410).json({
+        code: "CONVERSATION_EXPIRED",
+        message: "This conversation has expired. The scanner must scan the QR again to start a new chat."
+      });
+    }
+    const now = new Date();
+    const expiresAt = nextConversationExpiry(now);
     const message = await prisma.contactMessage.create({
       data: {
         contactRequestId: contactRequest.id,
@@ -2061,7 +2224,15 @@ app.post(
         body: input.message
       }
     });
-    await prisma.contactRequest.update({ where: { id: contactRequest.id }, data: { status: ContactRequestStatus.READ, readAt: new Date() } });
+    await prisma.contactRequest.update({
+      where: { id: contactRequest.id },
+      data: {
+        status: ContactRequestStatus.OPEN,
+        readAt: new Date(),
+        lastActivityAt: now,
+        expiresAt
+      }
+    });
     debugLog("owner.contactRequest.reply", {
       ownerId: shortId(req.user!.id),
       requestId: shortId(contactRequest.id),
@@ -2076,7 +2247,7 @@ app.post(
   "/owner/contact-requests/:id/mark-read",
   requireAuth,
   asyncRoute(async (req: AuthedRequest, res) => {
-    const result = await prisma.contactRequest.updateMany({ where: { id: req.params.id, ownerId: req.user!.id }, data: { status: ContactRequestStatus.READ, readAt: new Date() } });
+    const result = await prisma.contactRequest.updateMany({ where: { id: req.params.id, ownerId: req.user!.id }, data: { readAt: new Date() } });
     debugLog("owner.contactRequest.markRead", { ownerId: shortId(req.user!.id), requestId: shortId(req.params.id), updated: result.count });
     res.json({ ok: result.count > 0 });
   })
@@ -2322,7 +2493,7 @@ app.get("/admin/owners", requireAuth, requireRoles(RoleName.SUPER_ADMIN, RoleNam
       },
       contactRequests: {
         where: { deletedAt: null },
-        select: { id: true, status: true, createdAt: true },
+        select: { id: true, status: true, readAt: true, createdAt: true },
         orderBy: { createdAt: "desc" }
       },
       orders: {
@@ -2342,7 +2513,7 @@ app.get("/admin/owners", requireAuth, requireRoles(RoleName.SUPER_ADMIN, RoleNam
       createdAt: owner.createdAt,
       tagCount: owner.ownedTags.length,
       contactRequestCount: owner.contactRequests.length,
-      unreadRequestCount: owner.contactRequests.filter((request) => request.status === ContactRequestStatus.UNREAD).length,
+      unreadRequestCount: owner.contactRequests.filter((request) => request.status === ContactRequestStatus.OPEN && !request.readAt).length,
       orderCount: owner.orders.length,
       pendingOrderCount: owner.orders.filter((order) => !new Set<OrderStatus>([OrderStatus.DELIVERED, OrderStatus.CANCELLED, OrderStatus.RETURNED]).has(order.status)).length,
       abuseReportCount: owner.ownedTags.reduce((sum, tag) => sum + tag._count.abuseReports, 0),

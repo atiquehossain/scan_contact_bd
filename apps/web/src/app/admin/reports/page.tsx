@@ -77,7 +77,7 @@ export default function ReportsPage() {
                 <article key={request.id} className="rounded-[var(--radius-card)] border border-[var(--color-border)] p-4 text-sm">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div><h3 className="font-black">{request.reason}</h3><p className="text-[var(--color-muted)]">{request.qrTag?.label || "QR tag"} | {request.owner?.fullName || request.owner?.phone || "Owner"} | {formatDate(request.createdAt)}</p></div>
-                    <StatusBadge tone={request.status === "UNREAD" ? "warning" : "success"}>{request.status}</StatusBadge>
+                    <StatusBadge tone={request.status === "OPEN" ? "warning" : request.status === "EXPIRED" ? "warning" : "success"}>{request.status}</StatusBadge>
                   </div>
                   <p className="mt-2 whitespace-pre-wrap">{request.message}</p>
                 </article>

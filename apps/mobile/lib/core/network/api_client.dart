@@ -109,8 +109,10 @@ void _debugError(DioException error) {
     'message=${error.message}',
   );
   final data = error.response?.data;
-  if (data is Map && data['error'] is String) {
-    debugPrint('[ScanContact API] serverError=${data['error']}');
+  if (data is Map && (data['message'] is String || data['error'] is String)) {
+    debugPrint(
+      '[ScanContact API] serverError=${data['message'] ?? data['error']}',
+    );
   }
 }
 
@@ -131,6 +133,9 @@ String apiErrorMessage(Object error) {
         error.type == DioExceptionType.receiveTimeout ||
         error.type == DioExceptionType.connectionError) {
       return 'Connection problem. Check internet and try again.';
+    }
+    if (data is Map && data['message'] is String) {
+      return data['message'] as String;
     }
     if (data is Map && data['error'] is String) {
       return data['error'] as String;

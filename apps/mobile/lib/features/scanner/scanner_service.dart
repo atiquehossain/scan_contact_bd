@@ -123,17 +123,20 @@ class ScannerContactResult {
     required this.contactRequestId,
     required this.conversationToken,
     required this.conversationUrl,
+    this.expiresAt,
   });
 
   final String contactRequestId;
   final String conversationToken;
   final String conversationUrl;
+  final DateTime? expiresAt;
 
   factory ScannerContactResult.fromJson(Map<String, dynamic> json) {
     return ScannerContactResult(
       contactRequestId: json['contactRequestId']?.toString() ?? '',
       conversationToken: json['conversationToken']?.toString() ?? '',
       conversationUrl: json['conversationUrl']?.toString() ?? '',
+      expiresAt: DateTime.tryParse(json['expiresAt']?.toString() ?? ''),
     );
   }
 }
@@ -145,6 +148,7 @@ class ScannerConversation {
     required this.status,
     required this.tagLabel,
     required this.messages,
+    this.expiresAt,
   });
 
   final String requestId;
@@ -152,6 +156,23 @@ class ScannerConversation {
   final String status;
   final String tagLabel;
   final List<ScannerMessage> messages;
+  final DateTime? expiresAt;
+
+  bool get canReply => status.toUpperCase() == 'OPEN';
+
+  ScannerConversation copyWith({
+    String? status,
+    List<ScannerMessage>? messages,
+  }) {
+    return ScannerConversation(
+      requestId: requestId,
+      reason: reason,
+      status: status ?? this.status,
+      tagLabel: tagLabel,
+      messages: messages ?? this.messages,
+      expiresAt: expiresAt,
+    );
+  }
 
   factory ScannerConversation.fromJson(Map<String, dynamic> json) {
     final request = json['contactRequest'] is Map
@@ -160,8 +181,9 @@ class ScannerConversation {
     return ScannerConversation(
       requestId: request['id']?.toString() ?? '',
       reason: request['reason']?.toString() ?? 'OTHER',
-      status: request['status']?.toString() ?? 'UNREAD',
+      status: request['status']?.toString() ?? 'OPEN',
       tagLabel: request['tagLabel']?.toString() ?? 'QR tag',
+      expiresAt: DateTime.tryParse(request['expiresAt']?.toString() ?? ''),
       messages: (json['messages'] as List? ?? [])
           .whereType<Map>()
           .map(

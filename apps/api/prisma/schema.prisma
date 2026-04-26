@@ -92,10 +92,10 @@ enum ContactReason {
 }
 
 enum ContactRequestStatus {
-  UNREAD
-  READ
+  OPEN
+  EXPIRED
+  CLOSED
   DELETED
-  BLOCKED
 }
 
 enum ContactMessageSender {
@@ -438,9 +438,14 @@ model ContactRequest {
   scannerName    String?
   scannerContact String?
   scannerIpHash  String?
-  replyToken     String?              @unique
-  status         ContactRequestStatus @default(UNREAD)
+  replyTokenHash String?              @unique
+  status         ContactRequestStatus @default(OPEN)
   readAt         DateTime?
+  lastActivityAt DateTime?
+  expiresAt      DateTime?
+  expiredAt      DateTime?
+  closedAt       DateTime?
+  deleteAt       DateTime?
   messages       ContactMessage[]
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
@@ -448,6 +453,8 @@ model ContactRequest {
 
   @@index([ownerId, status])
   @@index([qrTagId, createdAt])
+  @@index([expiresAt])
+  @@index([deleteAt])
 }
 
 model ContactMessage {

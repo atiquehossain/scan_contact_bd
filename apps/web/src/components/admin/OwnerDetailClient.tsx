@@ -115,7 +115,7 @@ export function OwnerDetailClient() {
                   <article key={request.id} className="rounded-[var(--radius-card)] border border-[var(--color-border)] p-4 text-sm">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div><h3 className="font-black">{request.reason}</h3><p className="text-[var(--color-muted)]">{request.qrTag?.label || "QR tag"} | {formatDate(request.createdAt)}</p></div>
-                      <StatusBadge tone={request.status === "UNREAD" ? "warning" : "success"}>{request.status}</StatusBadge>
+                      <StatusBadge tone={request.status === "OPEN" ? "warning" : request.status === "EXPIRED" ? "warning" : "success"}>{request.status}</StatusBadge>
                     </div>
                     {request.scannerName ? <p className="mt-3 font-bold">Scanner: {request.scannerName}</p> : null}
                     <p className="mt-2 whitespace-pre-wrap rounded bg-[#f8fbf9] p-3">{request.message}</p>

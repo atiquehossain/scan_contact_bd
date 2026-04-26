@@ -106,7 +106,11 @@ class ContactRequestSummary {
     required this.updatedAt,
     required this.isUnread,
     required this.status,
+    required this.canReply,
     this.scannerName,
+    this.expiresAt,
+    this.expiredAt,
+    this.deleteAt,
   });
 
   final String id;
@@ -117,7 +121,14 @@ class ContactRequestSummary {
   final DateTime updatedAt;
   final bool isUnread;
   final String status;
+  final bool canReply;
   final String? scannerName;
+  final DateTime? expiresAt;
+  final DateTime? expiredAt;
+  final DateTime? deleteAt;
+
+  bool get isExpired => status.toLowerCase() == 'expired';
+  bool get isDeleted => status.toLowerCase() == 'deleted';
 
   factory ContactRequestSummary.fromJson(Map<String, dynamic> json) {
     return ContactRequestSummary(
@@ -133,7 +144,11 @@ class ContactRequestSummary {
           DateTime.now(),
       isUnread: json['isUnread'] == true,
       status: json['status']?.toString() ?? 'open',
+      canReply: json['canReply'] != false,
       scannerName: json['scannerName']?.toString(),
+      expiresAt: DateTime.tryParse(json['expiresAt']?.toString() ?? ''),
+      expiredAt: DateTime.tryParse(json['expiredAt']?.toString() ?? ''),
+      deleteAt: DateTime.tryParse(json['deleteAt']?.toString() ?? ''),
     );
   }
 }
