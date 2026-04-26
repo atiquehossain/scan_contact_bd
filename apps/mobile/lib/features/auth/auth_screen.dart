@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/config/app_config.dart';
 import '../../core/network/api_client.dart';
+import '../../core/push/push_notification_service.dart';
 import '../../core/services/owner_services.dart';
 import '../../core/utils/bd_phone.dart';
 import '../../core/widgets/app_widgets.dart';
@@ -121,6 +122,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
             accessToken: result.accessToken,
             refreshToken: result.refreshToken,
           );
+      await PushNotificationService.registerForCurrentUser(
+        ref.read(ownerServiceProvider),
+      );
       if (mounted) context.go('/main');
     } catch (err) {
       final message = apiErrorMessage(err);

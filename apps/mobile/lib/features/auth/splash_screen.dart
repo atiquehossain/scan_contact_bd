@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/config/app_config.dart';
 import '../../core/network/api_client.dart';
+import '../../core/push/push_notification_service.dart';
 import '../../core/services/owner_services.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -36,6 +37,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     }
     try {
       await ref.read(ownerServiceProvider).me();
+      await PushNotificationService.registerForCurrentUser(
+        ref.read(ownerServiceProvider),
+      );
       if (mounted) context.go('/main');
     } catch (err) {
       final message = apiErrorMessage(err);

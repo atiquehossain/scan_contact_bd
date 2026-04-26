@@ -197,6 +197,25 @@ class OwnerService {
     await _api.post('/owner/notifications/read-all');
   }
 
+  Future<void> registerDeviceToken({
+    required String token,
+    required String platform,
+    String provider = 'fcm',
+  }) async {
+    await _api.post(
+      '/devices/register',
+      data: {'token': token, 'platform': platform, 'provider': provider},
+    );
+    _debugOwnerData(
+      'device token registered platform=$platform provider=$provider',
+    );
+  }
+
+  Future<void> unregisterDeviceToken(String token) async {
+    await _api.delete('/devices/${Uri.encodeComponent(token)}');
+    _debugOwnerData('device token unregistered');
+  }
+
   Future<List<Product>> products() async {
     final response = await _api.get('/owner/products');
     final data = Map<String, dynamic>.from(response.data as Map);

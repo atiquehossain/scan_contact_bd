@@ -6,7 +6,7 @@ import { LockKeyhole, ShieldCheck } from "lucide-react";
 import { apiFetch, authToken, saveAuth } from "@/lib/api";
 import { Button, FieldError, InlineAlert } from "@/components/admin/ui";
 
-const developmentEmail = process.env.NODE_ENV === "production" ? "" : "atique@atique.com";
+const developmentEmail = process.env.NEXT_PUBLIC_DEV_ADMIN_EMAIL || "";
 
 export default function AdminLoginPage() {
   const router = useRouter();

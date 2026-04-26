@@ -3,26 +3,32 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/models/owner_models.dart';
 import '../../core/network/api_client.dart';
-import '../../core/services/owner_services.dart';
 import '../../core/widgets/app_widgets.dart';
+import 'scanner_service.dart';
 
-class ChatScreen extends ConsumerStatefulWidget {
-  const ChatScreen({super.key, required this.requestId});
+class ScannerConversationScreen extends ConsumerStatefulWidget {
+  const ScannerConversationScreen({
+    super.key,
+    required this.requestId,
+    required this.token,
+  });
 
   final String requestId;
+  final String token;
 
   @override
-  ConsumerState<ChatScreen> createState() => _ChatScreenState();
+  ConsumerState<ScannerConversationScreen> createState() =>
+      _ScannerConversationScreenState();
 }
 
-class _ChatScreenState extends ConsumerState<ChatScreen>
+class _ScannerConversationScreenState
+    extends ConsumerState<ScannerConversationScreen>
     with WidgetsBindingObserver {
   final controller = TextEditingController();
   final scrollController = ScrollController();
-  ContactRequestSummary? request;
-  List<ChatMessage> messages = [];
+  ScannerConversation? conversation;
+  List<ScannerMessage> messages = [];
   bool loading = true;
   bool sending = false;
   bool refreshing = false;
@@ -65,17 +71,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
     });
     try {
       final data = await ref
-          .read(ownerServiceProvider)
-          .messages(widget.requestId);
-      await ref.read(ownerServiceProvider).markRead(widget.requestId);
+          .read(scannerServiceProvider)
+          .conversation(requestId: widget.requestId, token: widget.token);
+      if (!mounted) return;
       setState(() {
-        request = data.request;
+        conversation = data;
         messages = data.messages;
       });
       scrollToBottom();
-      ref.invalidate(dashboardProvider);
-      ref.invalidate(requestsProvider('all'));
     } catch (err) {
+      if (!mounted) return;
       setState(() => error = apiErrorMessage(err));
     } finally {
       if (mounted) setState(() => loading = false);
@@ -93,9 +98,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
     refreshing = true;
     try {
       final data = await ref
-          .read(ownerServiceProvider)
-          .messages(widget.requestId);
-      await ref.read(ownerServiceProvider).markRead(widget.requestId);
+          .read(scannerServiceProvider)
+          .conversation(requestId: widget.requestId, token: widget.token);
       if (!mounted) return;
       final failedLocalMessages = messages
           .where(
@@ -104,7 +108,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
           .toList();
       final previousLastId = messages.isEmpty ? null : messages.last.id;
       setState(() {
-        request = data.request;
+        conversation = data;
         messages = [...data.messages, ...failedLocalMessages];
         error = null;
       });
@@ -112,13 +116,70 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
       if (nextLastId != null && nextLastId != previousLastId) {
         scrollToBottom();
       }
-      ref.invalidate(dashboardProvider);
-      ref.invalidate(requestsProvider('all'));
-      ref.invalidate(requestsProvider('unread'));
     } catch (_) {
-      // Keep the current chat visible. The next timer tick or manual retry can recover.
+      // Keep the existing thread visible. The next poll or retry can recover.
     } finally {
       refreshing = false;
+    }
+  }
+
+  Future<void> send({ScannerMessage? retry}) async {
+    final text = retry?.body ?? controller.text.trim();
+    if (text.isEmpty || sending) return;
+    final localId =
+        retry?.id ?? 'local-${DateTime.now().microsecondsSinceEpoch}';
+    if (retry == null) {
+      controller.clear();
+      setState(() {
+        messages = [
+          ...messages,
+          ScannerMessage(
+            id: localId,
+            sender: 'SCANNER',
+            body: text,
+            createdAt: DateTime.now(),
+            status: 'sending',
+          ),
+        ];
+      });
+      scrollToBottom();
+    } else {
+      setState(
+        () => messages = messages
+            .map(
+              (item) =>
+                  item.id == localId ? item.copyWith(status: 'sending') : item,
+            )
+            .toList(),
+      );
+    }
+    setState(() => sending = true);
+    try {
+      final sent = await ref
+          .read(scannerServiceProvider)
+          .reply(requestId: widget.requestId, token: widget.token, body: text);
+      setState(
+        () => messages = messages
+            .map((item) => item.id == localId ? sent : item)
+            .toList(),
+      );
+      scrollToBottom();
+    } catch (_) {
+      setState(
+        () => messages = messages
+            .map(
+              (item) =>
+                  item.id == localId ? item.copyWith(status: 'failed') : item,
+            )
+            .toList(),
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not send message. Try again.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => sending = false);
     }
   }
 
@@ -133,77 +194,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
     });
   }
 
-  Future<void> send({ChatMessage? retry}) async {
-    final text = retry?.message ?? controller.text.trim();
-    if (text.isEmpty || sending) return;
-    final localId =
-        retry?.id ?? 'local-${DateTime.now().microsecondsSinceEpoch}';
-    if (retry == null) {
-      controller.clear();
-      setState(() {
-        messages = [
-          ...messages,
-          ChatMessage(
-            id: localId,
-            senderType: 'owner',
-            message: text,
-            createdAt: DateTime.now(),
-            status: 'sending',
-          ),
-        ];
-      });
-    } else {
-      setState(
-        () => messages = messages
-            .map(
-              (item) =>
-                  item.id == localId ? item.copyWith(status: 'sending') : item,
-            )
-            .toList(),
-      );
-    }
-    setState(() => sending = true);
-    try {
-      final sent = await ref
-          .read(ownerServiceProvider)
-          .reply(requestId: widget.requestId, message: text);
-      setState(
-        () => messages = messages
-            .map((item) => item.id == localId ? sent : item)
-            .toList(),
-      );
-      scrollToBottom();
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Reply sent')));
-      }
-    } catch (_) {
-      setState(
-        () => messages = messages
-            .map(
-              (item) =>
-                  item.id == localId ? item.copyWith(status: 'failed') : item,
-            )
-            .toList(),
-      );
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not send reply. Try again.')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => sending = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(request?.tagLabel ?? 'Private chat')),
+      appBar: AppBar(title: Text(conversation?.tagLabel ?? 'Private thread')),
       body: loading
-          ? const AppLoadingView(label: 'Loading chat...')
-          : error != null
+          ? const AppLoadingView(label: 'Loading private thread...')
+          : error != null && conversation == null
           ? AppErrorView(message: error!, onRetry: load)
           : Column(
               children: [
@@ -211,17 +208,26 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                   child: Column(
                     children: [
-                      if (request != null)
+                      if (conversation != null)
                         Card(
                           child: ListTile(
                             leading: const Icon(Icons.forum_outlined),
-                            title: Text(request!.reason),
-                            subtitle: Text(request!.tagLabel),
+                            title: Text(conversation!.reason),
+                            subtitle: Text(conversation!.tagLabel),
+                            trailing: refreshing
+                                ? const SizedBox.square(
+                                    dimension: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : null,
                           ),
                         ),
                       const SizedBox(height: 8),
                       const PrivacyNoticeCard(
-                        message: 'Your phone number is hidden.',
+                        message:
+                            'This conversation keeps phone numbers hidden unless someone writes one manually.',
                       ),
                     ],
                   ),
@@ -231,15 +237,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                     controller: scrollController,
                     padding: const EdgeInsets.all(16),
                     itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      final message = messages[index];
-                      return ChatBubble(
-                        message: message,
-                        onRetry: message.status == 'failed'
-                            ? () => send(retry: message)
-                            : null,
-                      );
-                    },
+                    itemBuilder: (context, index) => ScannerChatBubble(
+                      message: messages[index],
+                      onRetry: messages[index].status == 'failed'
+                          ? () => send(retry: messages[index])
+                          : null,
+                    ),
                   ),
                 ),
                 SafeArea(
@@ -255,27 +258,24 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                             minLines: 1,
                             maxLines: 4,
                             decoration: const InputDecoration(
-                              labelText: 'Reply privately',
+                              labelText: 'Write a private message',
                             ),
                             onChanged: (_) => setState(() {}),
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Semantics(
-                          label: 'Send private reply',
-                          child: FilledButton(
-                            onPressed: controller.text.trim().isEmpty || sending
-                                ? null
-                                : send,
-                            child: sending
-                                ? const SizedBox.square(
-                                    dimension: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : const Icon(Icons.send),
-                          ),
+                        FilledButton(
+                          onPressed: controller.text.trim().isEmpty || sending
+                              ? null
+                              : send,
+                          child: sending
+                              ? const SizedBox.square(
+                                  dimension: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(Icons.send),
                         ),
                       ],
                     ),
@@ -283,6 +283,61 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                 ),
               ],
             ),
+    );
+  }
+}
+
+class ScannerChatBubble extends StatelessWidget {
+  const ScannerChatBubble({super.key, required this.message, this.onRetry});
+
+  final ScannerMessage message;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final isMine = message.isScanner;
+    final color = isMine
+        ? Theme.of(context).colorScheme.primaryContainer
+        : Theme.of(context).colorScheme.surface;
+    return Align(
+      alignment: isMine ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        constraints: const BoxConstraints(maxWidth: 320),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              isMine ? 'You' : 'Owner',
+              style: Theme.of(
+                context,
+              ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 4),
+            Text(message.body),
+            const SizedBox(height: 6),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '${formatDateTime(message.createdAt)} · ${message.status}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                if (message.status == 'failed' && onRetry != null)
+                  TextButton(onPressed: onRetry, child: const Text('Retry')),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -19,6 +19,9 @@ export const env = {
     .map((origin) => origin.trim())
     .filter(Boolean),
   otpProvider: process.env.OTP_PROVIDER || "dev-log",
+  fcmProjectId: process.env.FCM_PROJECT_ID || "",
+  fcmClientEmail: process.env.FCM_CLIENT_EMAIL || "",
+  fcmPrivateKey: (process.env.FCM_PRIVATE_KEY || "").replace(/\\n/g, "\n"),
   adminEmail: process.env.ADMIN_EMAIL || "admin@example.com",
   adminPhone: process.env.ADMIN_PHONE || "+8801000000000",
   adminPassword: process.env.ADMIN_PASSWORD || "change-me-admin-password"

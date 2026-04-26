@@ -1,6 +1,6 @@
 # ScanContact BD Architecture
 
-ScanContact BD is a privacy-first QR private contact platform for Bangladesh. The MVP is built as a self-hostable monorepo with a Next.js web app, Express/TypeScript REST API, PostgreSQL via Prisma, Redis-ready worker process, and a Flutter Android/iOS-ready app.
+ScanContact BD is a privacy-first QR private contact platform for Bangladesh. The MVP is built as a self-hostable monorepo with a static web frontend exported from Next.js, Caddy, an Express/TypeScript REST API, PostgreSQL via Prisma, optional Redis/worker services, and a Flutter Android/iOS-ready app.
 
 ## Product Architecture
 
@@ -12,7 +12,7 @@ flowchart LR
   OwnerShop["Owner app COD order flow"] --> API
   ScanPage --> API
   API --> DB[(PostgreSQL)]
-  API --> Redis[(Redis)]
+  API -. "optional cache/queue later" .-> Redis[(Redis)]
   API --> Storage["Local/MinIO storage abstraction"]
   API --> Providers["OTP/SMS/Email/Payment/Push provider abstractions"]
 ```
@@ -28,16 +28,38 @@ flowchart LR
 - COD works in the MVP; online payment providers are backend-verified placeholders.
 - Call masking is intentionally not implemented until a legal telecom/VoIP provider is approved.
 
-## Deployment Shape
+## Low-Cost Deployment Shape
+
+The default production recommendation is intentionally small:
 
 ```mermaid
 flowchart TB
   Internet --> Caddy["Caddy HTTPS reverse proxy"]
-  Caddy --> Web["Next.js web"]
-  Caddy --> API["API container"]
-  API --> Worker["Worker container"]
+  Caddy --> Web["Static admin/public QR files"]
+  Caddy --> API["Single Express API container"]
   API --> Postgres[(PostgreSQL volume)]
-  API --> Redis[(Redis volume)]
+  Cron["Backup script / VPS cron"] --> Postgres
+```
+
+This keeps the same admin, public QR, owner API, QR image, contact request, chat, and COD order features while avoiding an always-on Next.js runtime plus extra Redis, worker, Mailpit, and object-storage containers.
+
+Use optional services only when needed:
+
+- `redis`: future cache/queue workloads.
+- `worker`: scheduled/background jobs once the API should not do them inline.
+- `mailpit`: local email testing only.
+- MinIO/object storage: future private file uploads.
+
+## Full Expansion Shape
+
+```mermaid
+flowchart TB
+  Internet --> Caddy["Caddy HTTPS reverse proxy"]
+  Caddy --> Web["Static web files"]
+  Caddy --> API["API container"]
+  API --> Postgres[(PostgreSQL volume)]
+  API -. "optional" .-> Redis[(Redis volume)]
+  Worker["Optional worker container"] --> Postgres
   API --> MinIO["Optional MinIO"]
   Cron["Backup script/cron"] --> Postgres
   Cron --> MinIO

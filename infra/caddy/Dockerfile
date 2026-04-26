@@ -1,5 +1,6 @@
-FROM node:22-alpine AS builder
+FROM node:22-alpine AS web_builder
 WORKDIR /app
+
 ARG NEXT_PUBLIC_APP_NAME="ScanContact BD"
 ARG NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ARG NEXT_PUBLIC_API_URL="/api"
@@ -17,4 +18,4 @@ RUN npm run build
 
 FROM caddy:2-alpine
 COPY infra/caddy/Caddyfile /etc/caddy/Caddyfile
-COPY --from=builder /app/apps/web/out /srv/scancontact
+COPY --from=web_builder /app/apps/web/out /srv/scancontact

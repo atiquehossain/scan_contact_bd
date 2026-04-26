@@ -1,25 +1,17 @@
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 const appOrigin = new URL(appUrl).origin;
+const extraAllowedDevOrigins = (process.env.NEXT_ALLOWED_DEV_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
+  output: process.env.NODE_ENV === "production" ? "export" : undefined,
   poweredByHeader: false,
   reactStrictMode: true,
-  allowedDevOrigins: [appOrigin],
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: [
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "X-Frame-Options", value: "DENY" },
-          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" }
-        ]
-      }
-    ];
-  }
+  trailingSlash: true,
+  allowedDevOrigins: Array.from(new Set([appOrigin, ...extraAllowedDevOrigins]))
 };
 
 export default nextConfig;

@@ -58,6 +58,26 @@ class HomeScreen extends ConsumerWidget {
               onBuyQr: () => context.push('/shop'),
               onOpenOrders: () => context.push('/orders'),
             ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: () => context.push('/scan'),
+                    icon: const Icon(Icons.qr_code_scanner),
+                    label: const Text('Scan QR'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => context.push('/shop'),
+                    icon: const Icon(Icons.shopping_bag_outlined),
+                    label: const Text('Buy QR'),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 16),
             GridView.count(
               crossAxisCount: 2,

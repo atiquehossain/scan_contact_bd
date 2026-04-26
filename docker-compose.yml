@@ -19,6 +19,7 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
+    profiles: ["extras"]
     ports:
       - "${REDIS_PORT:-6379}:6379"
     volumes:
@@ -27,6 +28,7 @@ services:
   mailpit:
     image: axllent/mailpit:latest
     restart: unless-stopped
+    profiles: ["dev-tools"]
     ports:
       - "1025:1025"
       - "8025:8025"
@@ -40,57 +42,58 @@ services:
       - apps/api/.env
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-scancontact}:${POSTGRES_PASSWORD:-scancontact_local_password}@postgres:5432/${POSTGRES_DB:-scancontact}?schema=public
-      REDIS_URL: redis://redis:6379
+      REDIS_URL: ${API_REDIS_URL:-}
+      NODE_OPTIONS: ${API_NODE_OPTIONS:---max-old-space-size=384}
     ports:
       - "4000:4000"
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_started
     volumes:
       - api_uploads:/app/apps/api/uploads
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:4000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   worker:
     build:
       context: .
       dockerfile: apps/worker/Dockerfile
     restart: unless-stopped
+    profiles: ["extras"]
     env_file:
       - apps/api/.env
     depends_on:
       postgres:
         condition: service_healthy
 
-  web:
+  caddy:
     build:
       context: .
-      dockerfile: apps/web/Dockerfile
+      dockerfile: infra/caddy/Dockerfile
+      args:
+        NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-ScanContact BD}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+        NEXT_PUBLIC_API_URL: ${STATIC_NEXT_PUBLIC_API_URL:-/api}
     restart: unless-stopped
-    env_file:
-      - apps/web/.env
+    ports:
+      - "${WEB_HTTP_PORT:-3000}:80"
+      - "${WEB_HTTPS_PORT:-3443}:443"
     environment:
-      NEXT_PUBLIC_API_URL: ${API_URL:-http://localhost:4000}
-      NEXT_PUBLIC_APP_URL: ${APP_URL:-http://localhost:3000}
-    ports:
-      - "3000:3000"
-    depends_on:
-      - api
-
-  caddy:
-    image: caddy:2-alpine
-    restart: unless-stopped
-    profiles: ["production-proxy"]
-    ports:
-      - "80:80"
-      - "443:443"
+      CADDY_SITE_ADDRESS: ${CADDY_SITE_ADDRESS:-:80}
     volumes:
-      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - web
-      - api
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/admin/login/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 volumes:
   postgres_data:

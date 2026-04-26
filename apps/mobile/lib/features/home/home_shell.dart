@@ -1,7 +1,11 @@
+import 'dart:async';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/push/push_notification_service.dart';
 import '../../core/services/owner_services.dart';
 import '../account/account_screen.dart';
 import '../alerts/alerts_screen.dart';
@@ -19,17 +23,60 @@ class HomeShell extends ConsumerStatefulWidget {
 class _HomeShellState extends ConsumerState<HomeShell>
     with WidgetsBindingObserver {
   int index = 0;
+  StreamSubscription<RemoteMessage>? pushMessageSubscription;
+  StreamSubscription<RemoteMessage>? pushOpenedSubscription;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    unawaited(_startPush());
   }
 
   @override
   void dispose() {
+    pushMessageSubscription?.cancel();
+    pushOpenedSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  Future<void> _startPush() async {
+    await PushNotificationService.registerForCurrentUser(
+      ref.read(ownerServiceProvider),
+    );
+    pushMessageSubscription ??=
+        PushNotificationService.listenToForegroundMessages(
+          onMessage: (_) {
+            if (mounted) _refreshCurrentData();
+          },
+        );
+    pushOpenedSubscription ??= PushNotificationService.listenToOpenedMessages(
+      onMessage: _handlePushNavigation,
+    );
+    final initialMessage = await PushNotificationService.initialMessage();
+    if (mounted && initialMessage != null) {
+      _handlePushNavigation(initialMessage);
+    }
+  }
+
+  void _handlePushNavigation(RemoteMessage message) {
+    if (!mounted) return;
+    _refreshCurrentData();
+    final route = message.data['route'];
+    if (route is String && route.startsWith('/chat/')) {
+      context.push(route);
+      return;
+    }
+    final actionType = message.data['actionType'];
+    final actionId = message.data['actionId'];
+    if (actionType == 'request' && actionId is String && actionId.isNotEmpty) {
+      context.push('/chat/$actionId');
+    } else if (actionType == 'order') {
+      context.push('/orders');
+    } else if (actionType == 'tag') {
+      openTab(1);
+    }
   }
 
   @override

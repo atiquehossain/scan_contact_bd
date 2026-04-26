@@ -12,15 +12,29 @@
 Run:
 
 ```bash
-docker compose up -d postgres redis mailpit
+docker compose up -d postgres
 ```
 
-PostgreSQL listens on `localhost:5432`, Redis on `localhost:6379`, and Mailpit UI on `localhost:8025`.
+PostgreSQL listens on `localhost:5432`.
 
-If those ports are already used:
+Optional local email UI:
 
 ```bash
-POSTGRES_PORT=55432 REDIS_PORT=56379 docker compose up -d postgres redis
+docker compose --profile dev-tools up -d mailpit
+```
+
+Mailpit UI then opens at `localhost:8025`.
+
+Optional Redis/worker expansion:
+
+```bash
+docker compose --profile extras up -d redis worker
+```
+
+If the PostgreSQL port is already used:
+
+```bash
+POSTGRES_PORT=55432 docker compose up -d postgres
 ```
 
 Then set `DATABASE_URL=postgresql://scancontact:scancontact_local_password@localhost:55432/scancontact?schema=public` for local API commands.
@@ -48,7 +62,7 @@ Open `http://localhost:3000/admin`. The web app is admin-only except for public 
 ## Owner Flutter App
 
 ```bash
-cd apps/owner_app
+cd apps/mobile
 flutter pub get
 flutter run --dart-define=APP_NAME="ScanContact Owner" --dart-define=API_BASE_URL=http://10.0.2.2:4000
 ```

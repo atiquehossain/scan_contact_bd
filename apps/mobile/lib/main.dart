@@ -11,10 +11,16 @@ import 'features/auth/splash_screen.dart';
 import 'features/chat/chat_screen.dart';
 import 'features/home/home_shell.dart';
 import 'features/orders/my_orders_screen.dart';
+import 'features/scanner/scanner_contact_screen.dart';
+import 'features/scanner/scanner_conversation_screen.dart';
+import 'features/scanner/scanner_screen.dart';
 import 'features/shop/checkout_screen.dart';
 import 'features/shop/shop_screen.dart';
+import 'core/push/push_notification_service.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await PushNotificationService.initializeCore();
   runApp(const ProviderScope(child: ScanContactApp()));
 }
 
@@ -42,6 +48,23 @@ class ScanContactApp extends StatelessWidget {
         GoRoute(
           path: '/orders',
           builder: (context, state) => const MyOrdersScreen(),
+        ),
+        GoRoute(
+          path: '/scan',
+          builder: (context, state) => const ScannerScreen(),
+        ),
+        GoRoute(
+          path: '/scanner/contact/:publicSlug',
+          builder: (context, state) => ScannerContactScreen(
+            publicSlug: state.pathParameters['publicSlug']!,
+          ),
+        ),
+        GoRoute(
+          path: '/scanner/conversation/:requestId',
+          builder: (context, state) => ScannerConversationScreen(
+            requestId: state.pathParameters['requestId']!,
+            token: state.uri.queryParameters['token'] ?? '',
+          ),
         ),
         GoRoute(
           path: '/chat/:requestId',

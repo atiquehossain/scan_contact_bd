@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/network/api_client.dart';
+import '../../core/push/push_notification_service.dart';
 import '../../core/services/owner_services.dart';
 import '../../core/widgets/app_widgets.dart';
 
@@ -99,6 +100,10 @@ class AccountScreen extends ConsumerWidget {
       ),
     );
     if (confirmed != true) return;
+    await PushNotificationService.unregisterCurrentToken(
+      ref.read(ownerServiceProvider),
+    );
+    await PushNotificationService.shutdown();
     await ref.read(tokenStoreProvider).clear();
     if (context.mounted) {
       ScaffoldMessenger.of(

@@ -17,7 +17,7 @@ class AppConfig {
   );
   static const enablePush = bool.fromEnvironment(
     'ENABLE_PUSH',
-    defaultValue: false,
+    defaultValue: true,
   );
   static const enableAnalytics = bool.fromEnvironment(
     'ENABLE_ANALYTICS',

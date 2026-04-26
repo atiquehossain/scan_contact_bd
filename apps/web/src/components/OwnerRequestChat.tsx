@@ -35,7 +35,7 @@ export function OwnerRequestChat({ request }: { request: ContactRequest }) {
 
   useEffect(() => {
     load().catch(() => undefined);
-    const timer = window.setInterval(() => load().catch(() => undefined), 5000);
+    const timer = window.setInterval(() => load().catch(() => undefined), 1500);
     return () => window.clearInterval(timer);
   }, [request.id]);
 

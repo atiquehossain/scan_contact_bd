@@ -40,8 +40,16 @@ function purposeCopy(type?: string) {
   }
 }
 
-export function ScanClient({ slug }: { slug: string }) {
+function publicSlugFromLocation(fallback?: string) {
+  if (typeof window === "undefined") return fallback || "";
+  const parts = window.location.pathname.split("/").filter(Boolean);
+  const value = parts[0] === "t" ? parts[1] : fallback || "";
+  return value && !value.startsWith("__") ? decodeURIComponent(value) : fallback || "";
+}
+
+export function ScanClient({ slug: initialSlug }: { slug?: string }) {
   const errorSummaryRef = useRef<HTMLDivElement>(null);
+  const [slug, setSlug] = useState(() => publicSlugFromLocation(initialSlug));
   const [tag, setTag] = useState<any>(null);
   const [loadingTag, setLoadingTag] = useState(true);
   const [reason, setReason] = useState("VEHICLE_BLOCKING");
@@ -61,6 +69,16 @@ export function ScanClient({ slug }: { slug: string }) {
   }, []);
 
   useEffect(() => {
+    const nextSlug = publicSlugFromLocation(initialSlug);
+    setSlug(nextSlug);
+  }, [initialSlug]);
+
+  useEffect(() => {
+    if (!slug) {
+      setStatus("QR link is missing or invalid.");
+      setLoadingTag(false);
+      return;
+    }
     setLoadingTag(true);
     apiFetch<{ tag: any }>(`/t/${slug}`, {}, "")
       .then((data) => setTag(data.tag))

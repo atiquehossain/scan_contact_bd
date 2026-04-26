@@ -1,9 +1,51 @@
-{$APP_DOMAIN:localhost} {
+{$CADDY_SITE_ADDRESS::80} {
   encode zstd gzip
+  root * /srv/scancontact
+
+  header {
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    -Server
+  }
 
   handle_path /api/* {
     reverse_proxy api:4000
   }
 
-  reverse_proxy web:3000
+  handle /admin/tags/new* {
+    try_files {path} {path}/ /admin/tags/new/
+    file_server
+  }
+
+  handle /admin/tags/* {
+    rewrite * /admin/tags/__tagId__/
+    file_server
+  }
+
+  handle /admin/owners/* {
+    rewrite * /admin/owners/__ownerId__/
+    file_server
+  }
+
+  handle /dashboard/tags/* {
+    rewrite * /dashboard/tags/__id__/
+    file_server
+  }
+
+  handle /t/* {
+    rewrite * /t/__slug__/
+    file_server
+  }
+
+  handle /c/* {
+    rewrite * /c/__id__/
+    file_server
+  }
+
+  handle {
+    try_files {path} {path}/ /admin/
+    file_server
+  }
 }

@@ -4,6 +4,7 @@ import express, { NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import morgan from "morgan";
+import { createSign } from "node:crypto";
 import QRCode from "qrcode";
 import { z } from "zod";
 import {
@@ -131,6 +132,154 @@ function debugLog(area: string, fields: Record<string, unknown> = {}) {
     })
     .join(" ");
   console.info(`[ScanContact Debug] ${area}${details ? ` ${details}` : ""}`);
+}
+
+type OwnerPushPayload = {
+  title: string;
+  body: string;
+  data?: Record<string, string | number | boolean | null | undefined>;
+};
+
+let fcmAccessTokenCache: { token: string; expiresAtMs: number } | null = null;
+
+function base64Url(input: string | Buffer) {
+  return Buffer.from(input)
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
+}
+
+function pushData(data: OwnerPushPayload["data"] = {}) {
+  return Object.fromEntries(
+    Object.entries(data)
+      .filter(([, value]) => value !== null && value !== undefined)
+      .map(([key, value]) => [key, String(value)])
+  );
+}
+
+function fcmConfigured() {
+  return Boolean(env.fcmProjectId && env.fcmClientEmail && env.fcmPrivateKey);
+}
+
+async function getFcmAccessToken() {
+  if (!fcmConfigured()) return null;
+  if (fcmAccessTokenCache && fcmAccessTokenCache.expiresAtMs > Date.now() + 60_000) {
+    return fcmAccessTokenCache.token;
+  }
+
+  const issuedAt = Math.floor(Date.now() / 1000);
+  const unsignedJwt = [
+    base64Url(JSON.stringify({ alg: "RS256", typ: "JWT" })),
+    base64Url(
+      JSON.stringify({
+        iss: env.fcmClientEmail,
+        scope: "https://www.googleapis.com/auth/firebase.messaging",
+        aud: "https://oauth2.googleapis.com/token",
+        iat: issuedAt,
+        exp: issuedAt + 3600
+      })
+    )
+  ].join(".");
+  const signature = createSign("RSA-SHA256").update(unsignedJwt).sign(env.fcmPrivateKey);
+  const assertion = `${unsignedJwt}.${base64Url(signature)}`;
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion
+    })
+  });
+
+  if (!response.ok) {
+    debugLog("push.fcm.accessToken.failed", { status: response.status });
+    return null;
+  }
+
+  const data = (await response.json()) as { access_token?: string; expires_in?: number };
+  if (!data.access_token) return null;
+  fcmAccessTokenCache = {
+    token: data.access_token,
+    expiresAtMs: Date.now() + Math.max((data.expires_in ?? 3600) - 120, 60) * 1000
+  };
+  return data.access_token;
+}
+
+async function disableDeviceToken(deviceId: string, reason: string) {
+  await prisma.deviceToken.updateMany({
+    where: { id: deviceId },
+    data: { enabled: false, deletedAt: new Date() }
+  });
+  debugLog("push.fcm.deviceDisabled", { deviceId: shortId(deviceId), reason });
+}
+
+async function sendOwnerPush(userId: string, payload: OwnerPushPayload) {
+  const devices = await prisma.deviceToken.findMany({
+    where: { userId, provider: "fcm", enabled: true, deletedAt: null },
+    select: { id: true, token: true, platform: true }
+  });
+
+  if (!devices.length) {
+    debugLog("push.fcm.skip", { ownerId: shortId(userId), reason: "no_fcm_devices" });
+    return;
+  }
+  if (!fcmConfigured()) {
+    debugLog("push.fcm.skip", { ownerId: shortId(userId), reason: "not_configured", deviceCount: devices.length });
+    return;
+  }
+
+  const accessToken = await getFcmAccessToken();
+  if (!accessToken) {
+    debugLog("push.fcm.skip", { ownerId: shortId(userId), reason: "access_token_unavailable", deviceCount: devices.length });
+    return;
+  }
+
+  await Promise.allSettled(
+    devices.map(async (device) => {
+      try {
+        const response = await fetch(`https://fcm.googleapis.com/v1/projects/${encodeURIComponent(env.fcmProjectId)}/messages:send`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: {
+              token: device.token,
+              notification: { title: payload.title, body: payload.body },
+              data: pushData(payload.data),
+              android: {
+                priority: "HIGH"
+              }
+            }
+          })
+        });
+
+        if (response.ok) {
+          debugLog("push.fcm.sent", { ownerId: shortId(userId), deviceId: shortId(device.id), platform: device.platform });
+          return;
+        }
+
+        const errorText = await response.text();
+        debugLog("push.fcm.failed", {
+          ownerId: shortId(userId),
+          deviceId: shortId(device.id),
+          status: response.status,
+          error: errorText.slice(0, 160)
+        });
+        if (response.status === 404 || errorText.includes("UNREGISTERED") || errorText.includes("registration-token-not-registered")) {
+          await disableDeviceToken(device.id, "unregistered");
+        }
+      } catch (error) {
+        debugLog("push.fcm.failed", {
+          ownerId: shortId(userId),
+          deviceId: shortId(device.id),
+          error: error instanceof Error ? error.message : "unknown_error"
+        });
+      }
+    })
+  );
 }
 
 async function userRoles(userId: string): Promise<RoleName[]> {
@@ -344,6 +493,21 @@ function ownerDto(user: { id: string; fullName: string | null; phone: string; em
   };
 }
 
+async function findOwnerAppAccount(phone: string) {
+  return prisma.user.findFirst({
+    where: {
+      phone,
+      deletedAt: null,
+      status: UserStatus.ACTIVE,
+      OR: [
+        { ownedTags: { some: { deletedAt: null } } },
+        { contactRequests: { some: { deletedAt: null } } },
+        { orders: { some: { deletedAt: null } } }
+      ]
+    }
+  });
+}
+
 function ownerTagDto(tag: { id: string; publicSlug: string; label: string; type: QrTagType; status: QrTagStatus; scanCount: number; lastScannedAt: Date | null; createdAt: Date }) {
   return {
     id: tag.id,
@@ -389,6 +553,16 @@ function ownerMessageDto(message: { id: string; sender: ContactMessageSender; bo
     message: message.body,
     createdAt: message.createdAt,
     status: "sent"
+  };
+}
+
+function publicMessageDto(message: { id: string; sender: ContactMessageSender; senderName: string | null; body: string; createdAt: Date }) {
+  return {
+    id: message.id,
+    sender: message.sender,
+    senderName: message.sender === ContactMessageSender.SCANNER ? message.senderName : null,
+    body: message.body,
+    createdAt: message.createdAt
   };
 }
 
@@ -615,6 +789,24 @@ app.post(
   asyncRoute(async (req, res) => {
     const input = parseBody(requestOtpSchema, req);
     const phone = normalizeBangladeshPhone(input.phone);
+    const existingOwner = await prisma.user.findUnique({
+      where: { phone },
+      select: { id: true, fullName: true, status: true, deletedAt: true }
+    });
+    if (input.purpose === "LOGIN" || input.purpose === "PIN_RESET") {
+      if (!existingOwner || existingOwner.deletedAt || !existingOwner.fullName) {
+        debugLog("owner.auth.requestOtp.rejected", { phone: maskPhone(phone), purpose: input.purpose, reason: "owner_not_found" });
+        return res.status(404).json({ error: "No owner account found for this phone. Please sign up or contact admin." });
+      }
+      if (existingOwner.status !== UserStatus.ACTIVE) {
+        debugLog("owner.auth.requestOtp.rejected", { phone: maskPhone(phone), purpose: input.purpose, reason: "owner_not_active" });
+        return res.status(403).json({ error: "This owner account is not active. Please contact support." });
+      }
+    }
+    if (input.purpose === "REGISTER" && existingOwner?.deletedAt) {
+      debugLog("owner.auth.requestOtp.rejected", { phone: maskPhone(phone), purpose: input.purpose, reason: "owner_deleted" });
+      return res.status(403).json({ error: "This owner account cannot be used. Please contact support." });
+    }
     const recent = await prisma.authOtp.count({
       where: { phone, createdAt: { gte: new Date(Date.now() - 10 * 60 * 1000) } }
     });
@@ -663,28 +855,51 @@ app.post(
       debugLog("owner.auth.verifyOtp.failed", { phone: maskPhone(phone), reason: "invalid", attempts: otpRecord.attempts + 1 });
       return res.status(400).json({ error: "Invalid OTP" });
     }
-    const user = await prisma.user.upsert({
-      where: { phone },
-      update: {
-        fullName: input.fullName,
-        language: input.language as Language,
-        phoneVerifiedAt: new Date(),
-        lastLoginAt: new Date()
-      },
-      create: {
-        phone,
-        fullName: input.fullName,
-        language: input.language as Language,
-        phoneVerifiedAt: new Date(),
-        lastLoginAt: new Date(),
-        profile: {
-          create: {
-            privacySettings: { phoneVisible: false, nameVisible: false, emergencyVisible: false },
-            notificationSettings: { scanAlerts: false, contactRequestAlerts: true }
+    const existingOwner = await prisma.user.findUnique({ where: { phone } });
+    if (existingOwner?.deletedAt) {
+      await prisma.authOtp.update({ where: { id: otpRecord.id }, data: { status: "LOCKED" } });
+      debugLog("owner.auth.verifyOtp.failed", { phone: maskPhone(phone), purpose: otpRecord.purpose, reason: "owner_deleted" });
+      return res.status(403).json({ error: "This owner account cannot be used. Please contact support." });
+    }
+    if (otpRecord.purpose !== "REGISTER" && (!existingOwner || existingOwner.deletedAt || !existingOwner.fullName)) {
+      await prisma.authOtp.update({ where: { id: otpRecord.id }, data: { status: "LOCKED" } });
+      debugLog("owner.auth.verifyOtp.failed", { phone: maskPhone(phone), purpose: otpRecord.purpose, reason: "owner_not_found" });
+      return res.status(404).json({ error: "No owner account found for this phone. Please sign up or contact admin." });
+    }
+    if (existingOwner?.status && existingOwner.status !== UserStatus.ACTIVE) {
+      await prisma.authOtp.update({ where: { id: otpRecord.id }, data: { status: "LOCKED" } });
+      debugLog("owner.auth.verifyOtp.failed", { phone: maskPhone(phone), purpose: otpRecord.purpose, reason: "owner_not_active" });
+      return res.status(403).json({ error: "This owner account is not active. Please contact support." });
+    }
+    if (otpRecord.purpose === "REGISTER" && !existingOwner && !input.fullName) {
+      debugLog("owner.auth.verifyOtp.failed", { phone: maskPhone(phone), purpose: otpRecord.purpose, reason: "name_required" });
+      return res.status(400).json({ error: "Owner name is required for signup." });
+    }
+    const user = existingOwner
+      ? await prisma.user.update({
+          where: { id: existingOwner.id },
+          data: {
+            fullName: input.fullName ?? existingOwner.fullName,
+            language: input.language as Language,
+            phoneVerifiedAt: new Date(),
+            lastLoginAt: new Date()
           }
-        }
-      }
-    });
+        })
+      : await prisma.user.create({
+          data: {
+            phone,
+            fullName: input.fullName,
+            language: input.language as Language,
+            phoneVerifiedAt: new Date(),
+            lastLoginAt: new Date(),
+            profile: {
+              create: {
+                privacySettings: { phoneVisible: false, nameVisible: false, emergencyVisible: false },
+                notificationSettings: { scanAlerts: false, contactRequestAlerts: true }
+              }
+            }
+          }
+        });
     await prisma.authOtp.update({ where: { id: otpRecord.id }, data: { userId: user.id, status: "VERIFIED" } });
     await ensureRole(user.id, RoleName.USER);
     await prisma.consentLog.create({
@@ -951,6 +1166,7 @@ app.post(
       update: { userId: req.user!.id, platform: input.platform, provider: input.provider, enabled: true },
       create: { userId: req.user!.id, token: input.token, platform: input.platform, provider: input.provider }
     });
+    debugLog("device.registered", { ownerId: shortId(req.user!.id), deviceId: shortId(device.id), platform: input.platform, provider: input.provider });
     res.json({ device });
   })
 );
@@ -967,8 +1183,9 @@ app.delete(
   "/devices/:token",
   requireAuth,
   asyncRoute(async (req: AuthedRequest, res) => {
-    await prisma.deviceToken.updateMany({ where: { userId: req.user!.id, token: req.params.token }, data: { enabled: false, deletedAt: new Date() } });
-    res.json({ ok: true });
+    const result = await prisma.deviceToken.updateMany({ where: { userId: req.user!.id, token: req.params.token }, data: { enabled: false, deletedAt: new Date() } });
+    debugLog("device.deleted", { ownerId: shortId(req.user!.id), updated: result.count });
+    res.json({ ok: result.count > 0 });
   })
 );
 
@@ -1266,13 +1483,25 @@ app.post(
         }
       }
     });
-    await prisma.notification.create({
+    const notification = await prisma.notification.create({
       data: {
         userId: tag.ownerId,
         type: NotificationType.CONTACT_REQUEST,
         title: "New contact request",
         body: `Someone sent a message about ${tag.label}.`,
         data: { contactRequestId: contactRequest.id, qrTagId: tag.id }
+      }
+    });
+    await sendOwnerPush(tag.ownerId, {
+      title: notification.title,
+      body: notification.body,
+      data: {
+        type: "contact_request",
+        actionType: "request",
+        actionId: contactRequest.id,
+        contactRequestId: contactRequest.id,
+        qrTagId: tag.id,
+        route: `/chat/${contactRequest.id}`
       }
     });
     debugLog("public.contact.created", {
@@ -1308,6 +1537,11 @@ app.get(
       }
     });
     if (!contactRequest) return res.status(404).json({ error: "Conversation not found" });
+    debugLog("public.contact.messages", {
+      contactRequestId: shortId(contactRequest.id),
+      tagId: shortId(contactRequest.qrTagId),
+      count: contactRequest.messages.length
+    });
     res.json({
       contactRequest: {
         id: contactRequest.id,
@@ -1316,7 +1550,7 @@ app.get(
         tagLabel: contactRequest.qrTag.label,
         createdAt: contactRequest.createdAt
       },
-      messages: contactRequest.messages
+      messages: contactRequest.messages.map(publicMessageDto)
     });
   })
 );
@@ -1344,7 +1578,7 @@ app.post(
       where: { id: contactRequest.id },
       data: { status: ContactRequestStatus.UNREAD }
     });
-    await prisma.notification.create({
+    const notification = await prisma.notification.create({
       data: {
         userId: contactRequest.ownerId,
         type: NotificationType.CONTACT_REQUEST,
@@ -1353,7 +1587,25 @@ app.post(
         data: { contactRequestId: contactRequest.id, qrTagId: contactRequest.qrTagId }
       }
     });
-    res.status(201).json({ message });
+    await sendOwnerPush(contactRequest.ownerId, {
+      title: notification.title,
+      body: notification.body,
+      data: {
+        type: "contact_request",
+        actionType: "request",
+        actionId: contactRequest.id,
+        contactRequestId: contactRequest.id,
+        qrTagId: contactRequest.qrTagId,
+        route: `/chat/${contactRequest.id}`
+      }
+    });
+    debugLog("public.contact.reply", {
+      contactRequestId: shortId(contactRequest.id),
+      tagId: shortId(contactRequest.qrTagId),
+      messageId: shortId(message.id),
+      messageLength: input.body.length
+    });
+    res.status(201).json({ message: publicMessageDto(message) });
   })
 );
 

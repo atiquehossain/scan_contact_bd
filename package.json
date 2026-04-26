@@ -17,7 +17,11 @@
     "lint": "npm run lint --workspaces --if-present",
     "prisma:generate": "npm run prisma:generate --workspace @scancontact/api",
     "prisma:migrate": "npm run prisma:migrate --workspace @scancontact/api --",
-    "seed": "npm run seed --workspace @scancontact/api"
+    "seed": "npm run seed --workspace @scancontact/api",
+    "docker:lean": "docker compose up -d --build",
+    "docker:prod": "docker compose up -d --build",
+    "docker:extras": "docker compose --profile extras up -d redis worker",
+    "docker:dev-tools": "docker compose --profile dev-tools up -d mailpit"
   },
   "overrides": {
     "postcss": "8.5.10",
