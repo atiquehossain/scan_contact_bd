@@ -18,16 +18,15 @@
     "prisma:generate": "npm run prisma:generate --workspace @scancontact/api",
     "prisma:migrate": "npm run prisma:migrate --workspace @scancontact/api --",
     "seed": "npm run seed --workspace @scancontact/api",
+    "seed:products": "npm run seed:products --workspace @scancontact/api",
     "docker:lean": "docker compose up -d --build",
-    "docker:prod": "docker compose up -d --build",
+    "docker:prod": "docker compose -f docker-compose.prod.yml up -d --build",
+    "docker:prod:migrate": "docker compose -f docker-compose.prod.yml run --rm migrate",
     "docker:extras": "docker compose --profile extras up -d redis worker",
     "docker:dev-tools": "docker compose --profile dev-tools up -d mailpit"
   },
   "overrides": {
-    "postcss": "8.5.10",
-    "next@15.5.15": {
-      "postcss": "8.5.10"
-    }
+    "postcss": "8.5.10"
   },
   "engines": {
     "node": ">=20.11.0"

@@ -73,7 +73,7 @@ class HomeScreen extends ConsumerWidget {
                   child: OutlinedButton.icon(
                     onPressed: () => context.push('/shop'),
                     icon: const Icon(Icons.shopping_bag_outlined),
-                    label: const Text('Buy QR'),
+                    label: const Text('Buy QR Tag'),
                   ),
                 ),
               ],
@@ -88,7 +88,7 @@ class HomeScreen extends ConsumerWidget {
               childAspectRatio: 1.2,
               children: [
                 StatCard(
-                  label: 'Active QR tags',
+                  label: 'Active tags',
                   value: '${data.activeQrCount}',
                   icon: Icons.qr_code_2,
                 ),
@@ -114,7 +114,7 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Recent contact requests',
+                    'Recent private requests',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w900,
                     ),
@@ -129,9 +129,9 @@ class HomeScreen extends ConsumerWidget {
             if (data.recentRequests.isEmpty)
               const AppEmptyState(
                 icon: Icons.forum_outlined,
-                title: 'No contact requests yet',
+                title: 'No private requests yet',
                 body:
-                    'When someone scans your QR and sends a message, it will appear here.',
+                    'When someone scans your QR tag and contacts you, the request will appear here.',
               )
             else
               for (final request in data.recentRequests)
@@ -189,7 +189,7 @@ class _PriorityCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'You have ${data.unreadRequestCount} new message(s)',
+                'You have ${data.unreadRequestCount} new private request(s)',
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
@@ -216,8 +216,10 @@ class _PriorityCard extends StatelessWidget {
     return const Card(
       child: ListTile(
         leading: Icon(Icons.check_circle_outline),
-        title: Text('No new messages'),
-        subtitle: Text('We’ll show scan/contact updates here.'),
+        title: Text('No new private requests'),
+        subtitle: Text(
+          'You are all caught up. We will show scan/contact updates here.',
+        ),
       ),
     );
   }
@@ -237,24 +239,24 @@ class _NoQrCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'No QR code yet',
+              'No QR tag yet',
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 8),
             const Text(
-              'Buy a QR sticker first. After admin prints and assigns it to your phone number, it will appear here.',
+              'Order a QR tag so people can contact you privately. After admin prints and assigns it to your phone number, it will appear here.',
             ),
             const SizedBox(height: 12),
             const Text(
-              '1. Order QR sticker\n2. Admin prints and assigns it\n3. You receive scan messages privately',
+              '1. Order QR tag\n2. Admin prints and assigns it\n3. You receive private requests',
             ),
             const SizedBox(height: 16),
             FilledButton.icon(
               onPressed: onBuyQr,
               icon: const Icon(Icons.shopping_bag_outlined),
-              label: const Text('Buy QR Code'),
+              label: const Text('Buy QR Tag'),
             ),
           ],
         ),

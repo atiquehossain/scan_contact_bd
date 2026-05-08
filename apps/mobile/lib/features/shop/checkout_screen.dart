@@ -90,7 +90,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       return Scaffold(
         appBar: AppBar(title: const Text('Checkout')),
         body: AppErrorView(
-          message: 'Select a QR product before checkout.',
+          message: 'Select a QR tag product before checkout.',
           onRetry: () => context.go('/shop'),
         ),
       );
@@ -105,7 +105,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               icon: Icons.check_circle_outline,
               title: 'Order created',
               body:
-                  'Admin will process your order and assign your QR after printing.',
+                  'We will process your COD order. After your QR tag is printed and assigned to your phone number, it will appear in this app.',
             ),
             const SizedBox(height: 12),
             OrderStatusCard(
@@ -143,7 +143,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              '${widget.product!.name} · ${formatBdt(widget.product!.priceBdt)}',
+              '${widget.product!.name} - ${formatBdt(widget.product!.priceBdt)}',
+            ),
+            const SizedBox(height: 16),
+            const PrivacyNoticeCard(
+              message:
+                  'Your phone number is used for delivery, order updates, and QR assignment. It is not shown on your public QR tag.',
             ),
             const SizedBox(height: 16),
             TextFormField(

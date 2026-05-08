@@ -35,16 +35,14 @@ class MyOrdersScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Track QR sticker printing, assignment, and delivery.',
-              ),
+              const Text('Track QR tag printing, assignment, and delivery.'),
               const SizedBox(height: 16),
               if (items.isEmpty)
                 const AppEmptyState(
                   icon: Icons.local_shipping_outlined,
                   title: 'No orders yet',
                   body:
-                      'Buy a QR sticker first. Your order status will appear here.',
+                      'Buy a QR tag first. Your order status will appear here.',
                 )
               else
                 for (final order in items)

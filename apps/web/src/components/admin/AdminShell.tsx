@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { BarChart3, ClipboardList, FileWarning, History, LogOut, Menu, QrCode, Settings, ShieldCheck, ShoppingBag, Users, X } from "lucide-react";
-import { apiFetch, authToken, clearAuth, refreshToken } from "@/lib/api";
+import { apiFetch, authToken, clearAuth, clientDebugLog, refreshToken, saveAuth } from "@/lib/api";
 import { Button, cx } from "./ui";
 
 type AdminUser = {
@@ -12,6 +12,7 @@ type AdminUser = {
   email?: string | null;
   phone: string;
   fullName?: string | null;
+  roles?: string[];
   userRoles?: Array<{ role: { name: string } }>;
 };
 
@@ -27,7 +28,7 @@ const navItems = [
 ];
 
 function isAdmin(user: AdminUser | null) {
-  const roles = user?.userRoles?.map((entry) => entry.role.name) || [];
+  const roles = user?.roles || user?.userRoles?.map((entry) => entry.role.name) || [];
   return roles.some((role) => ["SUPER_ADMIN", "SUPPORT_ADMIN", "ORDER_MANAGER"].includes(role));
 }
 
@@ -41,21 +42,32 @@ export function AdminShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     let mounted = true;
     async function check() {
-      if (!authToken()) {
-        router.replace("/admin/login");
-        return;
+      clientDebugLog("admin.shell.check.start", { path: pathname, tokenPresent: Boolean(authToken()) });
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        const accessToken = params.get("accessToken");
+        const nextRefreshToken = params.get("refreshToken");
+        if (accessToken && nextRefreshToken) {
+          clientDebugLog("admin.shell.queryTokens.found", { accessTokenPresent: true, refreshTokenPresent: true });
+          saveAuth({ accessToken, refreshToken: nextRefreshToken });
+          window.history.replaceState(null, "", window.location.pathname);
+        }
       }
       try {
         const data = await apiFetch<{ user: AdminUser }>("/me");
         if (!mounted) return;
+        const roles = data.user?.roles || data.user?.userRoles?.map((entry) => entry.role.name) || [];
+        clientDebugLog("admin.shell.me.loaded", { userId: data.user?.id, roles });
         if (!isAdmin(data.user)) {
+          clientDebugLog("admin.shell.me.notAdmin", { userId: data.user?.id, roles });
           clearAuth();
           router.replace("/admin/login");
           return;
         }
         setAdmin(data.user);
         setChecking(false);
-      } catch {
+      } catch (error) {
+        clientDebugLog("admin.shell.check.failed", { error: error instanceof Error ? error.message : "unknown" });
         clearAuth();
         router.replace("/admin/login");
       }

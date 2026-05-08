@@ -5,7 +5,10 @@ import '../models/owner_models.dart';
 import '../network/api_client.dart';
 
 final ownerServiceProvider = Provider<OwnerService>(
-  (ref) => OwnerService(ref.watch(apiClientProvider)),
+  (ref) => OwnerService(
+    ref.watch(apiClientProvider),
+    publicApi: ref.watch(publicApiClientProvider),
+  ),
 );
 
 final ownerMeProvider = FutureProvider<OwnerProfile>(
@@ -30,11 +33,31 @@ final productsProvider = FutureProvider<List<Product>>(
 final ordersProvider = FutureProvider<List<OwnerOrder>>(
   (ref) => ref.watch(ownerServiceProvider).orders(),
 );
+final incomingCallsProvider = FutureProvider<List<OwnerCallSession>>(
+  (ref) => ref.watch(ownerServiceProvider).incomingCalls(),
+);
+
+void invalidateOwnerScopedProviders(WidgetRef ref) {
+  ref.invalidate(ownerMeProvider);
+  ref.invalidate(dashboardProvider);
+  ref.invalidate(tagsProvider);
+  ref.invalidate(notificationsProvider);
+  ref.invalidate(productsProvider);
+  ref.invalidate(ordersProvider);
+  ref.invalidate(incomingCallsProvider);
+  for (final filter in _requestProviderFilters) {
+    ref.invalidate(requestsProvider(filter));
+  }
+}
+
+const _requestProviderFilters = ['all', 'unread', 'open', 'closed'];
 
 class OwnerService {
-  const OwnerService(this._api);
+  const OwnerService(this._api, {ApiClient? publicApi})
+    : _publicApi = publicApi ?? _api;
 
   final ApiClient _api;
+  final ApiClient _publicApi;
 
   Future<Map<String, dynamic>> requestOtp({
     required String phone,
@@ -42,7 +65,7 @@ class OwnerService {
   }) async {
     final mode = signup ? 'signup' : 'login';
     _debugOwnerData('requestOtp start phone=${_maskPhone(phone)} mode=$mode');
-    final response = await _api.post(
+    final response = await _publicApi.post(
       '/owner/auth/request-otp',
       data: {'phone': phone, 'purpose': signup ? 'REGISTER' : 'LOGIN'},
     );
@@ -64,7 +87,7 @@ class OwnerService {
     String? fullName,
   }) async {
     _debugOwnerData('verifyOtp start phone=${_maskPhone(phone)}');
-    final response = await _api.post(
+    final response = await _publicApi.post(
       '/owner/auth/verify-otp',
       data: {
         'phone': phone,
@@ -258,6 +281,67 @@ class OwnerService {
         .toList();
     _debugOwnerData('orders count=${orders.length}');
     return orders;
+  }
+
+  Future<List<OwnerCallSession>> incomingCalls() async {
+    final response = await _api.get('/owner/calls/incoming');
+    final data = Map<String, dynamic>.from(response.data as Map);
+    final calls = (data['calls'] as List? ?? [])
+        .whereType<Map>()
+        .map(
+          (item) => OwnerCallSession.fromJson(Map<String, dynamic>.from(item)),
+        )
+        .toList();
+    _debugOwnerData('incomingCalls count=${calls.length}');
+    return calls;
+  }
+
+  Future<OwnerCallSession> call(String callId) async {
+    final response = await _api.get('/owner/calls/$callId');
+    final data = Map<String, dynamic>.from(response.data as Map);
+    return OwnerCallSession.fromJson(
+      Map<String, dynamic>.from(data['callSession'] as Map),
+    );
+  }
+
+  Future<OwnerCallSession> acceptCall(String callId) async {
+    final response = await _api.post('/owner/calls/$callId/accept');
+    final data = Map<String, dynamic>.from(response.data as Map);
+    return OwnerCallSession.fromJson(
+      Map<String, dynamic>.from(data['callSession'] as Map),
+    );
+  }
+
+  Future<void> declineCall(String callId) async {
+    await _api.post('/owner/calls/$callId/decline');
+  }
+
+  Future<void> endCall(String callId) async {
+    await _api.post('/owner/calls/$callId/end');
+  }
+
+  Future<List<CallSignal>> callSignals(String callId) async {
+    final response = await _api.get('/owner/calls/$callId/signals');
+    final data = Map<String, dynamic>.from(response.data as Map);
+    return (data['signals'] as List? ?? [])
+        .whereType<Map>()
+        .map((item) => CallSignal.fromJson(Map<String, dynamic>.from(item)))
+        .toList();
+  }
+
+  Future<CallSignal> sendCallSignal({
+    required String callId,
+    required String type,
+    required Map<String, dynamic> payload,
+  }) async {
+    final response = await _api.post(
+      '/owner/calls/$callId/signals',
+      data: {'type': type, 'payload': payload},
+    );
+    final data = Map<String, dynamic>.from(response.data as Map);
+    return CallSignal.fromJson(
+      Map<String, dynamic>.from(data['signal'] as Map),
+    );
   }
 }
 

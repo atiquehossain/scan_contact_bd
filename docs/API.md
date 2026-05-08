@@ -33,10 +33,33 @@ Authentication uses `Authorization: Bearer <accessToken>`. OTP endpoints are pub
 - `GET /products`
 - `POST /orders`
 - `GET /admin/dashboard`
+- `GET /admin/reseller-batches`
+- `POST /admin/reseller-batches`
 - `POST /reseller/apply`
+- `GET /reseller/batches`
+- `GET /reseller/tags`
+- `POST /reseller/tags/assign`
 - `POST /societies`
 
 The code includes the remaining MVP route families for cart, payments, devices, emergency contacts, reseller, society, CMS, and admin CRUD operations.
+
+## Reseller Batch Allocation
+
+Admins allocate reseller inventory with `POST /admin/reseller-batches`.
+
+Request body:
+
+```json
+{
+  "resellerId": "reseller_id",
+  "quantity": 100,
+  "tagType": "OTHER",
+  "labelPrefix": "Reseller QR",
+  "notes": "Optional batch note"
+}
+```
+
+The API creates pending QR tags linked to a real `ResellerBatch`. Resellers can assign only tags linked to their approved reseller profile; knowing a batch code alone is not enough.
 
 ## Development OTP
 

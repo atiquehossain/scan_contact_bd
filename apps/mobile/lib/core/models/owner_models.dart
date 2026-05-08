@@ -254,7 +254,7 @@ class Product {
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       id: json['id']?.toString() ?? '',
-      name: json['name']?.toString() ?? 'QR product',
+      name: json['name']?.toString() ?? 'QR tag product',
       description: json['description']?.toString() ?? '',
       priceBdt: (json['priceBdt'] as num?)?.toInt() ?? 0,
       estimatedDeliveryNote: json['estimatedDeliveryNote']?.toString(),
@@ -287,8 +287,140 @@ class OwnerOrder {
       orderNumber: json['orderNumber']?.toString() ?? '',
       status: json['status']?.toString() ?? 'created',
       codStatus: json['codStatus']?.toString() ?? 'cod_pending',
-      productName: json['productName']?.toString() ?? 'QR product',
+      productName: json['productName']?.toString() ?? 'QR tag product',
       priceBdt: (json['priceBdt'] as num?)?.toInt() ?? 0,
+      createdAt:
+          DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
+          DateTime.now(),
+    );
+  }
+}
+
+class IceServerConfig {
+  const IceServerConfig({required this.urls, this.username, this.credential});
+
+  final List<String> urls;
+  final String? username;
+  final String? credential;
+
+  Map<String, dynamic> toPeerConfig() {
+    final config = <String, dynamic>{
+      'urls': urls.length == 1 ? urls.first : urls,
+    };
+    if (username != null && username!.isNotEmpty) {
+      config['username'] = username;
+    }
+    if (credential != null && credential!.isNotEmpty) {
+      config['credential'] = credential;
+    }
+    return config;
+  }
+
+  factory IceServerConfig.fromJson(Map<String, dynamic> json) {
+    final rawUrls = json['urls'];
+    final urls = rawUrls is List
+        ? rawUrls
+              .map((item) => item.toString())
+              .where((item) => item.isNotEmpty)
+              .toList()
+        : rawUrls == null
+        ? <String>[]
+        : [rawUrls.toString()];
+
+    return IceServerConfig(
+      urls: urls.isEmpty ? const ['stun:stun.l.google.com:19302'] : urls,
+      username: json['username']?.toString(),
+      credential: json['credential']?.toString(),
+    );
+  }
+}
+
+const defaultIceServers = [
+  IceServerConfig(urls: ['stun:stun.l.google.com:19302']),
+];
+
+class OwnerCallSession {
+  const OwnerCallSession({
+    required this.id,
+    required this.status,
+    required this.tagLabel,
+    required this.createdAt,
+    required this.expiresAt,
+    required this.iceServers,
+    this.scannerName,
+    this.acceptedAt,
+    this.endedAt,
+  });
+
+  final String id;
+  final String status;
+  final String tagLabel;
+  final DateTime createdAt;
+  final DateTime expiresAt;
+  final List<IceServerConfig> iceServers;
+  final String? scannerName;
+  final DateTime? acceptedAt;
+  final DateTime? endedAt;
+
+  bool get isRinging => status.toUpperCase() == 'RINGING';
+  bool get isAccepted => status.toUpperCase() == 'ACCEPTED';
+  bool get isFinished {
+    final normalized = status.toUpperCase();
+    return normalized == 'DECLINED' ||
+        normalized == 'ENDED' ||
+        normalized == 'EXPIRED' ||
+        normalized == 'FAILED';
+  }
+
+  factory OwnerCallSession.fromJson(Map<String, dynamic> json) {
+    final iceServers = (json['iceServers'] as List? ?? [])
+        .whereType<Map>()
+        .map(
+          (item) => IceServerConfig.fromJson(Map<String, dynamic>.from(item)),
+        )
+        .where((item) => item.urls.isNotEmpty)
+        .toList();
+
+    return OwnerCallSession(
+      id: json['id']?.toString() ?? '',
+      status: json['status']?.toString() ?? 'RINGING',
+      tagLabel: json['tagLabel']?.toString() ?? 'QR tag',
+      iceServers: iceServers.isEmpty ? defaultIceServers : iceServers,
+      scannerName: json['scannerName']?.toString(),
+      createdAt:
+          DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
+          DateTime.now(),
+      expiresAt:
+          DateTime.tryParse(json['expiresAt']?.toString() ?? '') ??
+          DateTime.now(),
+      acceptedAt: DateTime.tryParse(json['acceptedAt']?.toString() ?? ''),
+      endedAt: DateTime.tryParse(json['endedAt']?.toString() ?? ''),
+    );
+  }
+}
+
+class CallSignal {
+  const CallSignal({
+    required this.id,
+    required this.sender,
+    required this.type,
+    required this.payload,
+    required this.createdAt,
+  });
+
+  final String id;
+  final String sender;
+  final String type;
+  final Map<String, dynamic> payload;
+  final DateTime createdAt;
+
+  factory CallSignal.fromJson(Map<String, dynamic> json) {
+    final payload = json['payload'];
+    return CallSignal(
+      id: json['id']?.toString() ?? '',
+      sender: json['sender']?.toString() ?? '',
+      type: json['type']?.toString() ?? '',
+      payload: payload is Map ? Map<String, dynamic>.from(payload) : {},
       createdAt:
           DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
           DateTime.now(),

@@ -10,9 +10,92 @@ String formatDateTime(DateTime value) =>
     DateFormat('MMM d, h:mm a').format(value);
 String formatBdt(int value) => NumberFormat.currency(
   locale: 'en_BD',
-  symbol: '৳',
+  symbol: 'BDT ',
   decimalDigits: 0,
 ).format(value);
+
+class ScanContactBrandMark extends StatelessWidget {
+  const ScanContactBrandMark({super.key, this.size = 72});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return SizedBox.square(
+      dimension: size,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(size * 0.22),
+                color: colorScheme.primaryContainer,
+              ),
+              child: Icon(
+                Icons.qr_code_2,
+                color: colorScheme.primary,
+                size: size * 0.52,
+              ),
+            ),
+          ),
+          Positioned(
+            right: -size * 0.08,
+            top: -size * 0.08,
+            child: _BrandBadge(
+              size: size * 0.34,
+              icon: Icons.phone_in_talk_outlined,
+              background: colorScheme.primary,
+              foreground: colorScheme.onPrimary,
+            ),
+          ),
+          Positioned(
+            left: -size * 0.08,
+            bottom: -size * 0.08,
+            child: _BrandBadge(
+              size: size * 0.34,
+              icon: Icons.shield_outlined,
+              background: colorScheme.surface,
+              foreground: colorScheme.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BrandBadge extends StatelessWidget {
+  const _BrandBadge({
+    required this.size,
+    required this.icon,
+    required this.background,
+    required this.foreground,
+  });
+
+  final double size;
+  final IconData icon;
+  final Color background;
+  final Color foreground;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: background,
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Theme.of(context).colorScheme.surface,
+          width: 2,
+        ),
+      ),
+      child: Icon(icon, color: foreground, size: size * 0.55),
+    );
+  }
+}
 
 class AppLoadingView extends StatelessWidget {
   const AppLoadingView({super.key, this.label = 'Loading...'});
@@ -161,7 +244,7 @@ class PrivacyNoticeCard extends StatelessWidget {
   const PrivacyNoticeCard({
     super.key,
     this.message =
-        'Your phone number is hidden from scanners. Chat stays inside ScanContact unless you choose another channel.',
+        'Your phone number is hidden from scanners inside ScanContact BD. If you choose WhatsApp, SMS, or phone outside the app, normal phone-number visibility may apply.',
   });
 
   final String message;
@@ -203,7 +286,7 @@ class CopyableUrlRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'Public QR URL',
+      label: 'Public QR link',
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
@@ -216,13 +299,13 @@ class CopyableUrlRow extends StatelessWidget {
               child: Text(url, maxLines: 2, overflow: TextOverflow.ellipsis),
             ),
             Tooltip(
-              message: 'Copy public QR URL',
+              message: 'Copy public link',
               child: IconButton(
                 onPressed: () async {
                   await Clipboard.setData(ClipboardData(text: url));
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Public QR URL copied')),
+                      const SnackBar(content: Text('Public link copied')),
                     );
                   }
                 },
@@ -259,6 +342,20 @@ class RequestCard extends StatelessWidget {
         ? Icons.chat_bubble_outline
         : Icons.lock_outline;
     return Card(
+      color: request.isUnread
+          ? Theme.of(
+              context,
+            ).colorScheme.primaryContainer.withValues(alpha: 0.55)
+          : null,
+      shape: request.isUnread
+          ? RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.primary,
+                width: 1.3,
+              ),
+            )
+          : null,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
@@ -282,7 +379,7 @@ class RequestCard extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                request.tagLabel,
+                'Tag: ${request.tagLabel}',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 8),
@@ -345,7 +442,7 @@ class ChatBubble extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '${formatDateTime(message.createdAt)} · ${message.status}',
+                  '${formatDateTime(message.createdAt)} - ${message.status}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 if (message.status == 'failed' && onRetry != null)
@@ -401,7 +498,7 @@ class ProductCard extends StatelessWidget {
                 ),
                 FilledButton(
                   onPressed: onOrder,
-                  child: const Text('Order COD'),
+                  child: const Text('Order with COD'),
                 ),
               ],
             ),
@@ -424,9 +521,9 @@ class OrderStatusCard extends StatelessWidget {
       case 'pending':
         return 'Order created. Admin will review it.';
       case 'processing':
-        return 'Admin is processing your QR sticker.';
+        return 'Admin is processing your QR tag.';
       case 'printed':
-        return 'Your QR sticker has been printed.';
+        return 'Your QR tag has been printed.';
       case 'assigned':
         return 'QR assigned. Check your Tags tab.';
       case 'delivered':
@@ -446,7 +543,7 @@ class OrderStatusCard extends StatelessWidget {
         leading: const Icon(Icons.local_shipping_outlined),
         title: Text(order.productName),
         subtitle: Text(
-          '$statusCopy\n${order.orderNumber} · ${formatBdt(order.priceBdt)}',
+          '$statusCopy\n${order.orderNumber} - ${formatBdt(order.priceBdt)}',
         ),
         isThreeLine: true,
         trailing: StatusChip(label: order.status),

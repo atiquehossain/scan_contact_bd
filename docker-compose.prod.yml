@@ -1,0 +1,152 @@
+name: scancontact-prod
+
+x-default-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "${LOG_MAX_SIZE:-10m}"
+    max-file: "${LOG_MAX_FILE:-5}"
+
+x-api-build: &api-build
+  build:
+    context: .
+    dockerfile: apps/api/Dockerfile
+  image: "${SCANCONTACT_API_IMAGE:-scancontact-api:${SCANCONTACT_IMAGE_TAG:-prod}}"
+
+x-api-environment: &api-environment
+  NODE_ENV: production
+  DATABASE_URL: "postgresql://${POSTGRES_USER:-scancontact}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-scancontact}?schema=public"
+  REDIS_URL: "${API_REDIS_URL:-}"
+  NODE_OPTIONS: "${API_NODE_OPTIONS:---max-old-space-size=384}"
+
+x-worker-environment: &worker-environment
+  NODE_ENV: production
+  DATABASE_URL: "postgresql://${POSTGRES_USER:-scancontact}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-scancontact}?schema=public"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB:-scancontact}"
+      POSTGRES_USER: "${POSTGRES_USER:-scancontact}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-scancontact} -d ${POSTGRES_DB:-scancontact}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    logging: *default-logging
+    mem_limit: "${POSTGRES_MEM_LIMIT:-512m}"
+    cpus: "${POSTGRES_CPUS:-1.0}"
+    pids_limit: 256
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 60s
+
+  migrate:
+    <<: *api-build
+    restart: "no"
+    env_file:
+      - apps/api/.env
+    environment: *api-environment
+    command: ["npm", "run", "prisma:deploy"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    logging: *default-logging
+    mem_limit: "${MIGRATE_MEM_LIMIT:-512m}"
+    cpus: "${MIGRATE_CPUS:-1.0}"
+    pids_limit: 256
+    security_opt:
+      - no-new-privileges:true
+
+  api:
+    <<: *api-build
+    restart: unless-stopped
+    env_file:
+      - apps/api/.env
+    environment: *api-environment
+    expose:
+      - "4000"
+    volumes:
+      - api_uploads:/app/apps/api/uploads
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:4000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging: *default-logging
+    mem_limit: "${API_MEM_LIMIT:-512m}"
+    cpus: "${API_CPUS:-1.0}"
+    pids_limit: 256
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 30s
+
+  worker:
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile
+    image: "${SCANCONTACT_WORKER_IMAGE:-scancontact-worker:${SCANCONTACT_IMAGE_TAG:-prod}}"
+    restart: unless-stopped
+    env_file:
+      - apps/api/.env
+    environment: *worker-environment
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    logging: *default-logging
+    mem_limit: "${WORKER_MEM_LIMIT:-256m}"
+    cpus: "${WORKER_CPUS:-0.5}"
+    pids_limit: 128
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 30s
+
+  caddy:
+    build:
+      context: .
+      dockerfile: infra/caddy/Dockerfile
+      args:
+        NEXT_PUBLIC_APP_NAME: "${NEXT_PUBLIC_APP_NAME:-ScanContact BD}"
+        NEXT_PUBLIC_APP_URL: "${NEXT_PUBLIC_APP_URL:?NEXT_PUBLIC_APP_URL is required}"
+        NEXT_PUBLIC_API_URL: "${STATIC_NEXT_PUBLIC_API_URL:-/api}"
+    image: "${SCANCONTACT_CADDY_IMAGE:-scancontact-caddy:${SCANCONTACT_IMAGE_TAG:-prod}}"
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      CADDY_SITE_ADDRESS: "${CADDY_SITE_ADDRESS:?CADDY_SITE_ADDRESS is required}"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/healthz >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging: *default-logging
+    mem_limit: "${CADDY_MEM_LIMIT:-256m}"
+    cpus: "${CADDY_CPUS:-0.5}"
+    pids_limit: 128
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 30s
+
+volumes:
+  postgres_data:
+  api_uploads:
+  caddy_data:
+  caddy_config:

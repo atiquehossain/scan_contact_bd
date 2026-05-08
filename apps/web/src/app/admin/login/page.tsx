@@ -1,56 +1,21 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { FormEvent } from "react";
 import { LockKeyhole, ShieldCheck } from "lucide-react";
-import { apiFetch, authToken, saveAuth } from "@/lib/api";
-import { Button, FieldError, InlineAlert } from "@/components/admin/ui";
+import { API_BASE, clientDebugLog } from "@/lib/api";
+import { Button, InlineAlert } from "@/components/admin/ui";
 
 const developmentEmail = process.env.NEXT_PUBLIC_DEV_ADMIN_EMAIL || "";
 
 export default function AdminLoginPage() {
-  const router = useRouter();
-  const errorSummaryRef = useRef<HTMLDivElement>(null);
-  const [email, setEmail] = useState(developmentEmail);
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; password?: string; summary?: string }>({});
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (authToken()) router.replace("/admin/overview");
-  }, [router]);
-
-  function validate() {
-    const nextErrors: typeof errors = {};
-    if (!email.trim()) nextErrors.email = "Admin email is required.";
-    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) nextErrors.email = "Enter a valid admin email.";
-    if (!password) nextErrors.password = "Admin password is required.";
-    return nextErrors;
-  }
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const nextErrors = validate();
-    if (Object.keys(nextErrors).length) {
-      setErrors({ ...nextErrors, summary: "Please fix the highlighted fields." });
-      window.setTimeout(() => errorSummaryRef.current?.focus(), 0);
-      return;
-    }
-    setLoading(true);
-    setErrors({});
-    try {
-      const data = await apiFetch<{ accessToken: string; refreshToken: string }>("/auth/admin-login", {
-        method: "POST",
-        body: JSON.stringify({ email: email.trim(), password })
-      }, "");
-      saveAuth(data);
-      router.replace("/admin/overview");
-    } catch {
-      setErrors({ summary: "Invalid email or password." });
-      window.setTimeout(() => errorSummaryRef.current?.focus(), 0);
-    } finally {
-      setLoading(false);
-    }
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    clientDebugLog("admin.login.submit", {
+      action: form.action,
+      emailPresent: Boolean(formData.get("email")),
+      passwordPresent: Boolean(formData.get("password"))
+    });
   }
 
   return (
@@ -66,27 +31,28 @@ export default function AdminLoginPage() {
           </div>
         </div>
 
-        {errors.summary ? (
-          <div ref={errorSummaryRef} tabIndex={-1} className="mb-4">
-            <InlineAlert tone="danger" title="Login failed">{errors.summary}</InlineAlert>
+        {typeof window !== "undefined" && new URLSearchParams(window.location.search).get("error") === "invalid" ? (
+          <div className="mb-4">
+            <InlineAlert tone="danger" title="Login failed">Invalid email or password.</InlineAlert>
           </div>
         ) : null}
 
-        <form className="grid gap-4" onSubmit={submit} noValidate>
+        <form className="grid gap-4" action={`${API_BASE}/auth/admin-login-form/`} method="post" onSubmit={handleSubmit}>
           <label className="grid gap-2 text-sm font-bold text-[var(--color-ink)]" htmlFor="admin-email">
             Email
             <input
               id="admin-email"
               name="email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              type="text"
+              inputMode="email"
+              defaultValue={developmentEmail}
               autoComplete="username"
-              aria-invalid={Boolean(errors.email)}
-              aria-describedby={errors.email ? "admin-email-error" : undefined}
+              autoCapitalize="none"
+              spellCheck={false}
+              required
+              pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
               className="focus-ring rounded-[var(--radius-button)] border border-[var(--color-border)] px-3 py-3 font-normal"
             />
-            <FieldError id="admin-email-error">{errors.email}</FieldError>
           </label>
 
           <label className="grid gap-2 text-sm font-bold text-[var(--color-ink)]" htmlFor="admin-password">
@@ -95,17 +61,14 @@ export default function AdminLoginPage() {
               id="admin-password"
               name="password"
               type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
               autoComplete="current-password"
-              aria-invalid={Boolean(errors.password)}
-              aria-describedby={errors.password ? "admin-password-error" : undefined}
+              required
+              minLength={8}
               className="focus-ring rounded-[var(--radius-button)] border border-[var(--color-border)] px-3 py-3 font-normal"
             />
-            <FieldError id="admin-password-error">{errors.password}</FieldError>
           </label>
 
-          <Button type="submit" loading={loading} className="w-full">
+          <Button type="submit" className="w-full">
             <LockKeyhole aria-hidden size={18} />
             Login
           </Button>

@@ -14,22 +14,49 @@ final apiClientProvider = Provider<ApiClient>((ref) {
   return ApiClient(ref.watch(tokenStoreProvider));
 });
 
+final publicApiClientProvider = Provider<ApiClient>((ref) {
+  return ApiClient.unauthenticated();
+});
+
 class ApiClient {
   ApiClient(this._tokenStore)
-    : dio = Dio(
-        BaseOptions(
-          baseUrl: AppConfig.apiBaseUrl,
-          connectTimeout: const Duration(seconds: 12),
-          receiveTimeout: const Duration(seconds: 20),
-          headers: {'Content-Type': 'application/json'},
-        ),
-      ) {
+    : _authenticated = true,
+      dio = Dio(_baseOptions()) {
+    _installInterceptors();
+  }
+
+  ApiClient.unauthenticated()
+    : _tokenStore = null,
+      _authenticated = false,
+      dio = Dio(_baseOptions()) {
+    _installInterceptors();
+  }
+
+  final TokenStore? _tokenStore;
+  final bool _authenticated;
+  final Dio dio;
+  Future<String?>? _refreshFuture;
+
+  static BaseOptions _baseOptions() {
+    return BaseOptions(
+      baseUrl: AppConfig.apiBaseUrl,
+      connectTimeout: const Duration(seconds: 12),
+      receiveTimeout: const Duration(seconds: 20),
+      headers: {'Content-Type': 'application/json'},
+    );
+  }
+
+  void _installInterceptors() {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          final token = await _tokenStore.readAccessToken();
-          if (token != null && token.isNotEmpty) {
+          final token = _authenticated
+              ? await _tokenStore?.readAccessToken()
+              : null;
+          if (_authenticated && token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
+          } else {
+            options.headers.remove('Authorization');
           }
           _debugRequest(options);
           handler.next(options);
@@ -40,13 +67,18 @@ class ApiClient {
         },
         onError: (error, handler) async {
           _debugError(error);
-          if (error.response?.statusCode == 401) {
-            final refreshed = await _tryRefreshToken();
-            if (refreshed) {
+          if (_authenticated &&
+              error.response?.statusCode == 401 &&
+              error.requestOptions.extra['retriedAfterRefresh'] != true) {
+            final accessToken = await _tryRefreshToken();
+            if (accessToken != null && accessToken.isNotEmpty) {
+              error.requestOptions.extra['retriedAfterRefresh'] = true;
+              error.requestOptions.headers['Authorization'] =
+                  'Bearer $accessToken';
               final response = await dio.fetch(error.requestOptions);
               return handler.resolve(response);
             }
-            await _tokenStore.clear();
+            await _tokenStore?.clear();
           }
           handler.next(error);
         },
@@ -54,24 +86,38 @@ class ApiClient {
     );
   }
 
-  final TokenStore _tokenStore;
-  final Dio dio;
+  Future<String?> _tryRefreshToken() {
+    final currentRefresh = _refreshFuture;
+    if (currentRefresh != null) return currentRefresh;
+    final nextRefresh = _performRefreshToken();
+    _refreshFuture = nextRefresh;
+    return nextRefresh.whenComplete(() {
+      if (identical(_refreshFuture, nextRefresh)) {
+        _refreshFuture = null;
+      }
+    });
+  }
 
-  Future<bool> _tryRefreshToken() async {
-    final refreshToken = await _tokenStore.readRefreshToken();
-    if (refreshToken == null) return false;
+  Future<String?> _performRefreshToken() async {
+    final tokenStore = _tokenStore;
+    if (tokenStore == null) return null;
+    final refreshToken = await tokenStore.readRefreshToken();
+    if (refreshToken == null || refreshToken.isEmpty) return null;
     try {
       final response = await Dio(
-        BaseOptions(baseUrl: AppConfig.apiBaseUrl),
+        _baseOptions(),
       ).post('/auth/refresh', data: {'refreshToken': refreshToken});
-      await _tokenStore.save(
-        accessToken: response.data['accessToken'],
-        refreshToken: response.data['refreshToken'],
+      final accessToken = response.data['accessToken']?.toString() ?? '';
+      final nextRefreshToken = response.data['refreshToken']?.toString() ?? '';
+      if (accessToken.isEmpty || nextRefreshToken.isEmpty) return null;
+      await tokenStore.save(
+        accessToken: accessToken,
+        refreshToken: nextRefreshToken,
       );
-      return true;
+      return accessToken;
     } catch (_) {
-      await _tokenStore.clear();
-      return false;
+      await tokenStore.clear();
+      return null;
     }
   }
 

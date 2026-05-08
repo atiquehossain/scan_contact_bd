@@ -119,7 +119,7 @@ class _RequestsScreenState extends ConsumerState<RequestsScreen>
             children: [
               Expanded(
                 child: Text(
-                  'Private contact requests',
+                  'Private requests',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w900,
                   ),
@@ -133,7 +133,7 @@ class _RequestsScreenState extends ConsumerState<RequestsScreen>
             ],
           ),
           const SizedBox(height: 4),
-          const Text('Reply without showing your phone number.'),
+          const Text('Reply privately without showing your phone number.'),
           const SizedBox(height: 12),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -170,9 +170,9 @@ class _RequestsScreenState extends ConsumerState<RequestsScreen>
           if (items.isEmpty)
             const AppEmptyState(
               icon: Icons.markunread_mailbox_outlined,
-              title: 'No contact requests yet',
+              title: 'No private requests yet',
               body:
-                  'When someone scans your QR and sends a message, it will appear here.',
+                  'When someone scans your QR tag and contacts you, the request will appear here.',
             )
           else
             for (final request in items)

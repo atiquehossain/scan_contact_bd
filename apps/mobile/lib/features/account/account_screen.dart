@@ -33,7 +33,8 @@ class AccountScreen extends ConsumerWidget {
             child: ListTile(
               leading: const Icon(Icons.person_outline),
               title: Text(profile.name),
-              subtitle: Text(profile.phone),
+              subtitle: Text('${profile.phone}\nVisible only to you'),
+              isThreeLine: true,
             ),
           ),
           const SizedBox(height: 12),
@@ -45,16 +46,14 @@ class AccountScreen extends ConsumerWidget {
                 ListTile(
                   leading: const Icon(Icons.local_shipping_outlined),
                   title: const Text('My orders'),
-                  subtitle: const Text('Track QR sticker orders'),
+                  subtitle: const Text('Track QR tag orders'),
                   onTap: () => context.push('/orders'),
                 ),
                 const Divider(height: 1),
                 ListTile(
                   leading: const Icon(Icons.shopping_bag_outlined),
-                  title: const Text('Buy QR Code'),
-                  subtitle: const Text(
-                    'Order a QR sticker by Cash on Delivery',
-                  ),
+                  title: const Text('Buy QR Tag'),
+                  subtitle: const Text('Order a QR tag by Cash on Delivery'),
                   onTap: () => context.push('/shop'),
                 ),
                 const Divider(height: 1),
@@ -62,7 +61,7 @@ class AccountScreen extends ConsumerWidget {
                   leading: Icon(Icons.health_and_safety_outlined),
                   title: Text('Privacy & safety'),
                   subtitle: Text(
-                    'Phone hidden by default. Scanners only see safe public QR pages.',
+                    'Your phone number is hidden from scanners inside ScanContact BD.',
                   ),
                 ),
               ],
@@ -85,7 +84,7 @@ class AccountScreen extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: const Text('Logout?'),
         content: const Text(
-          'This will clear your secure session on this device.',
+          'You can log in again with your owner phone number and OTP.',
         ),
         actions: [
           TextButton(
@@ -100,11 +99,20 @@ class AccountScreen extends ConsumerWidget {
       ),
     );
     if (confirmed != true) return;
-    await PushNotificationService.unregisterCurrentToken(
-      ref.read(ownerServiceProvider),
-    );
-    await PushNotificationService.shutdown();
+    try {
+      await PushNotificationService.unregisterCurrentToken(
+        ref.read(ownerServiceProvider),
+      );
+    } catch (_) {
+      // Local logout must not be blocked by best-effort push cleanup.
+    }
+    try {
+      await PushNotificationService.shutdown();
+    } catch (_) {
+      // FCM listener shutdown is also best effort during logout.
+    }
     await ref.read(tokenStoreProvider).clear();
+    invalidateOwnerScopedProviders(ref);
     if (context.mounted) {
       ScaffoldMessenger.of(
         context,

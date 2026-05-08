@@ -67,7 +67,7 @@ class AlertsScreen extends ConsumerWidget {
                   icon: Icons.notifications_none,
                   title: 'No notifications yet',
                   body:
-                      'Scan events, contact requests, and order updates will appear here.',
+                      'Scan events, private requests, and order updates will appear here.',
                 )
               else
                 for (final group in _group(items).entries) ...[
@@ -154,6 +154,9 @@ class NotificationTile extends ConsumerWidget {
           if (notification.actionType == 'request' &&
               notification.actionId != null) {
             context.push('/chat/${notification.actionId}');
+          } else if (notification.actionType == 'call' &&
+              notification.actionId != null) {
+            context.push('/call/${notification.actionId}');
           } else if (notification.actionType == 'order') {
             context.push('/orders');
           }
@@ -164,6 +167,7 @@ class NotificationTile extends ConsumerWidget {
 
   IconData _icon(String type) {
     if (type.contains('contact')) return Icons.forum_outlined;
+    if (type.contains('call')) return Icons.phone_in_talk_outlined;
     if (type.contains('scan')) return Icons.qr_code_scanner;
     if (type.contains('order')) return Icons.local_shipping_outlined;
     if (type.contains('security')) return Icons.security;

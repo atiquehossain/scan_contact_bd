@@ -206,7 +206,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
     final isReadOnly = request != null && !request!.canReply;
     final expiredCopy = request?.isDeleted == true
         ? 'This conversation was deleted according to the 10-day privacy policy.'
-        : 'This conversation has expired. The scanner must scan the QR again to start a new chat.';
+        : 'This conversation has expired. The scanner must scan the QR again to start a new chat. Your phone number was not shared.';
     return Scaffold(
       appBar: AppBar(title: Text(request?.tagLabel ?? 'Private chat')),
       body: loading
@@ -229,7 +229,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                         ),
                       const SizedBox(height: 8),
                       const PrivacyNoticeCard(
-                        message: 'Your phone number is hidden.',
+                        message:
+                            'Private chat. Your phone number is hidden from the scanner.',
                       ),
                       if (isReadOnly) ...[
                         const SizedBox(height: 8),
@@ -301,7 +302,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
                             decoration: InputDecoration(
                               labelText: isReadOnly
                                   ? 'Conversation expired'
-                                  : 'Reply privately',
+                                  : 'Write a private reply...',
                             ),
                             onChanged: (_) => setState(() {}),
                           ),

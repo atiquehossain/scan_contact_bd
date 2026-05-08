@@ -4,11 +4,13 @@ import express, { NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import morgan from "morgan";
-import { createSign } from "node:crypto";
+import { createHmac, createSign } from "node:crypto";
 import QRCode from "qrcode";
 import { z } from "zod";
 import {
   AbuseReportStatus,
+  CallSessionStatus,
+  CallSignalSender,
   ContactMessageSender,
   ContactReason,
   ContactRequestStatus,
@@ -18,15 +20,17 @@ import {
   PaymentMethod,
   PaymentStatus,
   Prisma,
+  ProductType,
   QrTagStatus,
   QrTagType,
+  ResellerBatchStatus,
   ResellerStatus,
   RoleName,
   SocietyMemberRole,
   UserStatus,
   VisitorStatus
 } from "@prisma/client";
-import { env, isProduction } from "./lib/env.js";
+import { env, isLocalDevelopment, isProduction } from "./lib/env.js";
 import { normalizeBangladeshPhone } from "./lib/phone.js";
 import {
   createPublicSlug,
@@ -79,6 +83,7 @@ app.use(
   })
 );
 app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: false, limit: "20kb" }));
 morgan.token("safe-url", (req) => {
   const expressReq = req as Request;
   const url = expressReq.originalUrl || expressReq.url || "";
@@ -95,7 +100,7 @@ app.use(
   cors({
     origin(origin, callback) {
       if (!origin || env.corsOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error("Blocked by CORS"));
+      return callback(Object.assign(new Error("Origin is not allowed"), { statusCode: 403 }));
     },
     credentials: true
   })
@@ -111,6 +116,16 @@ const publicContactLimiter = rateLimit({
   }
 });
 
+const publicOrderLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 8,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (_req, res) => {
+    res.status(429).json({ error: "Too many order attempts. Please wait before trying again." });
+  }
+});
+
 const otpLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 5,
@@ -119,6 +134,117 @@ const otpLimiter = rateLimit({
   handler: (_req, res) => {
     res.status(429).json({ error: "Too many OTP requests. Please wait before trying again." });
   }
+});
+
+const otpVerifyLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (_req, res) => {
+    res.status(429).json({ error: "Too many OTP verification attempts. Please wait before trying again." });
+  }
+});
+
+const adminLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 8,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  handler: (_req, res) => {
+    res.status(429).json({ error: "Too many admin login attempts. Please wait before trying again." });
+  }
+});
+
+const pinLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (_req, res) => {
+    res.status(429).json({ error: "Too many PIN login attempts. Please wait before trying again." });
+  }
+});
+
+const privateResponseKeys = new Set(["passwordHash", "pinHash"]);
+const accessCookieName = "scancontact_access";
+const refreshCookieName = "scancontact_refresh";
+
+function isPrivateResponseKey(key: string) {
+  return privateResponseKeys.has(key) || key.endsWith("Hash");
+}
+
+function sanitizePrivateFields(value: unknown, seen = new WeakSet<object>()): unknown {
+  if (!value || typeof value !== "object") return value;
+  if (value instanceof Date) return value;
+  if (seen.has(value)) return null;
+  seen.add(value);
+  if (Array.isArray(value)) {
+    const sanitizedArray = value.map((entry) => sanitizePrivateFields(entry, seen));
+    seen.delete(value);
+    return sanitizedArray;
+  }
+  const sanitized = Object.fromEntries(
+    Object.entries(value as Record<string, unknown>)
+      .filter(([key]) => !isPrivateResponseKey(key))
+      .map(([key, entry]) => [key, sanitizePrivateFields(entry, seen)])
+  );
+  seen.delete(value);
+  return sanitized;
+}
+
+function readCookie(req: Request, name: string) {
+  const raw = req.headers.cookie || "";
+  const match = raw
+    .split(";")
+    .map((entry) => entry.trim())
+    .find((entry) => entry.startsWith(`${name}=`));
+  if (!match) return "";
+  return decodeURIComponent(match.slice(name.length + 1));
+}
+
+function setAuthCookies(res: Response, tokens: { accessToken: string; refreshToken: string; expiresAt: Date }) {
+  const common = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: "lax" as const,
+    path: "/"
+  };
+  res.cookie(accessCookieName, tokens.accessToken, { ...common, maxAge: 30 * 60 * 1000 });
+  res.cookie(refreshCookieName, tokens.refreshToken, { ...common, expires: tokens.expiresAt });
+}
+
+function clearAuthCookies(res: Response) {
+  const common = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: "lax" as const,
+    path: "/"
+  };
+  res.clearCookie(accessCookieName, common);
+  res.clearCookie(refreshCookieName, common);
+}
+
+function adminRedirectBase(req: Request) {
+  const referer = req.get("referer");
+  if (referer) {
+    try {
+      const url = new URL(referer);
+      const allowed = new Set(env.corsOrigins);
+      allowed.add(env.appUrl.replace(/\/$/, ""));
+      if (allowed.has(url.origin)) return url.origin;
+    } catch {
+      // Fall back to configured app URL.
+    }
+  }
+  return env.appUrl.replace(/\/$/, "");
+}
+
+app.use((_req, res, next) => {
+  const json = res.json.bind(res);
+  res.json = ((body?: unknown) => json(sanitizePrivateFields(body))) as Response["json"];
+  next();
 });
 
 function asyncRoute(handler: (req: Request, res: Response, next: NextFunction) => Promise<unknown>) {
@@ -141,6 +267,19 @@ function maskPhone(phone?: string | null): string {
   if (!phone) return "none";
   if (phone.length <= 7) return "***";
   return `${phone.slice(0, 7)}****${phone.slice(-3)}`;
+}
+
+function maskEmail(email?: string | null): string {
+  if (!email) return "none";
+  const [name, domain] = email.split("@");
+  if (!domain) return "***";
+  const visibleName = name.length <= 2 ? `${name[0] || "*"}*` : `${name.slice(0, 2)}***${name.slice(-1)}`;
+  return `${visibleName}@${domain}`;
+}
+
+function safeRequestPath(req: Request) {
+  const url = req.originalUrl || req.url || "";
+  return url.replace(/([?&]token=)[^&]+/gi, "$1[redacted]");
 }
 
 function debugLog(area: string, fields: Record<string, unknown> = {}) {
@@ -372,7 +511,144 @@ async function validateScannerConversation(id: string, token: string) {
   if (lifecycle.contactRequest.status !== ContactRequestStatus.OPEN) {
     return { result: "unavailable" as const, contactRequest: lifecycle.contactRequest };
   }
+  if (!isPublicTagActive(lifecycle.contactRequest.qrTag)) {
+    return { result: "unavailable" as const, contactRequest: lifecycle.contactRequest };
+  }
   return { result: "active" as const, contactRequest: lifecycle.contactRequest };
+}
+
+type CallLifecycleRecord = {
+  id: string;
+  status: CallSessionStatus;
+  expiresAt: Date;
+};
+
+type IceServerDto = {
+  urls: string | string[];
+  username?: string;
+  credential?: string;
+  credentialType?: "password";
+};
+
+function nextCallRingExpiry(now = new Date()) {
+  return new Date(now.getTime() + 90 * 1000);
+}
+
+function nextCallActiveExpiry(now = new Date()) {
+  return new Date(now.getTime() + 30 * 60 * 1000);
+}
+
+function hashCallToken(token: string) {
+  return hmac(`call:${token}`);
+}
+
+function splitIceUrls(value: string) {
+  return value
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+}
+
+function iceUrls(urls: string[]) {
+  return urls.length === 1 ? urls[0] : urls;
+}
+
+function configuredIceServers(now = new Date()): IceServerDto[] {
+  const servers: IceServerDto[] = [];
+  const stunUrls = splitIceUrls(env.webrtcStunUrls);
+  const turnUrls = splitIceUrls(env.webrtcTurnUrls);
+
+  if (stunUrls.length) {
+    servers.push({ urls: iceUrls(stunUrls) });
+  }
+
+  if (!turnUrls.length) {
+    return servers;
+  }
+
+  if (env.webrtcTurnSharedSecret) {
+    const ttlSeconds =
+      Number.isFinite(env.webrtcTurnTtlSeconds) && env.webrtcTurnTtlSeconds > 0 ? env.webrtcTurnTtlSeconds : 3600;
+    const expiresAt = Math.floor(now.getTime() / 1000) + ttlSeconds;
+    const username = `${expiresAt}:scancontact`;
+    const credential = createHmac("sha1", env.webrtcTurnSharedSecret).update(username).digest("base64");
+    servers.push({ urls: iceUrls(turnUrls), username, credential, credentialType: "password" });
+    return servers;
+  }
+
+  if (env.webrtcTurnUsername && env.webrtcTurnCredential) {
+    servers.push({
+      urls: iceUrls(turnUrls),
+      username: env.webrtcTurnUsername,
+      credential: env.webrtcTurnCredential,
+      credentialType: "password"
+    });
+  }
+
+  return servers;
+}
+
+function isCallTerminal(status: CallSessionStatus) {
+  return (
+    status === CallSessionStatus.DECLINED ||
+    status === CallSessionStatus.ENDED ||
+    status === CallSessionStatus.EXPIRED ||
+    status === CallSessionStatus.FAILED
+  );
+}
+
+async function expireCallIfNeeded<T extends CallLifecycleRecord>(callSession: T, now = new Date()) {
+  if (isCallTerminal(callSession.status) || callSession.expiresAt >= now) {
+    return { callSession, expired: false };
+  }
+  const updated = await prisma.callSession.update({
+    where: { id: callSession.id },
+    data: { status: CallSessionStatus.EXPIRED, endedAt: now }
+  });
+  return { callSession: { ...callSession, ...updated }, expired: true };
+}
+
+async function expireInactiveCallsForOwner(ownerId: string) {
+  await prisma.callSession.updateMany({
+    where: {
+      ownerId,
+      deletedAt: null,
+      status: { in: [CallSessionStatus.RINGING, CallSessionStatus.ACCEPTED] },
+      expiresAt: { lt: new Date() }
+    },
+    data: { status: CallSessionStatus.EXPIRED, endedAt: new Date() }
+  });
+}
+
+function sendCallExpired(res: Response) {
+  return res.status(410).json({
+    code: "CALL_EXPIRED",
+    message: "This private call expired. Please scan the QR again to start a new call."
+  });
+}
+
+function sendCallUnavailable(res: Response) {
+  return res.status(404).json({
+    code: "CALL_NOT_AVAILABLE",
+    message: "This private call is no longer available. Please scan the QR again."
+  });
+}
+
+async function validateScannerCall(callSessionId: string, token: string) {
+  const tokenHash = hashCallToken(token);
+  const callSession = await prisma.callSession.findFirst({
+    where: { id: callSessionId, scannerTokenHash: tokenHash, deletedAt: null },
+    include: { qrTag: { select: { id: true, label: true, type: true, status: true, ownerId: true, deletedAt: true } } }
+  });
+  if (!callSession) return { result: "unavailable" as const, callSession: null };
+  const lifecycle = await expireCallIfNeeded(callSession);
+  if (lifecycle.expired || lifecycle.callSession.status === CallSessionStatus.EXPIRED) {
+    return { result: "expired" as const, callSession: lifecycle.callSession };
+  }
+  if (!isPublicTagActive(lifecycle.callSession.qrTag)) {
+    return { result: "unavailable" as const, callSession: lifecycle.callSession };
+  }
+  return { result: "active" as const, callSession: lifecycle.callSession };
 }
 
 async function userRoles(userId: string): Promise<RoleName[]> {
@@ -396,7 +672,22 @@ async function ensureRole(userId: string, roleName: RoleName) {
   });
 }
 
+function isActiveUser<T extends { status: UserStatus; deletedAt: Date | null }>(user: T | null | undefined): user is T {
+  return Boolean(user && !user.deletedAt && user.status === UserStatus.ACTIVE);
+}
+
+async function assertActiveUser(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, status: true, deletedAt: true }
+  });
+  if (!isActiveUser(user)) {
+    throw Object.assign(new Error("User not active"), { statusCode: 401 });
+  }
+}
+
 async function issueTokens(userId: string, req: Request) {
+  await assertActiveUser(userId);
   const roles = await userRoles(userId);
   const accessToken = signAccessToken(userId, roles);
   const refreshToken = randomToken();
@@ -417,42 +708,86 @@ async function issueTokens(userId: string, req: Request) {
 
 async function rotateRefreshToken(refreshToken: string, req: Request) {
   const tokenHash = hashRefreshToken(refreshToken);
-  const session = await prisma.session.findUnique({ where: { refreshTokenHash: tokenHash } });
-  if (!session || session.status !== "ACTIVE" || session.expiresAt < new Date()) {
+  const now = new Date();
+  const nextRefreshToken = randomToken();
+  const nextRefreshTokenHash = hashRefreshToken(nextRefreshToken);
+  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  const rotated = await prisma.$transaction(async (tx) => {
+    const session = await tx.session.findUnique({ where: { refreshTokenHash: tokenHash } });
+    if (!session) return { ok: false as const };
+    if (session.status !== "ACTIVE" || session.expiresAt < now) {
+      await tx.session.updateMany({
+        where: { familyId: session.familyId, status: "ACTIVE" },
+        data: { status: "REVOKED", revokedAt: now }
+      });
+      return { ok: false as const };
+    }
+
+    const user = await tx.user.findUnique({
+      where: { id: session.userId },
+      select: { id: true, status: true, deletedAt: true }
+    });
+    if (!isActiveUser(user)) {
+      await tx.session.updateMany({
+        where: { userId: session.userId, status: "ACTIVE" },
+        data: { status: "REVOKED", revokedAt: now }
+      });
+      return { ok: false as const };
+    }
+
+    const revoked = await tx.session.updateMany({
+      where: { id: session.id, refreshTokenHash: tokenHash, status: "ACTIVE" },
+      data: { status: "REVOKED", revokedAt: now }
+    });
+    if (revoked.count !== 1) {
+      await tx.session.updateMany({
+        where: { familyId: session.familyId, status: "ACTIVE" },
+        data: { status: "REVOKED", revokedAt: now }
+      });
+      return { ok: false as const };
+    }
+
+    await tx.session.create({
+      data: {
+        userId: session.userId,
+        refreshTokenHash: nextRefreshTokenHash,
+        familyId: session.familyId,
+        userAgent: req.get("user-agent"),
+        ipAddress: req.ip,
+        expiresAt
+      }
+    });
+    const roleEntries = await tx.userRole.findMany({
+      where: { userId: session.userId },
+      include: { role: true }
+    });
+    return { ok: true as const, userId: session.userId, roles: roleEntries.map((entry) => entry.role.name) };
+  });
+
+  if (!rotated.ok) {
     throw Object.assign(new Error("Invalid refresh token"), { statusCode: 401 });
   }
-  await prisma.session.update({
-    where: { id: session.id },
-    data: { status: "REVOKED", revokedAt: new Date() }
-  });
-  const roles = await userRoles(session.userId);
-  const accessToken = signAccessToken(session.userId, roles);
-  const nextRefreshToken = randomToken();
-  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-  await prisma.session.create({
-    data: {
-      userId: session.userId,
-      refreshTokenHash: hashRefreshToken(nextRefreshToken),
-      familyId: session.familyId,
-      userAgent: req.get("user-agent"),
-      ipAddress: req.ip,
-      expiresAt
-    }
-  });
-  return { accessToken, refreshToken: nextRefreshToken, expiresAt, roles };
+  const accessToken = signAccessToken(rotated.userId, rotated.roles);
+  return { accessToken, refreshToken: nextRefreshToken, expiresAt, roles: rotated.roles };
 }
 
 async function requireAuth(req: AuthedRequest, _res: Response, next: NextFunction) {
   try {
     const header = req.get("authorization") || "";
-    const token = header.startsWith("Bearer ") ? header.slice(7) : "";
-    if (!token) throw new Error("Missing bearer token");
+    const token = header.startsWith("Bearer ") ? header.slice(7) : readCookie(req, accessCookieName);
+    if (!token) {
+      debugLog("auth.requireAuth.missingToken", { method: req.method, path: safeRequestPath(req), hasCookie: Boolean(req.headers.cookie) });
+      throw new Error("Missing bearer token");
+    }
     const payload = verifyAccessToken(token);
     const user = await prisma.user.findUnique({
       where: { id: payload.sub },
       include: { userRoles: { include: { role: true } } }
     });
-    if (!user || user.status !== UserStatus.ACTIVE) throw new Error("User not active");
+    if (!isActiveUser(user)) {
+      debugLog("auth.requireAuth.inactiveUser", { method: req.method, path: safeRequestPath(req), userId: shortId(payload.sub), found: Boolean(user) });
+      throw new Error("User not active");
+    }
     req.user = {
       id: user.id,
       phone: user.phone,
@@ -460,8 +795,18 @@ async function requireAuth(req: AuthedRequest, _res: Response, next: NextFunctio
       fullName: user.fullName,
       roles: user.userRoles.map((entry) => entry.role.name)
     };
+    debugLog("auth.requireAuth.success", {
+      method: req.method,
+      path: safeRequestPath(req),
+      userId: shortId(user.id),
+      email: maskEmail(user.email),
+      roles: req.user.roles.join(",")
+    });
     next();
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && !["Missing bearer token", "User not active"].includes(error.message)) {
+      debugLog("auth.requireAuth.failed", { method: req.method, path: safeRequestPath(req), error: error.message });
+    }
     next(Object.assign(new Error("Unauthorized"), { statusCode: 401 }));
   }
 }
@@ -473,6 +818,36 @@ function requireRoles(...allowed: RoleName[]) {
       return next();
     }
     return next(Object.assign(new Error("Forbidden"), { statusCode: 403 }));
+  };
+}
+
+function hasGlobalSocietyAccess(user?: AuthUser) {
+  const roles = user?.roles || [];
+  return roles.includes(RoleName.SUPER_ADMIN) || roles.includes(RoleName.SOCIETY_MANAGER);
+}
+
+const allSocietyMemberRoles = [SocietyMemberRole.SOCIETY_ADMIN, SocietyMemberRole.GUARD, SocietyMemberRole.RESIDENT];
+
+function requireSocietyRoles(...allowed: SocietyMemberRole[]) {
+  const allowedRoles = allowed.length ? allowed : allSocietyMemberRoles;
+  return (req: AuthedRequest, _res: Response, next: NextFunction) => {
+    const user = req.user;
+    if (!user) return next(Object.assign(new Error("Unauthorized"), { statusCode: 401 }));
+    if (hasGlobalSocietyAccess(user)) return next();
+    prisma.societyMember
+      .findFirst({
+        where: {
+          societyId: req.params.id,
+          userId: user.id,
+          role: { in: allowedRoles }
+        },
+        select: { id: true }
+      })
+      .then((membership) => {
+        if (!membership) return next(Object.assign(new Error("Forbidden"), { statusCode: 403 }));
+        return next();
+      })
+      .catch(next);
   };
 }
 
@@ -528,10 +903,35 @@ const tagSchema = z.object({
     .default({})
 });
 
+const tagActivationSchema = z.object({
+  activationCode: z.string().trim().min(4).max(120)
+});
+
 const adminCreateTagSchema = tagSchema.extend({
   ownerPhone: z.string().min(8),
   ownerName: z.string().trim().min(2).max(100)
 });
+
+const resellerBatchCreateSchema = z
+  .object({
+    resellerId: z.string().min(1),
+    batchCode: z
+      .string()
+      .trim()
+      .min(2)
+      .max(80)
+      .regex(/^[A-Za-z0-9_-]+$/, "Batch code may contain letters, numbers, hyphens, and underscores only")
+      .optional(),
+    tagIds: z.array(z.string().min(1)).max(1000).optional(),
+    publicSlugs: z.array(z.string().min(4).max(200)).max(1000).optional(),
+    quantity: z.number().int().min(1).max(1000).optional(),
+    tagType: z.nativeEnum(QrTagType).default(QrTagType.OTHER),
+    labelPrefix: z.string().trim().min(1).max(80).default("Reseller QR"),
+    notes: z.string().trim().max(500).optional()
+  })
+  .refine((input) => Boolean(input.quantity || input.tagIds?.length || input.publicSlugs?.length), {
+    message: "Provide quantity, tagIds, or publicSlugs to allocate a reseller batch"
+  });
 
 const contactRequestSchema = z.object({
   reason: z.nativeEnum(ContactReason),
@@ -547,6 +947,16 @@ const chatMessageSchema = z.object({
 const publicChatMessageSchema = chatMessageSchema.extend({
   token: z.string().min(20),
   senderName: z.string().trim().max(80).optional()
+});
+
+const publicCallStartSchema = z.object({
+  scannerName: z.string().trim().max(80).optional()
+});
+
+const callSignalSchema = z.object({
+  token: z.string().min(20).optional(),
+  type: z.string().trim().min(2).max(40),
+  payload: z.record(z.unknown())
 });
 
 const orderSchema = z.object({
@@ -568,12 +978,221 @@ const orderSchema = z.object({
   notes: z.string().max(300).optional()
 });
 
+const publicOrderSchema = z.object({
+  customerName: z.string().trim().min(2).max(100),
+  phone: z.string().min(8),
+  deliveryAddress: z.string().trim().min(5).max(240),
+  deliveryCity: z.string().trim().min(1).max(80),
+  deliveryDistrict: z.string().trim().min(1).max(80),
+  productId: z.string().optional(),
+  productSlug: z.string().trim().min(2).max(120).optional(),
+  quantity: z.number().int().min(1).max(20).default(1),
+  tagLabel: z.string().trim().max(80).optional(),
+  vehicleNumber: z.string().trim().max(30).optional(),
+  note: z.string().trim().max(300).optional(),
+  paymentMethod: z.literal("COD").default("COD")
+});
+
 function publicUrlFor(slug: string) {
   return `${env.appUrl.replace(/\/$/, "")}/t/${slug}`;
 }
 
 function qrImageUrlFor(slug: string) {
   return `${env.apiUrl.replace(/\/$/, "")}/qr/${slug}.png`;
+}
+
+function createResellerBatchCode() {
+  return `RB-${createPublicSlug().slice(0, 12).toUpperCase()}`;
+}
+
+type ResellerBatchDtoSource = {
+  id: string;
+  batchCode: string;
+  resellerId: string;
+  status: ResellerBatchStatus;
+  notes: string | null;
+  assignedAt: Date;
+  closedAt: Date | null;
+  createdAt: Date;
+  reseller?: { businessName: string; user?: { fullName: string | null; phone: string } | null } | null;
+  tags?: Array<{ ownerId: string | null; status: QrTagStatus; deletedAt: Date | null }>;
+};
+
+function resellerBatchDto(batch: ResellerBatchDtoSource) {
+  const tags = batch.tags?.filter((tag) => !tag.deletedAt) ?? [];
+  const assignedTagCount = tags.filter((tag) => Boolean(tag.ownerId) || tag.status === QrTagStatus.ACTIVE).length;
+  const pendingTagCount = tags.filter((tag) => !tag.ownerId && tag.status === QrTagStatus.PENDING_ACTIVATION).length;
+  return {
+    id: batch.id,
+    batchCode: batch.batchCode,
+    resellerId: batch.resellerId,
+    resellerName: batch.reseller?.businessName ?? null,
+    resellerOwnerName: batch.reseller?.user?.fullName ?? null,
+    resellerPhone: batch.reseller?.user?.phone ?? null,
+    status: batch.status,
+    notes: batch.notes,
+    tagCount: tags.length,
+    assignedTagCount,
+    pendingTagCount,
+    assignedAt: batch.assignedAt,
+    closedAt: batch.closedAt,
+    createdAt: batch.createdAt
+  };
+}
+
+type PublicTagState = {
+  status: QrTagStatus;
+  ownerId: string | null;
+  deletedAt: Date | null;
+};
+
+type SafePublicTagInput = PublicTagState & {
+  publicSlug: string;
+  type: QrTagType;
+  label: string;
+  vehicleNumber: string | null;
+  itemName: string | null;
+  privacyMode: string;
+  owner: {
+    fullName: string | null;
+    phone: string;
+    emergencyContacts: Array<{
+      name: string;
+      relation: string | null;
+      phone: string;
+      visibleOnPublic: boolean;
+      deletedAt: Date | null;
+    }>;
+  } | null;
+  contactSetting: {
+    allowContactForm: boolean;
+    allowWhatsapp: boolean;
+    allowSms: boolean;
+    phoneVisible: boolean;
+    showName: boolean;
+    showEmergency: boolean;
+  } | null;
+};
+
+function isPublicTagActive<T extends PublicTagState>(
+  tag: T
+): tag is T & { status: typeof QrTagStatus.ACTIVE; ownerId: string; deletedAt: null } {
+  return !tag.deletedAt && tag.status === QrTagStatus.ACTIVE && Boolean(tag.ownerId);
+}
+
+function inactivePublicTagDto(tag: { publicSlug: string }) {
+  return {
+    publicSlug: tag.publicSlug,
+    publicUrl: publicUrlFor(tag.publicSlug),
+    status: "INACTIVE",
+    isActive: false,
+    contactOptions: {
+      contactForm: false,
+      whatsapp: false,
+      sms: false,
+      phoneVisible: false,
+      emergencyVisible: false
+    },
+    links: {
+      whatsapp: null,
+      sms: null
+    },
+    emergencyContacts: []
+  };
+}
+
+function safePublicTagDto(tag: SafePublicTagInput) {
+  if (!isPublicTagActive(tag)) return inactivePublicTagDto(tag);
+  const settings = tag.contactSetting;
+  const ownerPhone = tag.owner?.phone || "";
+  const showPhone = Boolean(settings?.phoneVisible && tag.privacyMode === "PHONE_VISIBLE_BY_OWNER_CHOICE");
+  const safeEmergency =
+    settings?.showEmergency && tag.owner
+      ? tag.owner.emergencyContacts
+          .filter((entry) => entry.visibleOnPublic && !entry.deletedAt)
+          .map((entry) => ({ name: entry.name, relation: entry.relation, phone: entry.phone }))
+      : [];
+  return {
+    publicSlug: tag.publicSlug,
+    publicUrl: publicUrlFor(tag.publicSlug),
+    status: QrTagStatus.ACTIVE,
+    isActive: true,
+    type: tag.type,
+    label: tag.label,
+    vehicleNumberHint: tag.vehicleNumber ? tag.vehicleNumber.slice(-4).padStart(tag.vehicleNumber.length, "*") : null,
+    itemName: tag.type === QrTagType.LOST_ITEM ? tag.itemName : undefined,
+    owner: {
+      name: settings?.showName ? tag.owner?.fullName || null : null,
+      phone: showPhone ? ownerPhone : null
+    },
+    contactOptions: {
+      contactForm: settings?.allowContactForm ?? true,
+      whatsapp: Boolean(settings?.allowWhatsapp),
+      sms: Boolean(settings?.allowSms),
+      phoneVisible: showPhone,
+      emergencyVisible: Boolean(settings?.showEmergency)
+    },
+    links: {
+      whatsapp: settings?.allowWhatsapp && ownerPhone ? `https://wa.me/${ownerPhone.replace("+", "")}` : null,
+      sms: settings?.allowSms && ownerPhone ? `sms:${ownerPhone}` : null
+    },
+    emergencyContacts: safeEmergency
+  };
+}
+
+function sendInactivePublicTag(res: Response) {
+  return res.status(409).json({ error: "QR tag is inactive" });
+}
+
+type UserDtoSource = {
+  id: string;
+  phone: string;
+  email: string | null;
+  fullName: string | null;
+  language?: Language;
+  status?: UserStatus;
+  phoneVerifiedAt?: Date | null;
+  lastLoginAt?: Date | null;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date | null;
+  profile?: unknown;
+  emergencyContacts?: unknown;
+  userRoles?: Array<{ role: { id?: string; name: RoleName; description?: string | null; createdAt?: Date; updatedAt?: Date } }>;
+};
+
+function roleNamesFromUser(user: UserDtoSource) {
+  return user.userRoles?.map((entry) => entry.role.name) ?? [];
+}
+
+function safeUserDto(user: UserDtoSource | null | undefined) {
+  if (!user) return null;
+  return {
+    id: user.id,
+    phone: user.phone,
+    email: user.email,
+    fullName: user.fullName,
+    language: user.language,
+    status: user.status,
+    phoneVerifiedAt: user.phoneVerifiedAt ?? null,
+    lastLoginAt: user.lastLoginAt ?? null,
+    profile: user.profile,
+    emergencyContacts: user.emergencyContacts,
+    roles: roleNamesFromUser(user)
+  };
+}
+
+function safeAdminUserDto(user: UserDtoSource | null | undefined) {
+  if (!user) return null;
+  const base = safeUserDto(user)!;
+  return {
+    ...base,
+    status: user.status,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+    deletedAt: user.deletedAt ?? null,
+    userRoles: user.userRoles?.map((entry) => ({ role: entry.role }))
+  };
 }
 
 function ownerDto(user: { id: string; fullName: string | null; phone: string; email?: string | null }) {
@@ -661,6 +1280,41 @@ function ownerMessageDto(message: { id: string; sender: ContactMessageSender; bo
   };
 }
 
+function callSessionDto(callSession: {
+  id: string;
+  scannerName: string | null;
+  status: CallSessionStatus;
+  expiresAt: Date;
+  acceptedAt: Date | null;
+  endedAt: Date | null;
+  createdAt: Date;
+  qrTag?: { id: string; label: string; type?: QrTagType } | null;
+}) {
+  return {
+    id: callSession.id,
+    status: callSession.status,
+    scannerName: callSession.scannerName,
+    tagId: callSession.qrTag?.id ?? null,
+    tagLabel: callSession.qrTag?.label ?? "QR tag",
+    tagType: callSession.qrTag?.type ?? null,
+    expiresAt: callSession.expiresAt,
+    acceptedAt: callSession.acceptedAt,
+    endedAt: callSession.endedAt,
+    createdAt: callSession.createdAt,
+    iceServers: configuredIceServers()
+  };
+}
+
+function callSignalDto(signal: { id: string; sender: CallSignalSender; type: string; payload: Prisma.JsonValue; createdAt: Date }) {
+  return {
+    id: signal.id,
+    sender: signal.sender.toLowerCase(),
+    type: signal.type,
+    payload: signal.payload,
+    createdAt: signal.createdAt
+  };
+}
+
 function publicMessageDto(message: { id: string; sender: ContactMessageSender; senderName: string | null; body: string; createdAt: Date }) {
   return {
     id: message.id,
@@ -676,16 +1330,18 @@ function ownerNotificationDto(notification: { id: string; type: NotificationType
   const contactRequestId = typeof data.contactRequestId === "string" ? data.contactRequestId : undefined;
   const qrTagId = typeof data.qrTagId === "string" ? data.qrTagId : undefined;
   const orderId = typeof data.orderId === "string" ? data.orderId : undefined;
-  const actionType = contactRequestId ? "request" : qrTagId ? "tag" : orderId ? "order" : null;
+  const callSessionId = typeof data.callSessionId === "string" ? data.callSessionId : undefined;
+  const notificationType = typeof data.type === "string" ? data.type : notification.type.toLowerCase();
+  const actionType = callSessionId ? "call" : contactRequestId ? "request" : qrTagId ? "tag" : orderId ? "order" : null;
   return {
     id: notification.id,
-    type: notification.type.toLowerCase(),
+    type: notificationType,
     title: notification.title,
     body: notification.body,
     createdAt: notification.createdAt,
     isRead: Boolean(notification.readAt),
     actionType,
-    actionId: contactRequestId || qrTagId || orderId || null
+    actionId: callSessionId || contactRequestId || qrTagId || orderId || null
   };
 }
 
@@ -713,6 +1369,81 @@ function ownerProductDto(product: { id: string; name: string; description: strin
   };
 }
 
+function productMetadata(product: { metadata: Prisma.JsonValue }) {
+  return typeof product.metadata === "object" && product.metadata !== null && !Array.isArray(product.metadata)
+    ? (product.metadata as Record<string, unknown>)
+    : {};
+}
+
+function publicProductDto(product: {
+  id: string;
+  slug: string;
+  type: ProductType;
+  name: string;
+  description: string;
+  priceBdt: number;
+  active: boolean;
+  metadata: Prisma.JsonValue;
+}) {
+  const metadata = productMetadata(product);
+  const list = (key: string) => (Array.isArray(metadata[key]) ? (metadata[key] as unknown[]).filter((item): item is string => typeof item === "string") : []);
+  return {
+    id: product.id,
+    slug: product.slug,
+    type: product.type,
+    name: product.name,
+    description: product.description,
+    priceBdt: product.priceBdt,
+    isActive: product.active,
+    bestUseCase: typeof metadata.bestUseCase === "string" ? metadata.bestUseCase : null,
+    estimatedDeliveryNote: typeof metadata.estimatedDeliveryNote === "string" ? metadata.estimatedDeliveryNote : null,
+    features: list("features"),
+    included: list("included"),
+    seoTitle: typeof metadata.seoTitle === "string" ? metadata.seoTitle : null,
+    seoDescription: typeof metadata.seoDescription === "string" ? metadata.seoDescription : null,
+    faq: Array.isArray(metadata.faq) ? metadata.faq : []
+  };
+}
+
+function publicOrderDto(order: {
+  id: string;
+  orderNumber: string;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  paymentMethod: PaymentMethod;
+  subtotalBdt: number;
+  deliveryFeeBdt: number;
+  totalBdt: number;
+  customerName: string;
+  deliveryCity: string | null;
+  deliveryDistrict: string | null;
+  createdAt: Date;
+  items?: Array<{ name: string; quantity: number; unitPriceBdt: number; totalBdt: number }>;
+}) {
+  return {
+    orderId: order.id,
+    orderNumber: order.orderNumber,
+    trackingCode: order.orderNumber,
+    status: order.status,
+    paymentStatus: order.paymentStatus,
+    paymentMethod: order.paymentMethod,
+    subtotalBdt: order.subtotalBdt,
+    deliveryFeeBdt: order.deliveryFeeBdt,
+    totalBdt: order.totalBdt,
+    customerName: order.customerName,
+    deliveryCity: order.deliveryCity,
+    deliveryDistrict: order.deliveryDistrict,
+    productName: order.items?.[0]?.name || "QR tag",
+    quantity: order.items?.reduce((sum, item) => sum + item.quantity, 0) || 1,
+    items: order.items || [],
+    createdAt: order.createdAt
+  };
+}
+
+function orderNumber() {
+  return `SCBD-${Date.now().toString(36).toUpperCase()}`;
+}
+
 async function makeSafePublicTag(slug: string) {
   const tag = await prisma.qrTag.findUnique({
     where: { publicSlug: slug },
@@ -721,43 +1452,8 @@ async function makeSafePublicTag(slug: string) {
       contactSetting: true
     }
   });
-  if (!tag || tag.deletedAt) return null;
-  const settings = tag.contactSetting;
-  const ownerPhone = tag.owner?.phone || "";
-  const showPhone = Boolean(settings?.phoneVisible && tag.privacyMode === "PHONE_VISIBLE_BY_OWNER_CHOICE");
-  const safeEmergency =
-    settings?.showEmergency && tag.owner
-      ? tag.owner.emergencyContacts
-          .filter((entry) => entry.visibleOnPublic && !entry.deletedAt)
-          .map((entry) => ({ name: entry.name, relation: entry.relation, phone: entry.phone }))
-      : [];
-  return {
-    id: tag.id,
-    publicSlug: tag.publicSlug,
-    publicUrl: publicUrlFor(tag.publicSlug),
-    status: tag.status,
-    type: tag.type,
-    label: tag.label,
-    vehicleNumberHint: tag.vehicleNumber ? tag.vehicleNumber.slice(-4).padStart(tag.vehicleNumber.length, "*") : null,
-    itemName: tag.type === QrTagType.LOST_ITEM ? tag.itemName : undefined,
-    scanCount: tag.scanCount,
-    owner: {
-      name: settings?.showName ? tag.owner?.fullName || null : null,
-      phone: showPhone ? ownerPhone : null
-    },
-    contactOptions: {
-      contactForm: settings?.allowContactForm ?? true,
-      whatsapp: Boolean(settings?.allowWhatsapp),
-      sms: Boolean(settings?.allowSms),
-      phoneVisible: showPhone,
-      emergencyVisible: Boolean(settings?.showEmergency)
-    },
-    links: {
-      whatsapp: settings?.allowWhatsapp && ownerPhone ? `https://wa.me/${ownerPhone.replace("+", "")}` : null,
-      sms: settings?.allowSms && ownerPhone ? `sms:${ownerPhone}` : null
-    },
-    emergencyContacts: safeEmergency
-  };
+  if (!tag) return null;
+  return safePublicTagDto(tag);
 }
 
 app.get("/health", (_req, res) => {
@@ -771,6 +1467,13 @@ app.post(
     const input = parseBody(requestOtpSchema, req);
     const phone = normalizeBangladeshPhone(input.phone);
     debugLog("owner.auth.requestOtp", { phone: maskPhone(phone), purpose: input.purpose, provider: otpProvider.getProviderName() });
+    const existingUser = await prisma.user.findUnique({
+      where: { phone },
+      select: { id: true, status: true, deletedAt: true }
+    });
+    if (existingUser && !isActiveUser(existingUser)) {
+      return res.status(403).json({ error: "This account is not active. Please contact support." });
+    }
     const recent = await prisma.authOtp.count({
       where: { phone, createdAt: { gte: new Date(Date.now() - 10 * 60 * 1000) } }
     });
@@ -795,7 +1498,7 @@ app.post(
       ok: true,
       phone,
       provider: otpProvider.getProviderName(),
-      devOtp: isProduction ? undefined : delivery.devOtp
+      devOtp: isLocalDevelopment ? delivery.devOtp : undefined
     });
   })
 );
@@ -807,6 +1510,13 @@ app.post(
     req.body = { ...req.body, purpose: "LOGIN" };
     const input = parseBody(requestOtpSchema, req);
     const phone = normalizeBangladeshPhone(input.phone);
+    const existingUser = await prisma.user.findUnique({
+      where: { phone },
+      select: { id: true, status: true, deletedAt: true }
+    });
+    if (existingUser && !isActiveUser(existingUser)) {
+      return res.status(403).json({ error: "This account is not active. Please contact support." });
+    }
     const otp = generateOtp();
     const delivery = await otpProvider.sendOtp(phone, otp);
     await prisma.authOtp.create({
@@ -820,12 +1530,13 @@ app.post(
         expiresAt: new Date(Date.now() + 5 * 60 * 1000)
       }
     });
-    res.json({ ok: true, phone, devOtp: isProduction ? undefined : delivery.devOtp });
+    res.json({ ok: true, phone, devOtp: isLocalDevelopment ? delivery.devOtp : undefined });
   })
 );
 
 app.post(
   "/auth/verify-otp",
+  otpVerifyLimiter,
   asyncRoute(async (req, res) => {
     const input = parseBody(verifyOtpSchema, req);
     const phone = normalizeBangladeshPhone(input.phone);
@@ -843,35 +1554,43 @@ app.post(
       await prisma.authOtp.update({ where: { id: otpRecord.id }, data: { attempts: { increment: 1 } } });
       return res.status(400).json({ error: "Invalid OTP" });
     }
-    const user = await prisma.user.upsert({
-      where: { phone },
-      update: {
-        fullName: input.fullName,
-        language: input.language as Language,
-        phoneVerifiedAt: new Date(),
-        lastLoginAt: new Date()
-      },
-      create: {
-        phone,
-        fullName: input.fullName,
-        language: input.language as Language,
-        phoneVerifiedAt: new Date(),
-        lastLoginAt: new Date(),
-        profile: {
-          create: {
-            privacySettings: {
-              phoneVisible: false,
-              nameVisible: false,
-              emergencyVisible: false
-            },
-            notificationSettings: {
-              scanAlerts: false,
-              contactRequestAlerts: true
+    const existingUser = await prisma.user.findUnique({ where: { phone } });
+    if (existingUser && !isActiveUser(existingUser)) {
+      await prisma.authOtp.update({ where: { id: otpRecord.id }, data: { status: "LOCKED" } });
+      return res.status(403).json({ error: "This account is not active. Please contact support." });
+    }
+    const user = existingUser
+      ? await prisma.user.update({
+          where: { id: existingUser.id },
+          data: {
+            fullName: input.fullName,
+            language: input.language as Language,
+            phoneVerifiedAt: new Date(),
+            lastLoginAt: new Date()
+          }
+        })
+      : await prisma.user.create({
+          data: {
+            phone,
+            fullName: input.fullName,
+            language: input.language as Language,
+            phoneVerifiedAt: new Date(),
+            lastLoginAt: new Date(),
+            profile: {
+              create: {
+                privacySettings: {
+                  phoneVisible: false,
+                  nameVisible: false,
+                  emergencyVisible: false
+                },
+                notificationSettings: {
+                  scanAlerts: false,
+                  contactRequestAlerts: true
+                }
+              }
             }
           }
-        }
-      }
-    });
+        });
     await prisma.authOtp.update({ where: { id: otpRecord.id }, data: { userId: user.id, status: "VERIFIED" } });
     await ensureRole(user.id, RoleName.USER);
     await prisma.consentLog.create({
@@ -884,7 +1603,8 @@ app.post(
       }
     });
     const tokens = await issueTokens(user.id, req);
-    res.json({ ok: true, user, ...tokens });
+    setAuthCookies(res, tokens);
+    res.json({ ok: true, user: safeUserDto(user), ...tokens });
   })
 );
 
@@ -931,13 +1651,14 @@ app.post(
         expiresAt: new Date(Date.now() + 5 * 60 * 1000)
       }
     });
-    debugLog("owner.auth.requestOtp.sent", { phone: maskPhone(phone), provider: otpProvider.getProviderName(), devOtpReturned: Boolean(!isProduction && delivery.devOtp) });
-    res.json({ ok: true, phone, provider: otpProvider.getProviderName(), devOtp: isProduction ? undefined : delivery.devOtp });
+    debugLog("owner.auth.requestOtp.sent", { phone: maskPhone(phone), provider: otpProvider.getProviderName(), devOtpReturned: Boolean(isLocalDevelopment && delivery.devOtp) });
+    res.json({ ok: true, phone, provider: otpProvider.getProviderName(), devOtp: isLocalDevelopment ? delivery.devOtp : undefined });
   })
 );
 
 app.post(
   "/owner/auth/verify-otp",
+  otpVerifyLimiter,
   asyncRoute(async (req, res) => {
     const input = parseBody(verifyOtpSchema, req);
     const phone = normalizeBangladeshPhone(input.phone);
@@ -1024,10 +1745,18 @@ app.post(
 
 app.post(
   "/auth/admin-login",
+  adminLoginLimiter,
   asyncRoute(async (req, res) => {
     const input = z.object({ email: z.string().email(), password: z.string().min(8) }).parse(req.body);
+    debugLog("admin.login.api.start", { email: maskEmail(input.email), ip: req.ip, userAgentPresent: Boolean(req.get("user-agent")) });
     const user = await prisma.user.findUnique({ where: { email: input.email } });
-    if (!user?.passwordHash || !(await bcrypt.compare(input.password, user.passwordHash))) {
+    if (!user || !isActiveUser(user) || !user.passwordHash || !(await bcrypt.compare(input.password, user.passwordHash))) {
+      debugLog("admin.login.api.failed", {
+        email: maskEmail(input.email),
+        userFound: Boolean(user),
+        active: Boolean(user && isActiveUser(user)),
+        hasPassword: Boolean(user?.passwordHash)
+      });
       await prisma.auditLog.create({
         data: {
           action: "ADMIN_LOGIN_FAILURE",
@@ -1041,6 +1770,7 @@ app.post(
     const roles = await userRoles(user.id);
     const adminRoles: RoleName[] = [RoleName.SUPER_ADMIN, RoleName.SUPPORT_ADMIN, RoleName.ORDER_MANAGER];
     if (!roles.some((role) => adminRoles.includes(role))) {
+      debugLog("admin.login.api.permissionDenied", { email: maskEmail(input.email), userId: shortId(user.id), roles: roles.join(",") });
       await prisma.auditLog.create({
         data: {
           actorId: user.id,
@@ -1054,20 +1784,100 @@ app.post(
       return res.status(401).json({ error: "Invalid email or password." });
     }
     const tokens = await issueTokens(user.id, req);
+    debugLog("admin.login.api.success", { email: maskEmail(user.email), userId: shortId(user.id), roles: roles.join(","), accessTokenIssued: true, refreshTokenIssued: true });
     await audit({ ...req, user: { id: user.id, phone: user.phone, email: user.email, fullName: user.fullName, roles } } as AuthedRequest, "ADMIN_LOGIN_SUCCESS", "User", user.id, {
       email: user.email,
       result: "success",
       userAgent: req.get("user-agent")
     });
-    res.json({ ok: true, user, ...tokens });
+    const userDto = safeAdminUserDto(user)!;
+    res.json({ ok: true, user: { ...userDto, roles }, ...tokens });
+  })
+);
+
+app.post(
+  "/auth/admin-login-form",
+  adminLoginLimiter,
+  asyncRoute(async (req, res) => {
+    const loginUrl = "/admin/login?error=invalid";
+    const parsed = z.object({ email: z.string().email(), password: z.string().min(8) }).safeParse(req.body);
+    debugLog("admin.login.form.start", {
+      email: typeof req.body?.email === "string" ? maskEmail(req.body.email) : "invalid",
+      bodyKeys: Object.keys(req.body || {}).join(","),
+      referer: req.get("referer") || "none"
+    });
+    if (!parsed.success) {
+      debugLog("admin.login.form.validationFailed", { issues: parsed.error.issues.map((issue) => issue.path.join(".")).join(",") });
+      return res.redirect(loginUrl);
+    }
+    const input = parsed.data;
+    const user = await prisma.user.findUnique({ where: { email: input.email } });
+    if (!user || !isActiveUser(user) || !user.passwordHash || !(await bcrypt.compare(input.password, user.passwordHash))) {
+      debugLog("admin.login.form.failed", {
+        email: maskEmail(input.email),
+        userFound: Boolean(user),
+        active: Boolean(user && isActiveUser(user)),
+        hasPassword: Boolean(user?.passwordHash)
+      });
+      await prisma.auditLog.create({
+        data: {
+          action: "ADMIN_LOGIN_FAILURE",
+          entityType: "User",
+          ipAddress: req.ip,
+          metadata: { email: input.email, result: "failed", userAgent: req.get("user-agent") }
+        }
+      });
+      return res.redirect(loginUrl);
+    }
+    const roles = await userRoles(user.id);
+    const adminRoles: RoleName[] = [RoleName.SUPER_ADMIN, RoleName.SUPPORT_ADMIN, RoleName.ORDER_MANAGER];
+    if (!roles.some((role) => adminRoles.includes(role))) {
+      debugLog("admin.login.form.permissionDenied", { email: maskEmail(input.email), userId: shortId(user.id), roles: roles.join(",") });
+      await prisma.auditLog.create({
+        data: {
+          actorId: user.id,
+          action: "ADMIN_LOGIN_PERMISSION_DENIED",
+          entityType: "User",
+          entityId: user.id,
+          ipAddress: req.ip,
+          metadata: { email: input.email, result: "permission_denied", userAgent: req.get("user-agent") }
+        }
+      });
+      return res.redirect(loginUrl);
+    }
+    const tokens = await issueTokens(user.id, req);
+    setAuthCookies(res, tokens);
+    debugLog("admin.login.form.success", {
+      email: maskEmail(user.email),
+      userId: shortId(user.id),
+      roles: roles.join(","),
+      cookieSet: true,
+      devTokenRedirect: !isProduction
+    });
+    await audit({ ...req, user: { id: user.id, phone: user.phone, email: user.email, fullName: user.fullName, roles } } as AuthedRequest, "ADMIN_LOGIN_SUCCESS", "User", user.id, {
+      email: user.email,
+      result: "success",
+      userAgent: req.get("user-agent"),
+      mode: "form"
+    });
+    if (!isProduction) {
+      const params = new URLSearchParams({ accessToken: tokens.accessToken, refreshToken: tokens.refreshToken });
+      debugLog("admin.login.form.redirect", { target: "/admin/overview", mode: "dev_query_tokens" });
+      return res.redirect(`/admin/overview?${params.toString()}`);
+    }
+    debugLog("admin.login.form.redirect", { target: "/admin/overview", mode: "cookie" });
+    return res.redirect("/admin/overview");
   })
 );
 
 app.post(
   "/auth/refresh",
   asyncRoute(async (req, res) => {
-    const input = z.object({ refreshToken: z.string().min(20) }).parse(req.body);
-    const tokens = await rotateRefreshToken(input.refreshToken, req);
+    const input = z.object({ refreshToken: z.string().min(20).optional() }).parse(req.body);
+    const refreshToken = input.refreshToken || readCookie(req, refreshCookieName);
+    if (!refreshToken) throw Object.assign(new Error("Invalid refresh token"), { statusCode: 401 });
+    const tokens = await rotateRefreshToken(refreshToken, req);
+    setAuthCookies(res, tokens);
     res.json({ ok: true, ...tokens });
   })
 );
@@ -1077,7 +1887,7 @@ app.post(
   asyncRoute(async (req, res) => {
     const input = z.object({ refreshToken: z.string().min(20).optional() }).parse(req.body);
     const header = req.get("authorization") || "";
-    const accessToken = header.startsWith("Bearer ") ? header.slice(7) : "";
+    const accessToken = header.startsWith("Bearer ") ? header.slice(7) : readCookie(req, accessCookieName);
     let actorId: string | undefined;
     if (accessToken) {
       try {
@@ -1103,6 +1913,7 @@ app.post(
         }
       });
     }
+    clearAuthCookies(res);
     res.json({ ok: true });
   })
 );
@@ -1132,15 +1943,19 @@ app.post(
 
 app.post(
   "/auth/login-pin",
+  pinLoginLimiter,
   asyncRoute(async (req, res) => {
     const input = z.object({ phone: z.string(), pin: z.string() }).parse(req.body);
     const phone = normalizeBangladeshPhone(input.phone);
     const user = await prisma.user.findUnique({ where: { phone } });
+    if (user && !isActiveUser(user)) {
+      return res.status(403).json({ error: "This account is not active. Please contact support." });
+    }
     if (!user?.pinHash || !(await bcrypt.compare(input.pin, user.pinHash))) {
       return res.status(401).json({ error: "Invalid PIN" });
     }
     const tokens = await issueTokens(user.id, req);
-    res.json({ ok: true, user, ...tokens });
+    res.json({ ok: true, user: safeUserDto(user), ...tokens });
   })
 );
 
@@ -1152,7 +1967,13 @@ app.get(
       where: { id: req.user!.id },
       include: { profile: true, userRoles: { include: { role: true } } }
     });
-    res.json({ user });
+    debugLog("auth.me", {
+      userId: shortId(req.user!.id),
+      email: maskEmail(user?.email),
+      phone: maskPhone(user?.phone),
+      roles: user?.userRoles?.map((entry) => entry.role.name).join(",") || "none"
+    });
+    res.json({ user: safeUserDto(user) });
   })
 );
 
@@ -1176,7 +1997,7 @@ app.patch(
       },
       include: { profile: true }
     });
-    res.json({ user });
+    res.json({ user: safeUserDto(user) });
   })
 );
 
@@ -1199,7 +2020,7 @@ app.get(
       prisma.contactRequest.findMany({ where: { ownerId: req.user!.id } }),
       prisma.order.findMany({ where: { userId: req.user!.id }, include: { items: true, payments: true } })
     ]);
-    res.json({ exportedAt: new Date().toISOString(), user, tags, contactRequests: requests, orders });
+    res.json({ exportedAt: new Date().toISOString(), user: safeUserDto(user), tags, contactRequests: requests, orders });
   })
 );
 
@@ -1415,11 +2236,34 @@ app.post(
   "/tags/:id/activate",
   requireAuth,
   asyncRoute(async (req: AuthedRequest, res) => {
-    const tag = await prisma.qrTag.updateMany({
-      where: { id: req.params.id, OR: [{ ownerId: req.user!.id }, { ownerId: null }] },
-      data: { ownerId: req.user!.id, status: QrTagStatus.ACTIVE }
+    const input = parseBody(tagActivationSchema, req);
+    const existing = await prisma.qrTag.findFirst({
+      where: { id: req.params.id, deletedAt: null },
+      select: { id: true, ownerId: true, status: true, activationCode: true }
     });
-    res.json({ ok: tag.count > 0 });
+    if (!existing) return res.status(404).json({ error: "Tag not found" });
+    if (existing.ownerId || existing.status !== QrTagStatus.PENDING_ACTIVATION) {
+      return res.status(409).json({ error: "QR tag is not awaiting activation" });
+    }
+    if (!existing.activationCode || existing.activationCode !== input.activationCode) {
+      return res.status(403).json({ error: "Invalid activation code" });
+    }
+    const activated = await prisma.qrTag.updateMany({
+      where: {
+        id: existing.id,
+        ownerId: null,
+        status: QrTagStatus.PENDING_ACTIVATION,
+        deletedAt: null,
+        activationCode: input.activationCode
+      },
+      data: { ownerId: req.user!.id, status: QrTagStatus.ACTIVE, activationCode: null }
+    });
+    if (!activated.count) return res.status(409).json({ error: "QR tag is not awaiting activation" });
+    const tag = await prisma.qrTag.findUnique({
+      where: { id: existing.id },
+      include: { contactSetting: true }
+    });
+    res.json({ ok: true, tag: tag ? { ...tag, publicUrl: publicUrlFor(tag.publicSlug) } : null });
   })
 );
 
@@ -1527,7 +2371,8 @@ app.post(
   publicContactLimiter,
   asyncRoute(async (req, res) => {
     const tag = await prisma.qrTag.findUnique({ where: { publicSlug: req.params.publicSlug } });
-    if (!tag || tag.deletedAt) return res.status(404).json({ error: "QR tag not found" });
+    if (!tag) return res.status(404).json({ error: "QR tag not found" });
+    if (!isPublicTagActive(tag)) return sendInactivePublicTag(res);
     await prisma.$transaction([
       prisma.scanEvent.create({
         data: {
@@ -1558,14 +2403,139 @@ app.post(
 );
 
 app.post(
+  "/t/:publicSlug/call",
+  publicContactLimiter,
+  asyncRoute(async (req, res) => {
+    const input = parseBody(publicCallStartSchema, req);
+    const tag = await prisma.qrTag.findUnique({ where: { publicSlug: req.params.publicSlug } });
+    if (!tag) return res.status(404).json({ error: "QR tag not found" });
+    if (!isPublicTagActive(tag)) return sendInactivePublicTag(res);
+    const callToken = randomToken(24);
+    const callSession = await prisma.callSession.create({
+      data: {
+        qrTagId: tag.id,
+        ownerId: tag.ownerId,
+        scannerTokenHash: hashCallToken(callToken),
+        scannerName: input.scannerName,
+        status: CallSessionStatus.RINGING,
+        expiresAt: nextCallRingExpiry()
+      },
+      include: { qrTag: { select: { id: true, label: true, type: true } } }
+    });
+    const notification = await prisma.notification.create({
+      data: {
+        userId: tag.ownerId,
+        type: NotificationType.CONTACT_REQUEST,
+        title: "Private call request",
+        body: `Someone is calling about ${tag.label}.`,
+        data: { callSessionId: callSession.id, qrTagId: tag.id, type: "private_call" }
+      }
+    });
+    await sendOwnerPush(tag.ownerId, {
+      title: notification.title,
+      body: notification.body,
+      data: {
+        type: "private_call",
+        actionType: "call",
+        actionId: callSession.id,
+        callSessionId: callSession.id,
+        qrTagId: tag.id,
+        route: `/call/${callSession.id}`
+      }
+    });
+    debugLog("public.call.created", {
+      publicSlug: shortId(tag.publicSlug),
+      tagId: shortId(tag.id),
+      ownerId: shortId(tag.ownerId),
+      callSessionId: shortId(callSession.id),
+      scannerNamePresent: Boolean(input.scannerName)
+    });
+    res.status(201).json({
+      ok: true,
+      callSessionId: callSession.id,
+      callToken,
+      callUrl: `${env.appUrl.replace(/\/$/, "")}/call/${callSession.id}?token=${callToken}`,
+      callSession: callSessionDto(callSession)
+    });
+  })
+);
+
+app.get(
+  "/public/calls/:id",
+  asyncRoute(async (req, res) => {
+    const token = typeof req.query.token === "string" ? req.query.token : "";
+    if (token.length < 20) return sendCallUnavailable(res);
+    const validation = await validateScannerCall(req.params.id, token);
+    if (validation.result === "expired") return sendCallExpired(res);
+    if (validation.result !== "active" || !validation.callSession) return sendCallUnavailable(res);
+    res.json({ callSession: callSessionDto(validation.callSession) });
+  })
+);
+
+app.get(
+  "/public/calls/:id/signals",
+  asyncRoute(async (req, res) => {
+    const token = typeof req.query.token === "string" ? req.query.token : "";
+    if (token.length < 20) return sendCallUnavailable(res);
+    const validation = await validateScannerCall(req.params.id, token);
+    if (validation.result === "expired") return sendCallExpired(res);
+    if (validation.result !== "active" || !validation.callSession) return sendCallUnavailable(res);
+    const signals = await prisma.callSignal.findMany({
+      where: { callSessionId: validation.callSession.id, sender: CallSignalSender.OWNER },
+      orderBy: { createdAt: "asc" },
+      take: 200
+    });
+    res.json({ callSession: callSessionDto(validation.callSession), signals: signals.map(callSignalDto) });
+  })
+);
+
+app.post(
+  "/public/calls/:id/signals",
+  publicContactLimiter,
+  asyncRoute(async (req, res) => {
+    const input = parseBody(callSignalSchema.required({ token: true }), req);
+    const validation = await validateScannerCall(req.params.id, input.token);
+    if (validation.result === "expired") return sendCallExpired(res);
+    if (validation.result !== "active" || !validation.callSession) return sendCallUnavailable(res);
+    if (!new Set<CallSessionStatus>([CallSessionStatus.RINGING, CallSessionStatus.ACCEPTED]).has(validation.callSession.status)) {
+      return res.status(409).json({ error: "This call is no longer active." });
+    }
+    const signal = await prisma.callSignal.create({
+      data: {
+        callSessionId: validation.callSession.id,
+        sender: CallSignalSender.SCANNER,
+        type: input.type,
+        payload: input.payload as Prisma.InputJsonValue
+      }
+    });
+    res.status(201).json({ signal: callSignalDto(signal) });
+  })
+);
+
+app.post(
+  "/public/calls/:id/end",
+  asyncRoute(async (req, res) => {
+    const input = z.object({ token: z.string().min(20) }).parse(req.body);
+    const validation = await validateScannerCall(req.params.id, input.token);
+    if (validation.result === "expired") return sendCallExpired(res);
+    if (validation.result !== "active" || !validation.callSession) return sendCallUnavailable(res);
+    const callSession = await prisma.callSession.update({
+      where: { id: validation.callSession.id },
+      data: { status: CallSessionStatus.ENDED, endedAt: new Date() },
+      include: { qrTag: { select: { id: true, label: true, type: true } } }
+    });
+    res.json({ ok: true, callSession: callSessionDto(callSession) });
+  })
+);
+
+app.post(
   "/t/:publicSlug/contact",
   publicContactLimiter,
   asyncRoute(async (req, res) => {
     const input = parseBody(contactRequestSchema, req);
     const tag = await prisma.qrTag.findUnique({ where: { publicSlug: req.params.publicSlug }, include: { contactSetting: true } });
-    if (!tag || tag.deletedAt) return res.status(404).json({ error: "QR tag not found" });
-    if (tag.status !== QrTagStatus.ACTIVE) return res.status(409).json({ error: "QR tag is not active" });
-    if (!tag.ownerId) return res.status(409).json({ error: "QR tag is not claimed yet" });
+    if (!tag) return res.status(404).json({ error: "QR tag not found" });
+    if (!isPublicTagActive(tag)) return sendInactivePublicTag(res);
     if (tag.contactSetting && !tag.contactSetting.allowContactForm) return res.status(403).json({ error: "Contact form is disabled" });
     const replyToken = randomToken(24);
     const now = new Date();
@@ -1857,6 +2827,160 @@ app.post(
 );
 
 app.get(
+  "/public/products",
+  asyncRoute(async (_req, res) => {
+    const products = await prisma.product.findMany({
+      where: { active: true, deletedAt: null },
+      orderBy: { createdAt: "asc" }
+    });
+    res.json({ products: products.map(publicProductDto) });
+  })
+);
+
+app.get(
+  "/public/products/:slug",
+  asyncRoute(async (req, res) => {
+    const product = await prisma.product.findFirst({
+      where: {
+        slug: req.params.slug,
+        active: true,
+        deletedAt: null
+      }
+    });
+    if (!product) return res.status(404).json({ error: "Product not found" });
+    res.json({ product: publicProductDto(product) });
+  })
+);
+
+app.post(
+  "/public/orders",
+  publicOrderLimiter,
+  asyncRoute(async (req, res) => {
+    const input = parseBody(publicOrderSchema, req);
+    if (!input.productId && !input.productSlug) {
+      return res.status(400).json({ error: "Choose a QR tag product before checkout." });
+    }
+    const product = await prisma.product.findFirst({
+      where: {
+        active: true,
+        deletedAt: null,
+        OR: [
+          ...(input.productId ? [{ id: input.productId }] : []),
+          ...(input.productSlug ? [{ slug: input.productSlug }] : [])
+        ]
+      }
+    });
+    if (!product) return res.status(404).json({ error: "Product not found" });
+
+    const customerPhone = normalizeBangladeshPhone(input.phone);
+    const existingUser = await prisma.user.findUnique({ where: { phone: customerPhone } });
+    if (existingUser?.deletedAt || existingUser?.status === UserStatus.DELETED) {
+      return res.status(403).json({ error: "This phone number cannot be used. Please contact support." });
+    }
+    const user = existingUser
+      ? await prisma.user.update({
+          where: { id: existingUser.id },
+          data: {
+            fullName: existingUser.fullName || input.customerName,
+            status: existingUser.status
+          }
+        })
+      : await prisma.user.create({
+          data: {
+            phone: customerPhone,
+            fullName: input.customerName,
+            language: Language.EN,
+            status: UserStatus.ACTIVE,
+            profile: {
+              create: {
+                privacySettings: { phoneVisible: false, nameVisible: false, emergencyVisible: false },
+                notificationSettings: { scanAlerts: false, contactRequestAlerts: true }
+              }
+            }
+          }
+        });
+    await ensureRole(user.id, RoleName.USER);
+
+    const quantity = input.quantity ?? 1;
+    const subtotalBdt = product.priceBdt * quantity;
+    const deliveryFeeBdt = subtotalBdt >= 1000 ? 0 : 80;
+    const totalBdt = subtotalBdt + deliveryFeeBdt;
+    const notes = [
+      input.tagLabel ? `Tag label: ${input.tagLabel}` : null,
+      input.vehicleNumber ? `Vehicle number: ${input.vehicleNumber}` : null,
+      input.note ? `Customer note: ${input.note}` : null,
+      "Public website COD order"
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const order = await prisma.order.create({
+      data: {
+        orderNumber: orderNumber(),
+        userId: user.id,
+        status: OrderStatus.PENDING,
+        paymentStatus: PaymentStatus.COD_PENDING,
+        paymentMethod: PaymentMethod.COD,
+        subtotalBdt,
+        deliveryFeeBdt,
+        totalBdt,
+        customerName: input.customerName,
+        customerPhone,
+        deliveryAddress: input.deliveryAddress,
+        deliveryCity: input.deliveryCity,
+        deliveryDistrict: input.deliveryDistrict,
+        notes,
+        items: {
+          create: {
+            productId: product.id,
+            name: product.name,
+            quantity,
+            unitPriceBdt: product.priceBdt,
+            totalBdt: subtotalBdt
+          }
+        }
+      },
+      include: { items: true }
+    });
+    await prisma.payment.create({
+      data: {
+        orderId: order.id,
+        provider: "manual-cod",
+        method: PaymentMethod.COD,
+        status: PaymentStatus.COD_PENDING,
+        amountBdt: totalBdt
+      }
+    });
+    await prisma.notification.create({
+      data: {
+        userId: user.id,
+        type: NotificationType.ORDER_CREATED,
+        title: "Order created",
+        body: `Order ${order.orderNumber} was created.`,
+        data: { orderId: order.id }
+      }
+    });
+
+    res.status(201).json({ order: publicOrderDto(order) });
+  })
+);
+
+app.get(
+  "/public/orders/:trackingCode",
+  asyncRoute(async (req, res) => {
+    const order = await prisma.order.findFirst({
+      where: {
+        orderNumber: req.params.trackingCode,
+        deletedAt: null
+      },
+      include: { items: true }
+    });
+    if (!order) return res.status(404).json({ error: "Order not found" });
+    res.json({ order: publicOrderDto(order) });
+  })
+);
+
+app.get(
   "/products",
   asyncRoute(async (_req, res) => {
     const products = await prisma.product.findMany({ where: { active: true, deletedAt: null }, include: { variants: true }, orderBy: { createdAt: "asc" } });
@@ -2090,7 +3214,7 @@ app.get(
     const user = await prisma.user.findUnique({ where: { id: req.user!.id } });
     if (!user) return res.status(404).json({ error: "Owner not found" });
     debugLog("owner.me", { ownerId: shortId(user.id), phone: maskPhone(user.phone), namePresent: Boolean(user.fullName) });
-    res.json({ owner: ownerDto(user), user });
+    res.json({ owner: ownerDto(user), user: safeUserDto(user) });
   })
 );
 
@@ -2100,7 +3224,7 @@ app.patch(
   asyncRoute(async (req: AuthedRequest, res) => {
     const input = updateProfileSchema.pick({ fullName: true, email: true }).parse(req.body);
     const user = await prisma.user.update({ where: { id: req.user!.id }, data: { fullName: input.fullName, email: input.email } });
-    res.json({ owner: ownerDto(user), user });
+    res.json({ owner: ownerDto(user), user: safeUserDto(user) });
   })
 );
 
@@ -2250,6 +3374,135 @@ app.post(
     const result = await prisma.contactRequest.updateMany({ where: { id: req.params.id, ownerId: req.user!.id }, data: { readAt: new Date() } });
     debugLog("owner.contactRequest.markRead", { ownerId: shortId(req.user!.id), requestId: shortId(req.params.id), updated: result.count });
     res.json({ ok: result.count > 0 });
+  })
+);
+
+app.get(
+  "/owner/calls/incoming",
+  requireAuth,
+  asyncRoute(async (req: AuthedRequest, res) => {
+    await expireInactiveCallsForOwner(req.user!.id);
+    const calls = await prisma.callSession.findMany({
+      where: {
+        ownerId: req.user!.id,
+        deletedAt: null,
+        status: { in: [CallSessionStatus.RINGING, CallSessionStatus.ACCEPTED] }
+      },
+      include: { qrTag: { select: { id: true, label: true, type: true } } },
+      orderBy: { createdAt: "desc" },
+      take: 5
+    });
+    res.json({ calls: calls.map(callSessionDto) });
+  })
+);
+
+app.get(
+  "/owner/calls/:id",
+  requireAuth,
+  asyncRoute(async (req: AuthedRequest, res) => {
+    const callSession = await prisma.callSession.findFirst({
+      where: { id: req.params.id, ownerId: req.user!.id, deletedAt: null },
+      include: { qrTag: { select: { id: true, label: true, type: true } } }
+    });
+    if (!callSession) return res.status(404).json({ error: "Call not found" });
+    const lifecycle = await expireCallIfNeeded(callSession);
+    if (lifecycle.expired || lifecycle.callSession.status === CallSessionStatus.EXPIRED) return sendCallExpired(res);
+    res.json({ callSession: callSessionDto(lifecycle.callSession) });
+  })
+);
+
+app.post(
+  "/owner/calls/:id/accept",
+  requireAuth,
+  asyncRoute(async (req: AuthedRequest, res) => {
+    const callSession = await prisma.callSession.findFirst({
+      where: { id: req.params.id, ownerId: req.user!.id, deletedAt: null },
+      include: { qrTag: { select: { id: true, label: true, type: true } } }
+    });
+    if (!callSession) return res.status(404).json({ error: "Call not found" });
+    const lifecycle = await expireCallIfNeeded(callSession);
+    if (lifecycle.expired || lifecycle.callSession.status === CallSessionStatus.EXPIRED) return sendCallExpired(res);
+    if (lifecycle.callSession.status !== CallSessionStatus.RINGING && lifecycle.callSession.status !== CallSessionStatus.ACCEPTED) {
+      return res.status(409).json({ error: "This call is no longer active." });
+    }
+    const now = new Date();
+    const updated = await prisma.callSession.update({
+      where: { id: callSession.id },
+      data: { status: CallSessionStatus.ACCEPTED, acceptedAt: lifecycle.callSession.acceptedAt ?? now, expiresAt: nextCallActiveExpiry(now) },
+      include: { qrTag: { select: { id: true, label: true, type: true } } }
+    });
+    res.json({ callSession: callSessionDto(updated) });
+  })
+);
+
+app.post(
+  "/owner/calls/:id/decline",
+  requireAuth,
+  asyncRoute(async (req: AuthedRequest, res) => {
+    const result = await prisma.callSession.updateMany({
+      where: { id: req.params.id, ownerId: req.user!.id, deletedAt: null, status: { in: [CallSessionStatus.RINGING, CallSessionStatus.ACCEPTED] } },
+      data: { status: CallSessionStatus.DECLINED, endedAt: new Date() }
+    });
+    res.json({ ok: result.count > 0 });
+  })
+);
+
+app.post(
+  "/owner/calls/:id/end",
+  requireAuth,
+  asyncRoute(async (req: AuthedRequest, res) => {
+    const result = await prisma.callSession.updateMany({
+      where: { id: req.params.id, ownerId: req.user!.id, deletedAt: null, status: { in: [CallSessionStatus.RINGING, CallSessionStatus.ACCEPTED] } },
+      data: { status: CallSessionStatus.ENDED, endedAt: new Date() }
+    });
+    res.json({ ok: result.count > 0 });
+  })
+);
+
+app.get(
+  "/owner/calls/:id/signals",
+  requireAuth,
+  asyncRoute(async (req: AuthedRequest, res) => {
+    const callSession = await prisma.callSession.findFirst({
+      where: { id: req.params.id, ownerId: req.user!.id, deletedAt: null },
+      include: { qrTag: { select: { id: true, label: true, type: true } } }
+    });
+    if (!callSession) return res.status(404).json({ error: "Call not found" });
+    const lifecycle = await expireCallIfNeeded(callSession);
+    if (lifecycle.expired || lifecycle.callSession.status === CallSessionStatus.EXPIRED) return sendCallExpired(res);
+    const signals = await prisma.callSignal.findMany({
+      where: { callSessionId: callSession.id, sender: CallSignalSender.SCANNER },
+      orderBy: { createdAt: "asc" },
+      take: 200
+    });
+    res.json({ callSession: callSessionDto(lifecycle.callSession), signals: signals.map(callSignalDto) });
+  })
+);
+
+app.post(
+  "/owner/calls/:id/signals",
+  requireAuth,
+  asyncRoute(async (req: AuthedRequest, res) => {
+    const input = parseBody(callSignalSchema.omit({ token: true }), req);
+    const callSession = await prisma.callSession.findFirst({
+      where: { id: req.params.id, ownerId: req.user!.id, deletedAt: null },
+      include: { qrTag: { select: { id: true, label: true, type: true } } }
+    });
+    if (!callSession) return res.status(404).json({ error: "Call not found" });
+    const lifecycle = await expireCallIfNeeded(callSession);
+    if (lifecycle.expired || lifecycle.callSession.status === CallSessionStatus.EXPIRED) return sendCallExpired(res);
+    if (lifecycle.callSession.status !== CallSessionStatus.ACCEPTED) {
+      return res.status(409).json({ error: "Accept the call before sending call signals." });
+    }
+    const signal = await prisma.callSignal.create({
+      data: {
+        callSessionId: callSession.id,
+        sender: CallSignalSender.OWNER,
+        type: input.type,
+        payload: input.payload as Prisma.InputJsonValue
+      }
+    });
+    res.status(201).json({ signal: callSignalDto(signal) });
   })
 );
 
@@ -2439,15 +3692,26 @@ app.get(
   })
 );
 
-app.get("/admin/users", requireAuth, requireRoles(RoleName.SUPER_ADMIN, RoleName.SUPPORT_ADMIN), asyncRoute(async (_req, res) => res.json({
-  users: await prisma.user.findMany({
+app.get("/admin/users", requireAuth, requireRoles(RoleName.SUPER_ADMIN, RoleName.SUPPORT_ADMIN), asyncRoute(async (_req, res) => {
+  const users = await prisma.user.findMany({
     include: { userRoles: { include: { role: true } } },
     orderBy: { createdAt: "desc" },
     take: 100
-  })
-})));
-app.get("/admin/users/:id", requireAuth, requireRoles(RoleName.SUPER_ADMIN, RoleName.SUPPORT_ADMIN), asyncRoute(async (req, res) => res.json({ user: await prisma.user.findUnique({ where: { id: req.params.id }, include: { profile: true, userRoles: { include: { role: true } } } }) })));
-app.patch("/admin/users/:id", requireAuth, requireRoles(RoleName.SUPER_ADMIN), asyncRoute(async (req, res) => res.json({ user: await prisma.user.update({ where: { id: req.params.id }, data: req.body }) })));
+  });
+  res.json({ users: users.map((user) => safeAdminUserDto(user)) });
+}));
+app.get("/admin/users/:id", requireAuth, requireRoles(RoleName.SUPER_ADMIN, RoleName.SUPPORT_ADMIN), asyncRoute(async (req, res) => {
+  const user = await prisma.user.findUnique({ where: { id: req.params.id }, include: { profile: true, userRoles: { include: { role: true } } } });
+  res.json({ user: safeAdminUserDto(user) });
+}));
+app.patch("/admin/users/:id", requireAuth, requireRoles(RoleName.SUPER_ADMIN), asyncRoute(async (req, res) => {
+  const user = await prisma.user.update({
+    where: { id: req.params.id },
+    data: req.body,
+    include: { profile: true, userRoles: { include: { role: true } } }
+  });
+  res.json({ user: safeAdminUserDto(user) });
+}));
 app.delete("/admin/users/:id", requireAuth, requireRoles(RoleName.SUPER_ADMIN), asyncRoute(async (req: AuthedRequest, res) => {
   if (req.params.id === req.user!.id) return res.status(400).json({ error: "You cannot delete your own admin account" });
   const user = await prisma.user.findUnique({
@@ -2564,6 +3828,14 @@ app.get("/admin/tags", requireAuth, requireRoles(RoleName.SUPER_ADMIN, RoleName.
 app.post("/admin/tags", requireAuth, requireRoles(RoleName.SUPER_ADMIN, RoleName.SUPPORT_ADMIN), asyncRoute(async (req: AuthedRequest, res) => {
   const input = parseBody(adminCreateTagSchema, req);
   const ownerPhone = normalizeBangladeshPhone(input.ownerPhone);
+  debugLog("admin.tags.create.start", {
+    actorId: shortId(req.user!.id),
+    ownerPhone: maskPhone(ownerPhone),
+    ownerNamePresent: Boolean(input.ownerName),
+    type: input.type,
+    labelPresent: Boolean(input.label),
+    vehiclePresent: Boolean(input.vehicleNumber)
+  });
   const owner = await prisma.user.upsert({
     where: { phone: ownerPhone },
     update: { fullName: input.ownerName },
@@ -2574,6 +3846,7 @@ app.post("/admin/tags", requireAuth, requireRoles(RoleName.SUPER_ADMIN, RoleName
     }
   });
   await ensureRole(owner.id, RoleName.USER);
+  debugLog("admin.tags.create.ownerReady", { ownerId: shortId(owner.id), ownerPhone: maskPhone(owner.phone), newlyCreatedOrUpdated: true });
   const tag = await prisma.qrTag.create({
     data: {
       publicSlug: createPublicSlug(),
@@ -2588,6 +3861,13 @@ app.post("/admin/tags", requireAuth, requireRoles(RoleName.SUPER_ADMIN, RoleName
       contactSetting: { create: input.contactSettings }
     },
     include: { owner: true, contactSetting: true }
+  });
+  debugLog("admin.tags.create.success", {
+    actorId: shortId(req.user!.id),
+    ownerId: shortId(owner.id),
+    tagId: shortId(tag.id),
+    slug: shortId(tag.publicSlug),
+    publicUrl: publicUrlFor(tag.publicSlug)
   });
   await audit(req, "ADMIN_CREATE_OWNER_QR_TAG", "QrTag", tag.id, { ownerPhone, ownerId: owner.id });
   res.status(201).json({ tag: { ...tag, publicUrl: publicUrlFor(tag.publicSlug) } });
@@ -2662,6 +3942,118 @@ app.route("/admin/emergency-numbers")
   .get(requireAuth, requireRoles(RoleName.SUPER_ADMIN, RoleName.CONTENT_MANAGER), asyncRoute(async (_req, res) => res.json({ setting: await prisma.setting.findUnique({ where: { key: "emergency_numbers" } }) })))
   .post(requireAuth, requireRoles(RoleName.SUPER_ADMIN, RoleName.CONTENT_MANAGER), asyncRoute(async (req, res) => res.json({ setting: await prisma.setting.upsert({ where: { key: "emergency_numbers" }, update: { value: req.body }, create: { key: "emergency_numbers", value: req.body } }) })));
 
+app.get(
+  "/admin/reseller-batches",
+  requireAuth,
+  requireRoles(RoleName.SUPER_ADMIN, RoleName.RESELLER_MANAGER, RoleName.SUPPORT_ADMIN),
+  asyncRoute(async (_req, res) => {
+    const batches = await prisma.resellerBatch.findMany({
+      where: { deletedAt: null },
+      include: {
+        reseller: { include: { user: { select: { fullName: true, phone: true } } } },
+        tags: { select: { ownerId: true, status: true, deletedAt: true } }
+      },
+      orderBy: { createdAt: "desc" },
+      take: 100
+    });
+    res.json({ batches: batches.map(resellerBatchDto) });
+  })
+);
+
+app.post(
+  "/admin/reseller-batches",
+  requireAuth,
+  requireRoles(RoleName.SUPER_ADMIN, RoleName.RESELLER_MANAGER),
+  asyncRoute(async (req: AuthedRequest, res) => {
+    const input = parseBody(resellerBatchCreateSchema, req);
+    const reseller = await prisma.reseller.findFirst({
+      where: { id: input.resellerId, deletedAt: null },
+      select: { id: true, status: true }
+    });
+    if (!reseller) return res.status(404).json({ error: "Reseller not found" });
+    if (reseller.status !== ResellerStatus.APPROVED) return res.status(409).json({ error: "Only approved resellers can receive QR batches" });
+
+    const requestedTagIds = Array.from(new Set(input.tagIds ?? []));
+    const requestedSlugs = Array.from(new Set(input.publicSlugs ?? []));
+    const requestedExistingCount = requestedTagIds.length + requestedSlugs.length;
+    const batchCode = input.batchCode ?? createResellerBatchCode();
+    const tagType = input.tagType ?? QrTagType.OTHER;
+    const labelPrefix = input.labelPrefix ?? "Reseller QR";
+
+    const batch = await prisma.$transaction(async (tx) => {
+      const existingBatch = await tx.resellerBatch.findUnique({ where: { batchCode }, select: { id: true } });
+      if (existingBatch) throw Object.assign(new Error("Batch code already exists"), { statusCode: 409 });
+
+      const createdBatch = await tx.resellerBatch.create({
+        data: {
+          batchCode,
+          resellerId: reseller.id,
+          createdById: req.user!.id,
+          notes: input.notes
+        }
+      });
+
+      if (requestedExistingCount) {
+        const filters: Prisma.QrTagWhereInput[] = [];
+        if (requestedTagIds.length) filters.push({ id: { in: requestedTagIds } });
+        if (requestedSlugs.length) filters.push({ publicSlug: { in: requestedSlugs } });
+        const candidateTags = await tx.qrTag.findMany({
+          where: { OR: filters, deletedAt: null },
+          select: { id: true, publicSlug: true, ownerId: true, status: true, resellerBatchId: true }
+        });
+        const unavailable = candidateTags.filter((tag) => tag.ownerId || tag.status !== QrTagStatus.PENDING_ACTIVATION || tag.resellerBatchId);
+        const foundIds = new Set(candidateTags.map((tag) => tag.id));
+        const foundSlugs = new Set(candidateTags.map((tag) => tag.publicSlug));
+        const hasMissingTag = requestedTagIds.some((id) => !foundIds.has(id)) || requestedSlugs.some((slug) => !foundSlugs.has(slug));
+        if (hasMissingTag || unavailable.length) {
+          throw Object.assign(new Error("One or more QR tags are unavailable for reseller allocation"), { statusCode: 409 });
+        }
+        await tx.qrTag.updateMany({
+          where: {
+            id: { in: candidateTags.map((tag) => tag.id) },
+            ownerId: null,
+            status: QrTagStatus.PENDING_ACTIVATION,
+            resellerBatchId: null,
+            deletedAt: null
+          },
+          data: { resellerId: reseller.id, resellerBatchId: createdBatch.id, batchCode }
+        });
+      }
+
+      if (input.quantity) {
+        await tx.qrTag.createMany({
+          data: Array.from({ length: input.quantity }, (_, index) => ({
+            publicSlug: createPublicSlug(),
+            resellerId: reseller.id,
+            resellerBatchId: createdBatch.id,
+            batchCode,
+            type: tagType,
+            label: `${labelPrefix} ${index + 1}`,
+            status: QrTagStatus.PENDING_ACTIVATION,
+            activationCode: randomToken(10),
+            privacyMode: "PRIVATE_CONTACT_ONLY" as const
+          }))
+        });
+      }
+
+      return tx.resellerBatch.findUniqueOrThrow({
+        where: { id: createdBatch.id },
+        include: {
+          reseller: { include: { user: { select: { fullName: true, phone: true } } } },
+          tags: { select: { ownerId: true, status: true, deletedAt: true } }
+        }
+      });
+    });
+
+    await audit(req, "ADMIN_CREATE_RESELLER_BATCH", "ResellerBatch", batch.id, {
+      resellerId: reseller.id,
+      batchCode,
+      tagCount: batch.tags.length
+    });
+    res.status(201).json({ batch: resellerBatchDto(batch) });
+  })
+);
+
 app.post(
   "/reseller/apply",
   requireAuth,
@@ -2679,26 +4071,83 @@ app.post(
 app.get("/reseller/dashboard", requireAuth, asyncRoute(async (req: AuthedRequest, res) => {
   const reseller = await prisma.reseller.findUnique({ where: { userId: req.user!.id } });
   if (!reseller) return res.status(404).json({ error: "No reseller profile" });
-  const [tags, customers, commissions, orders] = await Promise.all([
+  const [tags, batches, customers, commissions, orders] = await Promise.all([
     prisma.qrTag.count({ where: { resellerId: reseller.id } }),
+    prisma.resellerBatch.count({ where: { resellerId: reseller.id, deletedAt: null } }),
     prisma.resellerCustomer.count({ where: { resellerId: reseller.id } }),
     prisma.resellerCommission.aggregate({ where: { resellerId: reseller.id }, _sum: { amountBdt: true } }),
     prisma.order.count({ where: { resellerId: reseller.id } })
   ]);
-  res.json({ reseller, metrics: { tags, customers, commissionBdt: commissions._sum.amountBdt || 0, orders } });
+  res.json({ reseller, metrics: { tags, batches, customers, commissionBdt: commissions._sum.amountBdt || 0, orders } });
 }));
 app.get("/reseller/tags", requireAuth, asyncRoute(async (req: AuthedRequest, res) => {
   const reseller = await prisma.reseller.findUnique({ where: { userId: req.user!.id } });
-  res.json({ tags: reseller ? await prisma.qrTag.findMany({ where: { resellerId: reseller.id } }) : [] });
+  res.json({ tags: reseller ? await prisma.qrTag.findMany({ where: { resellerId: reseller.id }, include: { resellerBatch: true } }) : [] });
+}));
+app.get("/reseller/batches", requireAuth, asyncRoute(async (req: AuthedRequest, res) => {
+  const reseller = await prisma.reseller.findUnique({ where: { userId: req.user!.id } });
+  if (!reseller) return res.json({ batches: [] });
+  const batches = await prisma.resellerBatch.findMany({
+    where: { resellerId: reseller.id, deletedAt: null },
+    include: { tags: { select: { ownerId: true, status: true, deletedAt: true } } },
+    orderBy: { createdAt: "desc" }
+  });
+  res.json({ batches: batches.map(resellerBatchDto) });
 }));
 app.post("/reseller/tags/assign", requireAuth, asyncRoute(async (req: AuthedRequest, res) => {
-  const input = z.object({ publicSlug: z.string(), customerPhone: z.string(), customerName: z.string().min(2) }).parse(req.body);
+  const input = z
+    .object({
+      publicSlug: z.string(),
+      customerPhone: z.string(),
+      customerName: z.string().min(2),
+      batchCode: z.string().trim().min(2).max(120).optional()
+    })
+    .parse(req.body);
   const reseller = await prisma.reseller.findUnique({ where: { userId: req.user!.id } });
   if (!reseller || reseller.status !== ResellerStatus.APPROVED) return res.status(403).json({ error: "Approved reseller profile required" });
+  const existingTag = await prisma.qrTag.findUnique({ where: { publicSlug: input.publicSlug }, include: { resellerBatch: true } });
+  if (!existingTag || existingTag.deletedAt) return res.status(404).json({ error: "Tag not found" });
+  if (existingTag.ownerId || existingTag.status !== QrTagStatus.PENDING_ACTIVATION) {
+    return res.status(409).json({ error: "QR tag is not awaiting assignment" });
+  }
+  const batch = existingTag.resellerBatch;
+  const allocatedToReseller =
+    existingTag.resellerId === reseller.id &&
+    (!batch || (batch.resellerId === reseller.id && batch.status === ResellerBatchStatus.ACTIVE && !batch.deletedAt));
+  const batchCodeMatches = !input.batchCode || batch?.batchCode === input.batchCode || existingTag.batchCode === input.batchCode;
+  if (!allocatedToReseller || !batchCodeMatches) return res.status(403).json({ error: "QR tag is not allocated to this reseller" });
   const phone = normalizeBangladeshPhone(input.customerPhone);
   const customerUser = await prisma.user.upsert({ where: { phone }, update: {}, create: { phone, fullName: input.customerName, profile: { create: {} } } });
   await ensureRole(customerUser.id, RoleName.USER);
-  const tag = await prisma.qrTag.update({ where: { publicSlug: input.publicSlug }, data: { ownerId: customerUser.id, resellerId: reseller.id, status: QrTagStatus.ACTIVE } });
+  const assigned = await prisma.qrTag.updateMany({
+    where: {
+      id: existingTag.id,
+      ownerId: null,
+      status: QrTagStatus.PENDING_ACTIVATION,
+      deletedAt: null,
+      resellerId: reseller.id,
+      OR: [{ resellerBatchId: null }, { resellerBatch: { is: { resellerId: reseller.id, status: ResellerBatchStatus.ACTIVE, deletedAt: null } } }]
+    },
+    data: { ownerId: customerUser.id, resellerId: reseller.id, status: QrTagStatus.ACTIVE, activationCode: null }
+  });
+  if (!assigned.count) return res.status(409).json({ error: "QR tag is no longer available for assignment" });
+  if (existingTag.resellerBatchId) {
+    const remaining = await prisma.qrTag.count({
+      where: {
+        resellerBatchId: existingTag.resellerBatchId,
+        ownerId: null,
+        status: QrTagStatus.PENDING_ACTIVATION,
+        deletedAt: null
+      }
+    });
+    if (!remaining) {
+      await prisma.resellerBatch.update({
+        where: { id: existingTag.resellerBatchId },
+        data: { status: ResellerBatchStatus.CLOSED, closedAt: new Date() }
+      });
+    }
+  }
+  const tag = await prisma.qrTag.findUnique({ where: { id: existingTag.id } });
   const customer = await prisma.resellerCustomer.create({ data: { resellerId: reseller.id, userId: customerUser.id, phone, name: input.customerName } });
   res.json({ tag, customer });
 }));
@@ -2736,40 +4185,69 @@ app.post("/societies", requireAuth, asyncRoute(async (req: AuthedRequest, res) =
   res.status(201).json({ society });
 }));
 app.get("/societies", requireAuth, asyncRoute(async (req: AuthedRequest, res) => {
-  const societies = await prisma.society.findMany({ where: { members: { some: { userId: req.user!.id, deletedAt: null } } }, include: { members: true } });
+  const where: Prisma.SocietyWhereInput = hasGlobalSocietyAccess(req.user)
+    ? { deletedAt: null }
+    : { deletedAt: null, members: { some: { userId: req.user!.id } } };
+  const societies = await prisma.society.findMany({ where, include: { members: true } });
   res.json({ societies });
 }));
-app.get("/societies/:id", requireAuth, asyncRoute(async (req, res) => res.json({ society: await prisma.society.findUnique({ where: { id: req.params.id }, include: { units: true, members: true, vehicles: true, parkingSlots: true } }) })));
-app.patch("/societies/:id", requireAuth, asyncRoute(async (req, res) => res.json({ society: await prisma.society.update({ where: { id: req.params.id }, data: req.body }) })));
-app.post("/societies/:id/units", requireAuth, asyncRoute(async (req, res) => {
+app.get("/societies/:id", requireAuth, requireSocietyRoles(), asyncRoute(async (req, res) => res.json({ society: await prisma.society.findFirst({ where: { id: req.params.id, deletedAt: null }, include: { units: true, members: true, vehicles: true, parkingSlots: true } }) })));
+app.patch("/societies/:id", requireAuth, requireSocietyRoles(SocietyMemberRole.SOCIETY_ADMIN), asyncRoute(async (req, res) => res.json({ society: await prisma.society.update({ where: { id: req.params.id }, data: req.body }) })));
+app.post("/societies/:id/units", requireAuth, requireSocietyRoles(SocietyMemberRole.SOCIETY_ADMIN), asyncRoute(async (req, res) => {
   const input = z.object({ unitNo: z.string().min(1), building: z.string().optional(), floor: z.string().optional() }).parse(req.body);
   res.status(201).json({ unit: await prisma.societyUnit.create({ data: { societyId: req.params.id, ...input } }) });
 }));
-app.get("/societies/:id/units", requireAuth, asyncRoute(async (req, res) => res.json({ units: await prisma.societyUnit.findMany({ where: { societyId: req.params.id } }) })));
-app.post("/societies/:id/members", requireAuth, asyncRoute(async (req, res) => {
+app.get("/societies/:id/units", requireAuth, requireSocietyRoles(), asyncRoute(async (req, res) => res.json({ units: await prisma.societyUnit.findMany({ where: { societyId: req.params.id } }) })));
+app.post("/societies/:id/members", requireAuth, requireSocietyRoles(SocietyMemberRole.SOCIETY_ADMIN), asyncRoute(async (req, res) => {
   const input = z.object({ name: z.string().min(2), phone: z.string(), role: z.nativeEnum(SocietyMemberRole), unitId: z.string().optional() }).parse(req.body);
+  if (input.unitId) {
+    const unit = await prisma.societyUnit.findFirst({ where: { id: input.unitId, societyId: req.params.id }, select: { id: true } });
+    if (!unit) return res.status(400).json({ error: "Unit does not belong to this society" });
+  }
   res.status(201).json({ member: await prisma.societyMember.create({ data: { societyId: req.params.id, ...input, phone: normalizeBangladeshPhone(input.phone) } }) });
 }));
-app.get("/societies/:id/members", requireAuth, asyncRoute(async (req, res) => res.json({ members: await prisma.societyMember.findMany({ where: { societyId: req.params.id } }) })));
-app.post("/societies/:id/vehicles", requireAuth, asyncRoute(async (req, res) => {
+app.get("/societies/:id/members", requireAuth, requireSocietyRoles(SocietyMemberRole.SOCIETY_ADMIN, SocietyMemberRole.GUARD), asyncRoute(async (req, res) => res.json({ members: await prisma.societyMember.findMany({ where: { societyId: req.params.id } }) })));
+app.post("/societies/:id/vehicles", requireAuth, requireSocietyRoles(SocietyMemberRole.SOCIETY_ADMIN), asyncRoute(async (req, res) => {
   const input = z.object({ vehicleNumber: z.string().min(2), vehicleType: z.string().default("car"), memberId: z.string().optional(), unitId: z.string().optional(), qrTagId: z.string().optional() }).parse(req.body);
+  if (input.memberId) {
+    const member = await prisma.societyMember.findFirst({ where: { id: input.memberId, societyId: req.params.id }, select: { id: true } });
+    if (!member) return res.status(400).json({ error: "Member does not belong to this society" });
+  }
+  if (input.unitId) {
+    const unit = await prisma.societyUnit.findFirst({ where: { id: input.unitId, societyId: req.params.id }, select: { id: true } });
+    if (!unit) return res.status(400).json({ error: "Unit does not belong to this society" });
+  }
+  if (input.qrTagId) {
+    const tag = await prisma.qrTag.findFirst({ where: { id: input.qrTagId, societyId: req.params.id, deletedAt: null }, select: { id: true } });
+    if (!tag) return res.status(400).json({ error: "QR tag does not belong to this society" });
+  }
   res.status(201).json({ vehicle: await prisma.societyVehicle.create({ data: { societyId: req.params.id, ...input } }) });
 }));
-app.get("/societies/:id/vehicles", requireAuth, asyncRoute(async (req, res) => res.json({ vehicles: await prisma.societyVehicle.findMany({ where: { societyId: req.params.id } }) })));
-app.post("/societies/:id/parking-slots", requireAuth, asyncRoute(async (req, res) => {
+app.get("/societies/:id/vehicles", requireAuth, requireSocietyRoles(SocietyMemberRole.SOCIETY_ADMIN, SocietyMemberRole.GUARD), asyncRoute(async (req, res) => res.json({ vehicles: await prisma.societyVehicle.findMany({ where: { societyId: req.params.id } }) })));
+app.post("/societies/:id/parking-slots", requireAuth, requireSocietyRoles(SocietyMemberRole.SOCIETY_ADMIN), asyncRoute(async (req, res) => {
   const input = z.object({ label: z.string().min(1), status: z.string().default("available"), qrTagId: z.string().optional() }).parse(req.body);
+  if (input.qrTagId) {
+    const tag = await prisma.qrTag.findFirst({ where: { id: input.qrTagId, societyId: req.params.id, deletedAt: null }, select: { id: true } });
+    if (!tag) return res.status(400).json({ error: "QR tag does not belong to this society" });
+  }
   res.status(201).json({ slot: await prisma.parkingSlot.create({ data: { societyId: req.params.id, ...input } }) });
 }));
-app.get("/societies/:id/parking-slots", requireAuth, asyncRoute(async (req, res) => res.json({ slots: await prisma.parkingSlot.findMany({ where: { societyId: req.params.id } }) })));
-app.post("/societies/:id/visitor-logs", requireAuth, asyncRoute(async (req: AuthedRequest, res) => {
+app.get("/societies/:id/parking-slots", requireAuth, requireSocietyRoles(), asyncRoute(async (req, res) => res.json({ slots: await prisma.parkingSlot.findMany({ where: { societyId: req.params.id } }) })));
+app.post("/societies/:id/visitor-logs", requireAuth, requireSocietyRoles(SocietyMemberRole.SOCIETY_ADMIN, SocietyMemberRole.GUARD), asyncRoute(async (req: AuthedRequest, res) => {
   const input = z.object({ visitorName: z.string().min(2), visitorPhone: z.string().optional(), vehicleNumber: z.string().optional(), purpose: z.string().optional(), unitId: z.string().optional() }).parse(req.body);
+  if (input.unitId) {
+    const unit = await prisma.societyUnit.findFirst({ where: { id: input.unitId, societyId: req.params.id }, select: { id: true } });
+    if (!unit) return res.status(400).json({ error: "Unit does not belong to this society" });
+  }
   res.status(201).json({ log: await prisma.visitorLog.create({ data: { societyId: req.params.id, ...input, enteredByUserId: req.user!.id } }) });
 }));
-app.patch("/societies/:id/visitor-logs/:logId/exit", requireAuth, asyncRoute(async (req: AuthedRequest, res) => {
-  res.json({ log: await prisma.visitorLog.update({ where: { id: req.params.logId }, data: { status: VisitorStatus.EXITED, exitAt: new Date(), exitedByUserId: req.user!.id } }) });
+app.patch("/societies/:id/visitor-logs/:logId/exit", requireAuth, requireSocietyRoles(SocietyMemberRole.SOCIETY_ADMIN, SocietyMemberRole.GUARD), asyncRoute(async (req: AuthedRequest, res) => {
+  const log = await prisma.visitorLog.findFirst({ where: { id: req.params.logId, societyId: req.params.id, deletedAt: null }, select: { id: true } });
+  if (!log) return res.status(404).json({ error: "Visitor log not found" });
+  res.json({ log: await prisma.visitorLog.update({ where: { id: log.id }, data: { status: VisitorStatus.EXITED, exitAt: new Date(), exitedByUserId: req.user!.id } }) });
 }));
-app.get("/societies/:id/visitor-logs", requireAuth, asyncRoute(async (req, res) => res.json({ logs: await prisma.visitorLog.findMany({ where: { societyId: req.params.id }, orderBy: { entryAt: "desc" }, take: 100 }) })));
-app.get("/societies/:id/reports", requireAuth, asyncRoute(async (req, res) => {
+app.get("/societies/:id/visitor-logs", requireAuth, requireSocietyRoles(SocietyMemberRole.SOCIETY_ADMIN, SocietyMemberRole.GUARD), asyncRoute(async (req, res) => res.json({ logs: await prisma.visitorLog.findMany({ where: { societyId: req.params.id }, orderBy: { entryAt: "desc" }, take: 100 }) })));
+app.get("/societies/:id/reports", requireAuth, requireSocietyRoles(SocietyMemberRole.SOCIETY_ADMIN, SocietyMemberRole.GUARD), asyncRoute(async (req, res) => {
   const [activeVisitors, vehicles, residents] = await Promise.all([
     prisma.visitorLog.count({ where: { societyId: req.params.id, status: VisitorStatus.ENTERED } }),
     prisma.societyVehicle.count({ where: { societyId: req.params.id } }),
@@ -2786,17 +4264,19 @@ app.get("/cms/pages/:slug", asyncRoute(async (req, res) => {
   res.json({ page });
 }));
 
-app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) => {
+app.use((error: unknown, req: Request, res: Response, _next: NextFunction) => {
   if (error instanceof z.ZodError) {
+    debugLog("api.error.validation", { method: req.method, path: safeRequestPath(req), fields: Object.keys(error.flatten().fieldErrors).join(",") });
     return res.status(400).json({ error: "Validation failed", details: error.flatten() });
   }
   const statusCode = typeof error === "object" && error && "statusCode" in error ? Number((error as { statusCode: number }).statusCode) : 500;
   const message = error instanceof Error ? error.message : "Internal server error";
+  debugLog("api.error", { method: req.method, path: safeRequestPath(req), statusCode, message });
   if (statusCode >= 500) console.error(error);
   res.status(statusCode).json({ error: message });
 });
 
-export { app };
+export { app, isPublicTagActive, safePublicTagDto };
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(env.port, () => {

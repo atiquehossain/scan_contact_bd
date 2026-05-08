@@ -6,6 +6,7 @@ import '../../core/config/app_config.dart';
 import '../../core/network/api_client.dart';
 import '../../core/push/push_notification_service.dart';
 import '../../core/services/owner_services.dart';
+import '../../core/widgets/app_widgets.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -25,6 +26,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> validateSession() async {
+    if (!mounted) return;
     setState(() {
       validating = true;
       error = null;
@@ -42,6 +44,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       );
       if (mounted) context.go('/main');
     } catch (err) {
+      if (!mounted) return;
       final message = apiErrorMessage(err);
       if (message.startsWith('Connection problem')) {
         setState(() {
@@ -65,15 +68,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircleAvatar(
-                  radius: 36,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  child: const Icon(
-                    Icons.qr_code_2,
-                    color: Colors.white,
-                    size: 40,
-                  ),
-                ),
+                const ScanContactBrandMark(),
                 const SizedBox(height: 16),
                 Text(
                   AppConfig.appName,
@@ -81,6 +76,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
+                const SizedBox(height: 6),
+                const Text('Private QR contact for owners'),
                 const SizedBox(height: 20),
                 if (validating) const CircularProgressIndicator(),
                 if (error != null) ...[

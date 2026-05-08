@@ -31,14 +31,15 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   int resendSeconds = 0;
   String? devOtp;
   String? error;
+  String? requestedOtpPhone;
   Timer? timer;
 
   @override
   void initState() {
     super.initState();
-    phoneController.addListener(() => setState(() {}));
-    otpController.addListener(() => setState(() {}));
-    nameController.addListener(() => setState(() {}));
+    phoneController.addListener(_handlePhoneChanged);
+    otpController.addListener(_handleFieldChanged);
+    nameController.addListener(_handleFieldChanged);
   }
 
   @override
@@ -57,12 +58,45 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       resendSeconds == 0 &&
       (!signup || nameController.text.trim().length >= 2);
   bool get canVerify =>
-      phoneValid && otpController.text.trim().length == 6 && !verifying;
+      phoneValid &&
+      requestedOtpPhone == normalizeBangladeshPhone(phoneController.text) &&
+      otpController.text.trim().length == 6 &&
+      !verifying;
+
+  void _handleFieldChanged() {
+    if (mounted) setState(() {});
+  }
+
+  void _handlePhoneChanged() {
+    if (!mounted) return;
+    if (otpRequested && requestedOtpPhone != null) {
+      final currentPhone = phoneValid
+          ? normalizeBangladeshPhone(phoneController.text)
+          : null;
+      if (currentPhone != requestedOtpPhone) {
+        timer?.cancel();
+        if (otpController.text.isNotEmpty) otpController.clear();
+        setState(() {
+          otpRequested = false;
+          requestedOtpPhone = null;
+          resendSeconds = 0;
+          devOtp = null;
+          error = 'Phone changed. Request a new OTP.';
+        });
+        return;
+      }
+    }
+    setState(() {});
+  }
 
   void startCountdown() {
     timer?.cancel();
     setState(() => resendSeconds = 60);
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
       if (resendSeconds <= 1) {
         timer.cancel();
         setState(() => resendSeconds = 0);
@@ -74,24 +108,45 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
   Future<void> requestOtp() async {
     if (!canRequest) return;
+    final phone = normalizeBangladeshPhone(phoneController.text);
+    final requestSignup = signup;
     setState(() {
       requesting = true;
       error = null;
       devOtp = null;
+      requestedOtpPhone = null;
     });
     try {
       final data = await ref
           .read(ownerServiceProvider)
-          .requestOtp(
-            phone: normalizeBangladeshPhone(phoneController.text),
-            signup: signup,
-          );
+          .requestOtp(phone: phone, signup: signup);
+      if (!mounted) return;
+      final currentPhone = phoneValid
+          ? normalizeBangladeshPhone(phoneController.text)
+          : null;
+      if (currentPhone != phone || signup != requestSignup) {
+        setState(() {
+          otpRequested = false;
+          requestedOtpPhone = null;
+          resendSeconds = 0;
+          devOtp = null;
+          error = 'Request changed. Request a new OTP.';
+        });
+        return;
+      }
+      final returnedPhone = data['phone']?.toString();
+      final otpPhone =
+          returnedPhone != null && isValidBangladeshPhone(returnedPhone)
+          ? normalizeBangladeshPhone(returnedPhone)
+          : phone;
       setState(() {
         otpRequested = true;
+        requestedOtpPhone = otpPhone;
         devOtp = kDebugMode ? data['devOtp']?.toString() : null;
       });
       startCountdown();
     } catch (err) {
+      if (!mounted) return;
       setState(
         () => error = apiErrorMessage(err) == 'Something went wrong. Try again.'
             ? 'Could not send OTP. Try again.'
@@ -104,6 +159,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
   Future<void> verifyOtp() async {
     if (!canVerify) return;
+    final phone = requestedOtpPhone;
+    if (phone == null) return;
     setState(() {
       verifying = true;
       error = null;
@@ -112,7 +169,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       final result = await ref
           .read(ownerServiceProvider)
           .verifyOtp(
-            phone: normalizeBangladeshPhone(phoneController.text),
+            phone: phone,
             otp: otpController.text.trim(),
             fullName: signup ? nameController.text.trim() : null,
           );
@@ -122,11 +179,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
             accessToken: result.accessToken,
             refreshToken: result.refreshToken,
           );
+      invalidateOwnerScopedProviders(ref);
       await PushNotificationService.registerForCurrentUser(
         ref.read(ownerServiceProvider),
       );
       if (mounted) context.go('/main');
     } catch (err) {
+      if (!mounted) return;
       final message = apiErrorMessage(err);
       setState(
         () => error = message.contains('Invalid OTP')
@@ -147,15 +206,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           padding: appPadding,
           children: [
             const SizedBox(height: 20),
-            CircleAvatar(
-              radius: 32,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              child: const Icon(
-                Icons.shield_outlined,
-                color: Colors.white,
-                size: 34,
-              ),
-            ),
+            const Center(child: ScanContactBrandMark(size: 68)),
             const SizedBox(height: 16),
             Text(
               AppConfig.appName,
@@ -173,8 +224,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Use the same phone number used for your QR assignment or order.',
+            Text(
+              signup
+                  ? 'Your phone number is used for account verification and QR assignment only.'
+                  : 'Use the phone number linked to your QR tag or order. Your number is not shown to scanners.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
@@ -185,10 +238,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               ],
               selected: {signup},
               onSelectionChanged: (value) {
+                timer?.cancel();
+                if (otpController.text.isNotEmpty) otpController.clear();
                 setState(() {
                   signup = value.first;
                   otpRequested = false;
-                  otpController.clear();
+                  requestedOtpPhone = null;
+                  resendSeconds = 0;
+                  devOtp = null;
                   error = null;
                 });
               },

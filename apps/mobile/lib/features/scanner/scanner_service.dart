@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/network/api_client.dart';
 
 final scannerServiceProvider = Provider<ScannerService>(
-  (ref) => ScannerService(ref.watch(apiClientProvider)),
+  (ref) => ScannerService(ref.watch(publicApiClientProvider)),
 );
 
 class ScannerService {

@@ -1,18 +1,24 @@
 {$CADDY_SITE_ADDRESS::80} {
   encode zstd gzip
   root * /srv/scancontact
+  log {
+    output stdout
+    format console
+  }
 
   header {
     X-Content-Type-Options "nosniff"
     X-Frame-Options "DENY"
     Referrer-Policy "strict-origin-when-cross-origin"
-    Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Permissions-Policy "camera=(), microphone=(self), geolocation=()"
     -Server
   }
 
   handle_path /api/* {
     reverse_proxy api:4000
   }
+
+  respond /healthz 200
 
   handle /admin/tags/new* {
     try_files {path} {path}/ /admin/tags/new/
@@ -41,6 +47,11 @@
 
   handle /c/* {
     rewrite * /c/__id__/
+    file_server
+  }
+
+  handle /call/* {
+    rewrite * /call/__id__/
     file_server
   }
 

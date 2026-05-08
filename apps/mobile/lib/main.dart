@@ -8,6 +8,7 @@ import 'core/models/owner_models.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/auth_screen.dart';
 import 'features/auth/splash_screen.dart';
+import 'features/calls/owner_call_screen.dart';
 import 'features/chat/chat_screen.dart';
 import 'features/home/home_shell.dart';
 import 'features/orders/my_orders_screen.dart';
@@ -70,6 +71,11 @@ class ScanContactApp extends StatelessWidget {
           path: '/chat/:requestId',
           builder: (context, state) =>
               ChatScreen(requestId: state.pathParameters['requestId']!),
+        ),
+        GoRoute(
+          path: '/call/:callId',
+          builder: (context, state) =>
+              OwnerCallScreen(callId: state.pathParameters['callId']!),
         ),
         GoRoute(
           path: '/request/:requestId',

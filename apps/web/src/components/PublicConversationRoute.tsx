@@ -28,7 +28,7 @@ export function PublicConversationRoute() {
             <h1 className="text-2xl font-black">Private conversation</h1>
           </div>
         </div>
-        <div className="mb-4"><InlineAlert tone="info">Conversation access requires the private token in this URL.</InlineAlert></div>
+        <div className="mb-4"><InlineAlert tone="info">This private chat opens only from the secure conversation link created after scanning the QR.</InlineAlert></div>
         {id && token ? (
           <PublicConversation contactRequestId={id} token={token} />
         ) : (

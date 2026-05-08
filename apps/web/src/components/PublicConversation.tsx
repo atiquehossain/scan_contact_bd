@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Send, ShieldCheck } from "lucide-react";
+import { MessageSquareText, QrCode, Send, ShieldCheck } from "lucide-react";
 import { apiFetch } from "@/lib/api";
+import { safePublicLabel } from "@/lib/brand";
 import { Button, InlineAlert, LoadingState, StatusBadge } from "@/components/admin/ui";
 
 type ChatMessage = {
@@ -90,12 +91,18 @@ export function PublicConversation({
   return (
     <section className="mt-5 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[#f8fbf9] p-4">
       <div className="flex items-start gap-3">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[var(--radius-button)] bg-[var(--color-primary)] text-white">
-          <ShieldCheck aria-hidden size={20} />
+        <span className="relative grid h-11 w-11 shrink-0 place-items-center rounded-[var(--radius-button)] bg-[var(--color-primary-soft)] text-[var(--color-primary)]">
+          <QrCode aria-hidden size={22} />
+          <span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full bg-[var(--color-primary)] text-white ring-2 ring-white">
+            <MessageSquareText aria-hidden size={11} />
+          </span>
+          <span className="absolute -bottom-1 -left-1 grid h-5 w-5 place-items-center rounded-full bg-white text-[var(--color-primary)] ring-1 ring-[var(--color-border)]">
+            <ShieldCheck aria-hidden size={11} />
+          </span>
         </span>
         <div>
-          <h2 className="text-lg font-black">Private conversation</h2>
-          {thread ? <p className="mt-1 text-sm text-[var(--color-muted)]">{thread.tagLabel} | {thread.reason}</p> : null}
+          <h2 className="text-lg font-black">Private QR chat</h2>
+          {thread ? <p className="mt-1 text-sm text-[var(--color-muted)]">{safePublicLabel(thread.tagLabel)} | {thread.reason}</p> : null}
           {thread ? (
             <div className="mt-2">
               <StatusBadge tone={thread.status === "OPEN" ? "success" : "warning"}>
@@ -106,7 +113,7 @@ export function PublicConversation({
         </div>
       </div>
       <div className="mt-4">
-        <InlineAlert tone="info">This conversation keeps phone numbers hidden unless someone chooses to share them.</InlineAlert>
+        <InlineAlert tone="info">Phone numbers stay hidden in this ScanContact BD chat unless someone chooses to type them.</InlineAlert>
       </div>
       {unavailable ? (
         <div className="mt-3">
@@ -115,7 +122,7 @@ export function PublicConversation({
       ) : null}
       {loading ? (
         <div className="mt-4">
-          <LoadingState label="Validating conversation token..." />
+          <LoadingState label="Checking private chat access..." />
         </div>
       ) : null}
       <div className="mt-4 max-h-80 space-y-3 overflow-y-auto rounded-[var(--radius-card)] bg-white p-3">

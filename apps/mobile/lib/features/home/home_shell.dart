@@ -25,18 +25,28 @@ class _HomeShellState extends ConsumerState<HomeShell>
   int index = 0;
   StreamSubscription<RemoteMessage>? pushMessageSubscription;
   StreamSubscription<RemoteMessage>? pushOpenedSubscription;
+  Timer? callPollTimer;
+  String? activeCallNavigationId;
+  bool callPollInFlight = false;
+  AppLifecycleState lifecycleState = AppLifecycleState.resumed;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     unawaited(_startPush());
+    callPollTimer = Timer.periodic(
+      const Duration(seconds: 3),
+      (_) => unawaited(_pollIncomingCalls()),
+    );
+    unawaited(_pollIncomingCalls());
   }
 
   @override
   void dispose() {
     pushMessageSubscription?.cancel();
     pushOpenedSubscription?.cancel();
+    callPollTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -45,6 +55,7 @@ class _HomeShellState extends ConsumerState<HomeShell>
     await PushNotificationService.registerForCurrentUser(
       ref.read(ownerServiceProvider),
     );
+    if (!mounted) return;
     pushMessageSubscription ??=
         PushNotificationService.listenToForegroundMessages(
           onMessage: (_) {
@@ -68,10 +79,20 @@ class _HomeShellState extends ConsumerState<HomeShell>
       context.push(route);
       return;
     }
+    if (route is String && route.startsWith('/call/')) {
+      activeCallNavigationId = route.split('/').last;
+      context.push(route);
+      return;
+    }
     final actionType = message.data['actionType'];
     final actionId = message.data['actionId'];
     if (actionType == 'request' && actionId is String && actionId.isNotEmpty) {
       context.push('/chat/$actionId');
+    } else if (actionType == 'call' &&
+        actionId is String &&
+        actionId.isNotEmpty) {
+      activeCallNavigationId = actionId;
+      context.push('/call/$actionId');
     } else if (actionType == 'order') {
       context.push('/orders');
     } else if (actionType == 'tag') {
@@ -81,8 +102,10 @@ class _HomeShellState extends ConsumerState<HomeShell>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    lifecycleState = state;
     if (state == AppLifecycleState.resumed) {
       _refreshCurrentData();
+      unawaited(_pollIncomingCalls());
     }
   }
 
@@ -104,6 +127,34 @@ class _HomeShellState extends ConsumerState<HomeShell>
     }
     if (index == 3) {
       ref.invalidate(notificationsProvider);
+    }
+  }
+
+  Future<void> _pollIncomingCalls() async {
+    if (!mounted ||
+        callPollInFlight ||
+        lifecycleState != AppLifecycleState.resumed) {
+      return;
+    }
+    callPollInFlight = true;
+    try {
+      final calls = await ref.read(ownerServiceProvider).incomingCalls();
+      if (!mounted || calls.isEmpty) return;
+      final call = calls.firstWhere(
+        (item) => item.isRinging || item.isAccepted,
+        orElse: () => calls.first,
+      );
+      if (call.isFinished || activeCallNavigationId == call.id) return;
+      activeCallNavigationId = call.id;
+      await context.push('/call/${call.id}');
+      if (mounted) {
+        activeCallNavigationId = null;
+        _refreshCurrentData();
+      }
+    } catch (_) {
+      // Incoming call polling is best effort. Push notifications and manual refresh still work.
+    } finally {
+      callPollInFlight = false;
     }
   }
 

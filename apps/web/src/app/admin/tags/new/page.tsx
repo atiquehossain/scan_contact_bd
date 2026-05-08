@@ -4,7 +4,7 @@ import { FormEvent, useMemo, useRef, useState } from "react";
 import { CheckCircle2, Copy, Download, ExternalLink, Printer, RotateCcw } from "lucide-react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Button, FieldError, InlineAlert, LinkButton, PageHeader, Panel, StatusBadge } from "@/components/admin/ui";
-import { apiFetch, qrImageUrl } from "@/lib/api";
+import { apiFetch, clientDebugLog, qrImageUrl } from "@/lib/api";
 
 type AdminTag = {
   id: string;
@@ -21,6 +21,12 @@ const vehicleTypes = new Set(["CAR", "MOTORBIKE", "DELIVERY_BIKE", "APARTMENT_PA
 
 function validBdPhone(value: string) {
   return /^(\+8801\d{9}|01\d{9})$/.test(value.trim());
+}
+
+function maskOwnerPhone(phone: string) {
+  const cleaned = phone.trim();
+  if (cleaned.length <= 7) return "***";
+  return `${cleaned.slice(0, 5)}****${cleaned.slice(-3)}`;
 }
 
 export default function CreateTagPage() {
@@ -55,6 +61,12 @@ export default function CreateTagPage() {
   function moveNext(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextErrors = validateStep(step);
+    clientDebugLog("admin.tags.wizard.next", {
+      step,
+      ownerPhone: maskOwnerPhone(ownerPhone),
+      ownerNamePresent: Boolean(ownerName.trim()),
+      errorFields: Object.keys(nextErrors).join(",")
+    });
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
       setSummary("Please fix the highlighted fields.");
@@ -68,6 +80,14 @@ export default function CreateTagPage() {
 
   async function createTag() {
     const nextErrors = validateStep(3);
+    clientDebugLog("admin.tags.create.start", {
+      ownerPhone: maskOwnerPhone(ownerPhone),
+      ownerNamePresent: Boolean(ownerName.trim()),
+      type,
+      labelPresent: Boolean(label.trim()),
+      vehiclePresent: Boolean(vehicleNumber.trim()),
+      errorFields: Object.keys(nextErrors).join(",")
+    });
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
       setSummary("Please fix the highlighted fields.");
@@ -96,10 +116,17 @@ export default function CreateTagPage() {
           }
         })
       });
+      clientDebugLog("admin.tags.create.success", {
+        tagId: data.tag.id,
+        slug: data.tag.publicSlug,
+        ownerId: data.tag.owner?.id,
+        qrImageUrl: qrImageUrl(data.tag.publicSlug)
+      });
       setCreatedTag(data.tag);
       setErrors({});
       setSummary("");
     } catch (error) {
+      clientDebugLog("admin.tags.create.failed", { error: error instanceof Error ? error.message : "unknown" });
       setSummary(error instanceof Error ? error.message : "Could not create QR tag.");
       window.setTimeout(() => errorSummaryRef.current?.focus(), 0);
     } finally {
@@ -110,11 +137,13 @@ export default function CreateTagPage() {
   async function copyUrl() {
     if (!createdTag) return;
     await navigator.clipboard.writeText(createdTag.publicUrl);
+    clientDebugLog("admin.tags.copyUrl", { tagId: createdTag.id, slug: createdTag.publicSlug });
     setSummary("QR public URL copied.");
   }
 
   function printQr() {
     if (!createdTag) return;
+    clientDebugLog("admin.tags.printQr", { tagId: createdTag.id, slug: createdTag.publicSlug });
     const win = window.open("", "_blank", "noopener,noreferrer,width=520,height=720");
     if (!win) return;
     win.document.write(`

@@ -2,13 +2,12 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { authToken } from "@/lib/api";
 
 export default function AdminIndexPage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace(authToken() ? "/admin/overview" : "/admin/login");
+    router.replace("/admin/overview");
   }, [router]);
 
   return (

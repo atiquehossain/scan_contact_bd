@@ -104,6 +104,20 @@ enum ContactMessageSender {
   SYSTEM
 }
 
+enum CallSessionStatus {
+  RINGING
+  ACCEPTED
+  DECLINED
+  ENDED
+  EXPIRED
+  FAILED
+}
+
+enum CallSignalSender {
+  SCANNER
+  OWNER
+}
+
 enum NotificationType {
   QR_SCANNED
   CONTACT_REQUEST
@@ -166,6 +180,12 @@ enum ResellerStatus {
   SUSPENDED
 }
 
+enum ResellerBatchStatus {
+  ACTIVE
+  CLOSED
+  CANCELLED
+}
+
 enum PayoutStatus {
   REQUESTED
   APPROVED
@@ -205,40 +225,42 @@ enum FileVisibility {
 }
 
 model User {
-  id                      String                @id @default(cuid())
-  phone                   String                @unique
-  email                   String?               @unique
-  fullName                String?
-  passwordHash            String?
-  pinHash                 String?
-  language                Language              @default(EN)
-  status                  UserStatus            @default(ACTIVE)
-  phoneVerifiedAt         DateTime?
-  lastLoginAt             DateTime?
-  profile                 UserProfile?
-  otps                    AuthOtp[]
-  sessions                Session[]
-  deviceTokens            DeviceToken[]
-  userRoles               UserRole[]
-  ownedTags               QrTag[]               @relation("OwnedTags")
-  createdTags             QrTag[]               @relation("CreatedTags")
-  contactRequests         ContactRequest[]      @relation("OwnerContactRequests")
-  notifications           Notification[]
-  emergencyContacts       EmergencyContact[]
-  cart                    Cart?
-  orders                  Order[]
-  resellerProfile         Reseller?
-  resellerCustomers       ResellerCustomer[]
-  societyMemberships      SocietyMember[]
-  enteredVisitorLogs      VisitorLog[]          @relation("VisitorEnteredBy")
-  exitedVisitorLogs       VisitorLog[]          @relation("VisitorExitedBy")
-  auditLogs               AuditLog[]            @relation("AuditActor")
-  consentLogs             ConsentLog[]
-  deletionRequests        DataDeletionRequest[]
-  uploads                 FileUpload[]
-  createdAt               DateTime              @default(now())
-  updatedAt               DateTime              @updatedAt
-  deletedAt               DateTime?
+  id                     String                @id @default(cuid())
+  phone                  String                @unique
+  email                  String?               @unique
+  fullName               String?
+  passwordHash           String?
+  pinHash                String?
+  language               Language              @default(EN)
+  status                 UserStatus            @default(ACTIVE)
+  phoneVerifiedAt        DateTime?
+  lastLoginAt            DateTime?
+  profile                UserProfile?
+  otps                   AuthOtp[]
+  sessions               Session[]
+  deviceTokens           DeviceToken[]
+  userRoles              UserRole[]
+  ownedTags              QrTag[]               @relation("OwnedTags")
+  createdTags            QrTag[]               @relation("CreatedTags")
+  contactRequests        ContactRequest[]      @relation("OwnerContactRequests")
+  callSessions           CallSession[]         @relation("OwnerCallSessions")
+  notifications          Notification[]
+  emergencyContacts      EmergencyContact[]
+  cart                   Cart?
+  orders                 Order[]
+  resellerProfile        Reseller?
+  resellerCustomers      ResellerCustomer[]
+  createdResellerBatches ResellerBatch[]       @relation("CreatedResellerBatches")
+  societyMemberships     SocietyMember[]
+  enteredVisitorLogs     VisitorLog[]          @relation("VisitorEnteredBy")
+  exitedVisitorLogs      VisitorLog[]          @relation("VisitorExitedBy")
+  auditLogs              AuditLog[]            @relation("AuditActor")
+  consentLogs            ConsentLog[]
+  deletionRequests       DataDeletionRequest[]
+  uploads                FileUpload[]
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  deletedAt              DateTime?
 
   @@index([phone])
   @@index([email])
@@ -246,17 +268,17 @@ model User {
 }
 
 model UserProfile {
-  id                   String   @id @default(cuid())
-  userId               String   @unique
-  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   city                 String?
   district             String?
   address              String?
   photoFileId          String?
-  notificationSettings Json     @default("{}")
-  privacySettings      Json     @default("{}")
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  notificationSettings Json      @default("{}")
+  privacySettings      Json      @default("{}")
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
   deletedAt            DateTime?
 }
 
@@ -359,57 +381,61 @@ model UserRole {
 }
 
 model QrTag {
-  id              String              @id @default(cuid())
-  publicSlug      String              @unique
+  id              String             @id @default(cuid())
+  publicSlug      String             @unique
   ownerId         String?
-  owner           User?               @relation("OwnedTags", fields: [ownerId], references: [id], onDelete: SetNull)
+  owner           User?              @relation("OwnedTags", fields: [ownerId], references: [id], onDelete: SetNull)
   createdById     String?
-  createdBy       User?               @relation("CreatedTags", fields: [createdById], references: [id], onDelete: SetNull)
+  createdBy       User?              @relation("CreatedTags", fields: [createdById], references: [id], onDelete: SetNull)
   resellerId      String?
-  reseller        Reseller?           @relation(fields: [resellerId], references: [id], onDelete: SetNull)
+  reseller        Reseller?          @relation(fields: [resellerId], references: [id], onDelete: SetNull)
+  resellerBatchId String?
+  resellerBatch   ResellerBatch?     @relation(fields: [resellerBatchId], references: [id], onDelete: SetNull)
   societyId       String?
-  society         Society?            @relation(fields: [societyId], references: [id], onDelete: SetNull)
+  society         Society?           @relation(fields: [societyId], references: [id], onDelete: SetNull)
   type            QrTagType
   label           String
   vehicleNumber   String?
   itemName        String?
-  status          QrTagStatus         @default(ACTIVE)
-  privacyMode     PrivacyMode         @default(PRIVATE_CONTACT_ONLY)
+  status          QrTagStatus        @default(ACTIVE)
+  privacyMode     PrivacyMode        @default(PRIVATE_CONTACT_ONLY)
   activationCode  String?
   batchCode       String?
-  businessProfile Json                @default("{}")
-  scanCount       Int                 @default(0)
+  businessProfile Json               @default("{}")
+  scanCount       Int                @default(0)
   lastScannedAt   DateTime?
   contactSetting  TagContactSetting?
   scanEvents      ScanEvent[]
   contactRequests ContactRequest[]
+  callSessions    CallSession[]
   abuseReports    AbuseReport[]
   societyVehicles SocietyVehicle[]
   parkingSlots    ParkingSlot[]
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
   deletedAt       DateTime?
 
   @@index([ownerId, status])
   @@index([publicSlug])
   @@index([batchCode])
+  @@index([resellerBatchId])
 }
 
 model TagContactSetting {
-  id                String   @id @default(cuid())
-  qrTagId           String   @unique
-  qrTag             QrTag    @relation(fields: [qrTagId], references: [id], onDelete: Cascade)
-  allowContactForm  Boolean  @default(true)
-  allowWhatsapp     Boolean  @default(false)
-  allowSms          Boolean  @default(false)
-  phoneVisible      Boolean  @default(false)
-  showName          Boolean  @default(false)
-  showEmergency     Boolean  @default(false)
-  whatsappPhone     String?
-  smsPhone          String?
-  quietHours        Json     @default("{}")
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id               String   @id @default(cuid())
+  qrTagId          String   @unique
+  qrTag            QrTag    @relation(fields: [qrTagId], references: [id], onDelete: Cascade)
+  allowContactForm Boolean  @default(true)
+  allowWhatsapp    Boolean  @default(false)
+  allowSms         Boolean  @default(false)
+  phoneVisible     Boolean  @default(false)
+  showName         Boolean  @default(false)
+  showEmergency    Boolean  @default(false)
+  whatsappPhone    String?
+  smsPhone         String?
+  quietHours       Json     @default("{}")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model ScanEvent {
@@ -474,6 +500,41 @@ model ContactMessage {
   @@index([senderUserId])
 }
 
+model CallSession {
+  id               String            @id @default(cuid())
+  qrTagId          String
+  qrTag            QrTag             @relation(fields: [qrTagId], references: [id], onDelete: Cascade)
+  ownerId          String
+  owner            User              @relation("OwnerCallSessions", fields: [ownerId], references: [id], onDelete: Cascade)
+  scannerTokenHash String            @unique
+  scannerName      String?
+  status           CallSessionStatus @default(RINGING)
+  expiresAt        DateTime
+  acceptedAt       DateTime?
+  endedAt          DateTime?
+  signals          CallSignal[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  deletedAt        DateTime?
+
+  @@index([ownerId, status, createdAt])
+  @@index([qrTagId, createdAt])
+  @@index([expiresAt])
+}
+
+model CallSignal {
+  id            String           @id @default(cuid())
+  callSessionId String
+  callSession   CallSession      @relation(fields: [callSessionId], references: [id], onDelete: Cascade)
+  sender        CallSignalSender
+  type          String
+  payload       Json             @default("{}")
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([callSessionId, createdAt])
+}
+
 model Notification {
   id        String           @id @default(cuid())
   userId    String
@@ -506,37 +567,37 @@ model EmergencyContact {
 }
 
 model Product {
-  id            String           @id @default(cuid())
-  slug          String           @unique
-  type          ProductType
-  name          String
-  description   String
-  priceBdt      Int
-  active        Boolean          @default(true)
-  metadata      Json             @default("{}")
-  variants      ProductVariant[]
-  cartItems     CartItem[]
-  orderItems    OrderItem[]
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  deletedAt     DateTime?
+  id          String           @id @default(cuid())
+  slug        String           @unique
+  type        ProductType
+  name        String
+  description String
+  priceBdt    Int
+  active      Boolean          @default(true)
+  metadata    Json             @default("{}")
+  variants    ProductVariant[]
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  deletedAt   DateTime?
 
   @@index([type, active])
 }
 
 model ProductVariant {
-  id        String      @id @default(cuid())
-  productId String
-  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  name      String
-  sku       String      @unique
-  priceBdt  Int
-  active    Boolean     @default(true)
-  cartItems CartItem[]
+  id         String      @id @default(cuid())
+  productId  String
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name       String
+  sku        String      @unique
+  priceBdt   Int
+  active     Boolean     @default(true)
+  cartItems  CartItem[]
   orderItems OrderItem[]
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  deletedAt DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  deletedAt  DateTime?
 }
 
 model Cart {
@@ -566,31 +627,31 @@ model CartItem {
 }
 
 model Order {
-  id                 String        @id @default(cuid())
-  orderNumber        String        @unique
-  userId             String?
-  user               User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
-  resellerId         String?
-  reseller           Reseller?     @relation(fields: [resellerId], references: [id], onDelete: SetNull)
-  status             OrderStatus   @default(PENDING)
-  paymentStatus      PaymentStatus @default(COD_PENDING)
-  paymentMethod      PaymentMethod @default(COD)
-  subtotalBdt        Int
-  deliveryFeeBdt     Int           @default(80)
-  totalBdt           Int
-  customerName       String
-  customerPhone      String
-  deliveryAddress    String
-  deliveryCity       String?
-  deliveryDistrict   String?
-  notes              String?
-  items              OrderItem[]
-  payments           Payment[]
-  shipments          Shipment[]
-  commissions        ResellerCommission[]
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  deletedAt          DateTime?
+  id               String               @id @default(cuid())
+  orderNumber      String               @unique
+  userId           String?
+  user             User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  resellerId       String?
+  reseller         Reseller?            @relation(fields: [resellerId], references: [id], onDelete: SetNull)
+  status           OrderStatus          @default(PENDING)
+  paymentStatus    PaymentStatus        @default(COD_PENDING)
+  paymentMethod    PaymentMethod        @default(COD)
+  subtotalBdt      Int
+  deliveryFeeBdt   Int                  @default(80)
+  totalBdt         Int
+  customerName     String
+  customerPhone    String
+  deliveryAddress  String
+  deliveryCity     String?
+  deliveryDistrict String?
+  notes            String?
+  items            OrderItem[]
+  payments         Payment[]
+  shipments        Shipment[]
+  commissions      ResellerCommission[]
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  deletedAt        DateTime?
 
   @@index([userId, status])
   @@index([status, createdAt])
@@ -613,18 +674,18 @@ model OrderItem {
 }
 
 model Payment {
-  id            String        @id @default(cuid())
-  orderId       String
-  order         Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  provider      String
-  method        PaymentMethod
-  status        PaymentStatus @default(PENDING)
-  amountBdt     Int
-  providerRef   String?
-  metadata      Json          @default("{}")
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  deletedAt     DateTime?
+  id          String        @id @default(cuid())
+  orderId     String
+  order       Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider    String
+  method      PaymentMethod
+  status      PaymentStatus @default(PENDING)
+  amountBdt   Int
+  providerRef String?
+  metadata    Json          @default("{}")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
 
   @@index([provider, status])
 }
@@ -644,23 +705,44 @@ model Shipment {
 }
 
 model Reseller {
-  id             String                @id @default(cuid())
-  userId         String                @unique
-  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String               @id @default(cuid())
+  userId         String               @unique
+  user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   businessName   String
-  status         ResellerStatus        @default(APPLIED)
+  status         ResellerStatus       @default(APPLIED)
   territoryCity  String?
-  commissionRate Decimal               @default(10.0) @db.Decimal(5, 2)
+  commissionRate Decimal              @default(10.0) @db.Decimal(5, 2)
   tags           QrTag[]
+  batches        ResellerBatch[]
   customers      ResellerCustomer[]
   orders         Order[]
   commissions    ResellerCommission[]
   payouts        Payout[]
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
   deletedAt      DateTime?
 
   @@index([status, territoryCity])
+}
+
+model ResellerBatch {
+  id          String              @id @default(cuid())
+  batchCode   String              @unique
+  resellerId  String
+  reseller    Reseller            @relation(fields: [resellerId], references: [id], onDelete: Cascade)
+  createdById String?
+  createdBy   User?               @relation("CreatedResellerBatches", fields: [createdById], references: [id], onDelete: SetNull)
+  status      ResellerBatchStatus @default(ACTIVE)
+  notes       String?
+  tags        QrTag[]
+  assignedAt  DateTime            @default(now())
+  closedAt    DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  deletedAt   DateTime?
+
+  @@index([resellerId, status])
+  @@index([createdAt])
 }
 
 model ResellerCustomer {
@@ -680,49 +762,49 @@ model ResellerCustomer {
 }
 
 model ResellerCommission {
-  id          String        @id @default(cuid())
-  resellerId  String
-  reseller    Reseller      @relation(fields: [resellerId], references: [id], onDelete: Cascade)
-  orderId     String?
-  order       Order?        @relation(fields: [orderId], references: [id], onDelete: SetNull)
-  amountBdt   Int
-  status      PayoutStatus  @default(REQUESTED)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  deletedAt   DateTime?
+  id         String       @id @default(cuid())
+  resellerId String
+  reseller   Reseller     @relation(fields: [resellerId], references: [id], onDelete: Cascade)
+  orderId    String?
+  order      Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  amountBdt  Int
+  status     PayoutStatus @default(REQUESTED)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  deletedAt  DateTime?
 
   @@index([resellerId, status])
 }
 
 model Payout {
-  id          String       @id @default(cuid())
-  resellerId  String
-  reseller    Reseller     @relation(fields: [resellerId], references: [id], onDelete: Cascade)
-  amountBdt   Int
-  status      PayoutStatus @default(REQUESTED)
+  id           String       @id @default(cuid())
+  resellerId   String
+  reseller     Reseller     @relation(fields: [resellerId], references: [id], onDelete: Cascade)
+  amountBdt    Int
+  status       PayoutStatus @default(REQUESTED)
   payoutMethod String?
-  notes       String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  deletedAt   DateTime?
+  notes        String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  deletedAt    DateTime?
 }
 
 model Society {
-  id            String           @id @default(cuid())
-  name          String
-  address       String
-  city          String?
-  district      String?
+  id             String           @id @default(cuid())
+  name           String
+  address        String
+  city           String?
+  district       String?
   emergencyPhone String?
-  members       SocietyMember[]
-  units         SocietyUnit[]
-  vehicles      SocietyVehicle[]
-  parkingSlots  ParkingSlot[]
-  visitorLogs   VisitorLog[]
-  qrTags        QrTag[]
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  deletedAt     DateTime?
+  members        SocietyMember[]
+  units          SocietyUnit[]
+  vehicles       SocietyVehicle[]
+  parkingSlots   ParkingSlot[]
+  visitorLogs    VisitorLog[]
+  qrTags         QrTag[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  deletedAt      DateTime?
 
   @@index([city, district])
 }
@@ -747,36 +829,36 @@ model SocietyMember {
 }
 
 model SocietyUnit {
-  id        String          @id @default(cuid())
-  societyId String
-  society   Society         @relation(fields: [societyId], references: [id], onDelete: Cascade)
-  building  String?
-  floor     String?
-  unitNo    String
-  members   SocietyMember[]
-  vehicles  SocietyVehicle[]
+  id          String           @id @default(cuid())
+  societyId   String
+  society     Society          @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  building    String?
+  floor       String?
+  unitNo      String
+  members     SocietyMember[]
+  vehicles    SocietyVehicle[]
   visitorLogs VisitorLog[]
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  deletedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  deletedAt   DateTime?
 
   @@unique([societyId, unitNo])
 }
 
 model SocietyVehicle {
-  id            String        @id @default(cuid())
+  id            String         @id @default(cuid())
   societyId     String
-  society       Society       @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  society       Society        @relation(fields: [societyId], references: [id], onDelete: Cascade)
   memberId      String?
   member        SocietyMember? @relation(fields: [memberId], references: [id], onDelete: SetNull)
   unitId        String?
-  unit          SocietyUnit?  @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  unit          SocietyUnit?   @relation(fields: [unitId], references: [id], onDelete: SetNull)
   qrTagId       String?
-  qrTag         QrTag?        @relation(fields: [qrTagId], references: [id], onDelete: SetNull)
+  qrTag         QrTag?         @relation(fields: [qrTagId], references: [id], onDelete: SetNull)
   vehicleNumber String
   vehicleType   String
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   deletedAt     DateTime?
 
   @@index([societyId, vehicleNumber])
@@ -822,7 +904,7 @@ model VisitorLog {
 }
 
 model AbuseReport {
-  id              String            @id @default(cuid())
+  id               String            @id @default(cuid())
   qrTagId          String?
   qrTag            QrTag?            @relation(fields: [qrTagId], references: [id], onDelete: SetNull)
   contactRequestId String?
@@ -922,15 +1004,15 @@ model FileUpload {
 }
 
 model BackupLog {
-  id        String    @id @default(cuid())
-  type      String
-  status    String
-  location  String?
-  message   String?
-  startedAt DateTime  @default(now())
+  id         String    @id @default(cuid())
+  type       String
+  status     String
+  location   String?
+  message    String?
+  startedAt  DateTime  @default(now())
   finishedAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model District {

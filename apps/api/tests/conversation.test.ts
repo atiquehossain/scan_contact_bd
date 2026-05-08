@@ -1,4 +1,4 @@
-import { ContactRequestStatus } from "@prisma/client";
+import { ContactRequestStatus, QrTagStatus, QrTagType } from "@prisma/client";
 import { describe, expect, it } from "vitest";
 import {
   CONVERSATION_ACTIVE_MS,
@@ -10,6 +10,7 @@ import {
   nextConversationDeleteAt,
   nextConversationExpiry
 } from "../src/lib/conversation.js";
+import { isPublicTagActive, safePublicTagDto } from "../src/server.js";
 
 describe("conversation lifecycle", () => {
   it("hashes scanner reply tokens instead of storing raw values", () => {
@@ -70,5 +71,72 @@ describe("conversation lifecycle", () => {
         now
       )
     ).toBe(false);
+  });
+});
+
+describe("public QR exposure", () => {
+  const baseTag = {
+    id: "internal-tag-id",
+    activationCode: "secret-code",
+    publicSlug: "public-slug",
+    ownerId: "owner-id",
+    deletedAt: null,
+    type: QrTagType.CAR,
+    label: "Basement parking",
+    vehicleNumber: "DHAKA-METRO-1234",
+    itemName: null,
+    privacyMode: "PHONE_VISIBLE_BY_OWNER_CHOICE",
+    owner: {
+      fullName: "Owner Name",
+      phone: "+8801712345678",
+      emergencyContacts: [
+        {
+          name: "Visible Contact",
+          relation: "Family",
+          phone: "+8801812345678",
+          visibleOnPublic: true,
+          deletedAt: null
+        }
+      ]
+    },
+    contactSetting: {
+      allowContactForm: true,
+      allowWhatsapp: true,
+      allowSms: true,
+      phoneVisible: true,
+      showName: true,
+      showEmergency: true
+    }
+  };
+
+  it("omits internal tag identifiers and activation secrets from active public tag output", () => {
+    const dto = safePublicTagDto({ ...baseTag, status: QrTagStatus.ACTIVE });
+    const json = JSON.stringify(dto);
+    expect(isPublicTagActive({ ...baseTag, status: QrTagStatus.ACTIVE })).toBe(true);
+    expect(dto).not.toHaveProperty("id");
+    expect(dto).not.toHaveProperty("scanCount");
+    expect(json).not.toContain("internal-tag-id");
+    expect(json).not.toContain("secret-code");
+  });
+
+  it("returns only inactive public fields for disabled tags", () => {
+    const dto = safePublicTagDto({ ...baseTag, status: QrTagStatus.DISABLED });
+    const json = JSON.stringify(dto);
+    expect(isPublicTagActive({ ...baseTag, status: QrTagStatus.DISABLED })).toBe(false);
+    expect(dto).toMatchObject({
+      publicSlug: "public-slug",
+      status: "INACTIVE",
+      isActive: false,
+      contactOptions: {
+        contactForm: false,
+        whatsapp: false,
+        sms: false,
+        phoneVisible: false,
+        emergencyVisible: false
+      }
+    });
+    expect(json).not.toContain("Basement parking");
+    expect(json).not.toContain("+8801712345678");
+    expect(json).not.toContain("internal-tag-id");
   });
 });

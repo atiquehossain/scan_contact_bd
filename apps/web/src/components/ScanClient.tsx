@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { AlertTriangle, Check, ExternalLink, MessageSquare, Send, ShieldCheck } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AlertTriangle, Check, ExternalLink, MessageSquare, PhoneCall, QrCode, Send, ShieldCheck } from "lucide-react";
 import { API_BASE, APP_NAME, apiFetch } from "@/lib/api";
+import { BRAND_PROMISE, PRIVATE_QR_CONTACT, contactContextTitle, safePublicLabel } from "@/lib/brand";
 import { PublicConversation } from "@/components/PublicConversation";
 import { Button, FieldError, InlineAlert, LoadingState } from "@/components/admin/ui";
 
@@ -20,15 +22,6 @@ type SavedConversation = {
   expiresAt?: string | null;
 };
 
-function friendlyType(type?: string) {
-  if (!type) return "Private QR contact";
-  return type
-    .toLowerCase()
-    .split("_")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-}
-
 function purposeCopy(type?: string) {
   switch (type) {
     case "CAR":
@@ -43,7 +36,7 @@ function purposeCopy(type?: string) {
     case "SHOP":
       return "Shop contact request";
     default:
-      return "Private QR contact";
+      return "Send a private request to the owner without revealing phone numbers.";
   }
 }
 
@@ -55,6 +48,7 @@ function publicSlugFromLocation(fallback?: string) {
 }
 
 export function ScanClient({ slug: initialSlug }: { slug?: string }) {
+  const router = useRouter();
   const errorSummaryRef = useRef<HTMLDivElement>(null);
   const [slug, setSlug] = useState(() => publicSlugFromLocation(initialSlug));
   const [tag, setTag] = useState<any>(null);
@@ -65,15 +59,17 @@ export function ScanClient({ slug: initialSlug }: { slug?: string }) {
   const [status, setStatus] = useState("");
   const [errors, setErrors] = useState<{ message?: string; reason?: string; report?: string }>({});
   const [submitting, setSubmitting] = useState(false);
+  const [startingCall, setStartingCall] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [reportReason, setReportReason] = useState("");
   const [reportDetails, setReportDetails] = useState("");
   const [reporting, setReporting] = useState(false);
   const [conversation, setConversation] = useState<SavedConversation | null>(null);
   const [validatingSavedConversation, setValidatingSavedConversation] = useState(false);
-  const safetyHost = useMemo(() => {
-    if (typeof window === "undefined") return "scancontactbd.com";
-    return window.location.hostname || "scancontactbd.com";
+  const [safetyHost, setSafetyHost] = useState("scancontactbd.com");
+
+  useEffect(() => {
+    setSafetyHost(window.location.hostname || "scancontactbd.com");
   }, []);
 
   useEffect(() => {
@@ -209,25 +205,68 @@ export function ScanClient({ slug: initialSlug }: { slug?: string }) {
     }
   }
 
+  async function startPrivateCall() {
+    setStartingCall(true);
+    setStatus("");
+    let permissionStream: MediaStream | null = null;
+    try {
+      if (!window.isSecureContext) {
+        throw new Error("Private audio calls need a secure HTTPS link. Text messages still work on this local link.");
+      }
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("This browser does not support private voice calls. Please send a text message instead.");
+      }
+      permissionStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      permissionStream.getTracks().forEach((track) => track.stop());
+      const data = await apiFetch<{ callUrl: string }>(
+        `/t/${slug}/call`,
+        {
+          method: "POST",
+          body: JSON.stringify({ scannerName: scannerName.trim() || undefined })
+        },
+        ""
+      );
+      router.push(data.callUrl);
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Could not start private call. Please try text instead.");
+      window.setTimeout(() => errorSummaryRef.current?.focus(), 0);
+    } finally {
+      permissionStream?.getTracks().forEach((track) => track.stop());
+      setStartingCall(false);
+    }
+  }
+
   const contactLinks = [tag?.links?.whatsapp ? "whatsapp" : null, tag?.links?.sms ? "sms" : null].filter(Boolean);
 
   return (
     <main className="min-h-screen bg-[var(--color-page-bg)] px-4 py-6">
       <section className="mx-auto w-full max-w-md rounded-[var(--radius-card)] border border-[var(--color-border)] bg-white p-5 shadow-[var(--shadow-card)]">
         <header className="text-center">
-          <span className="mx-auto grid h-12 w-12 place-items-center rounded-[var(--radius-button)] bg-[var(--color-primary)] text-white">
-            <ShieldCheck aria-hidden size={25} />
+          <span className="relative mx-auto grid h-14 w-14 place-items-center rounded-[var(--radius-button)] bg-[var(--color-primary-soft)] text-[var(--color-primary)]">
+            <QrCode aria-hidden size={27} />
+            <span className="absolute -right-1 -top-1 grid h-6 w-6 place-items-center rounded-full bg-[var(--color-primary)] text-white ring-2 ring-white">
+              <PhoneCall aria-hidden size={13} />
+            </span>
+            <span className="absolute -bottom-1 -left-1 grid h-6 w-6 place-items-center rounded-full bg-white text-[var(--color-primary)] ring-1 ring-[var(--color-border)]">
+              <ShieldCheck aria-hidden size={13} />
+            </span>
           </span>
           <p className="mt-3 text-base font-black text-[var(--color-ink)]">{APP_NAME}</p>
-          <p className="mt-1 text-sm font-bold text-[var(--color-muted)]">Private QR contact</p>
+          <p className="mt-1 text-sm font-bold leading-6 text-[var(--color-muted)]">{BRAND_PROMISE}</p>
         </header>
 
         <div className="mt-6 border-t border-[var(--color-border)] pt-5">
           {loadingTag ? <LoadingState label="Loading QR page..." /> : null}
           {!loadingTag ? (
             <>
-              <h1 className="text-2xl font-black text-[var(--color-ink)]">{tag?.label || friendlyType(tag?.type)}</h1>
+              <p className="text-xs font-bold uppercase tracking-wide text-[var(--color-primary)]">{PRIVATE_QR_CONTACT}</p>
+              <h1 className="mt-2 text-2xl font-black text-[var(--color-ink)]">{contactContextTitle(tag?.type, tag?.label)}</h1>
               <p className="mt-1 text-sm font-bold text-[var(--color-muted)]">{purposeCopy(tag?.type)}</p>
+              {tag?.label ? (
+                <p className="mt-3 inline-flex rounded-full border border-[var(--color-border)] bg-[#f8fbf9] px-3 py-1 text-xs font-bold text-[var(--color-muted)]">
+                  Tag: {safePublicLabel(tag.label)}
+                </p>
+              ) : null}
             </>
           ) : null}
         </div>
@@ -236,8 +275,8 @@ export function ScanClient({ slug: initialSlug }: { slug?: string }) {
           <h2 className="font-black">Private by default</h2>
           <ul className="mt-3 grid gap-2">
             <li className="flex gap-2"><Check aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />Send a private message to the owner</li>
-            <li className="flex gap-2"><Check aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />Your phone number is hidden unless you choose to share it</li>
-            <li className="flex gap-2"><Check aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />This QR contains no personal details</li>
+            <li className="flex gap-2"><Check aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />Phone numbers stay hidden through {APP_NAME}</li>
+            <li className="flex gap-2"><Check aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />This QR tag contains only a public contact link</li>
           </ul>
         </section>
 
@@ -327,6 +366,15 @@ export function ScanClient({ slug: initialSlug }: { slug?: string }) {
             Send request privately
           </Button>
 
+          <Button variant="secondary" onClick={startPrivateCall} loading={startingCall}>
+            <PhoneCall aria-hidden size={18} />
+            Start private owner call
+          </Button>
+
+          <p className="text-xs font-semibold leading-5 text-[var(--color-muted)]">
+            Your phone number stays hidden. ScanContact BD connects the call privately through this QR link.
+          </p>
+
         </div>
         ) : null}
 
@@ -338,6 +386,9 @@ export function ScanClient({ slug: initialSlug }: { slug?: string }) {
               {tag?.links?.whatsapp ? <a className="focus-ring inline-flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[var(--color-border)] px-4 py-3 font-bold" href={tag.links.whatsapp}><MessageSquare aria-hidden size={18} /> WhatsApp</a> : null}
               {tag?.links?.sms ? <a className="focus-ring inline-flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[var(--color-border)] px-4 py-3 font-bold" href={tag.links.sms}><MessageSquare aria-hidden size={18} /> SMS</a> : null}
             </div>
+            <p className="mt-3 text-xs font-semibold leading-5 text-[var(--color-muted)]">
+              WhatsApp or SMS may use phone-number based apps. Use the private request first if you want ScanContact BD privacy.
+            </p>
           </section>
         ) : null}
 

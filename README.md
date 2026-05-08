@@ -303,7 +303,7 @@ Important model groups:
 - Scan events, contact requests, contact messages
 - Notifications
 - Products, orders, payments, shipments
-- Resellers, commissions, payouts
+- Resellers, inventory batches, commissions, payouts
 - Societies, units, vehicles, parking slots, visitor logs
 - Abuse reports, audit logs, CMS pages, settings
 - Consent logs, deletion requests, file uploads, backup logs
@@ -341,12 +341,22 @@ Set these carefully:
 - `APP_URL`
 - `API_URL`
 - `CORS_ORIGINS`
+- `WEBRTC_STUN_URLS`
+- `WEBRTC_TURN_URLS` and `WEBRTC_TURN_SHARED_SECRET` for reliable private calls
 - `ADMIN_EMAIL`
 - `ADMIN_PASSWORD`
 - `OTP_PROVIDER`
 - Future SMS/payment provider values
 
 Do not commit real `.env` files. They are ignored by Git.
+
+Production reminders:
+
+- Root `.env` controls Docker/Caddy ports plus static web build-time values.
+- `apps/api/.env` controls API runtime, database access, OTP, and the admin seed.
+- Production must use `NODE_ENV=production`, strong unique secrets, real domain URLs, strict `CORS_ORIGINS`, and a real SMS OTP provider.
+- Private browser/app calls require HTTPS and should use a TURN server such as coturn for mobile-network reliability. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#reliable-private-calling).
+- Do not seed production with example `ADMIN_EMAIL` or `ADMIN_PASSWORD`; rotate the seeded admin password immediately after first login.
 
 ## Local Setup
 
@@ -407,7 +417,10 @@ Seed behavior:
 
 - Creates roles
 - Creates one super admin from `apps/api/.env`
+- Uses `ADMIN_EMAIL` and `ADMIN_PASSWORD` as production-sensitive seed inputs
 - Does not create demo users, demo QR tags, demo orders, demo chats, demo products, or fake business data
+
+Production warning: replace the example admin credentials before running `npm run seed` or `docker compose run --rm api npm run seed`.
 
 ### 4. Run API
 
@@ -459,7 +472,14 @@ flutter run --dart-define=API_BASE_URL=http://10.0.2.2:4000 --dart-define=WEB_BA
 
 ### Real Android Phone
 
-Use your PC LAN IP. Example:
+Use your PC LAN IP. For Docker-based local testing, expose the local services on your LAN first:
+
+```powershell
+$env:HOST_BIND_IP="0.0.0.0"
+docker compose up -d
+```
+
+Then run the app with your PC LAN IP. Example:
 
 ```powershell
 cd apps\mobile
@@ -608,11 +628,16 @@ CORS_ORIGINS=https://yourdomain.com
 
 Note: `NEXT_PUBLIC_*` values are compiled into the static web files inside the Caddy image. Rebuild `caddy` after changing production app/API URLs.
 
+Full production env checklist: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+
 Before launch:
 
 - Replace all secrets.
+- Set `NODE_ENV=production`.
 - Configure production `APP_URL`, `API_URL`, and CORS origins.
 - Configure a real SMS OTP provider.
+- Run the admin seed only after setting a real `ADMIN_EMAIL` and temporary strong `ADMIN_PASSWORD`.
+- Rotate the seeded admin password immediately after first deploy.
 - Configure external encrypted backups.
 - Configure log rotation.
 - Keep database private. Keep Redis private if you enable it later.
@@ -632,10 +657,13 @@ Scripts:
 Minimum recommended backup policy:
 
 - Daily database backup
+- Daily file backup if local uploads are enabled
 - Keep last 7 daily backups
 - Keep last 4 weekly backups
 - Store a copy outside the server
 - Test restore before production launch
+
+Restore is intentionally strict and requires `RESTORE_CONFIRM=scancontact-restore`. If file uploads are stored in a Docker named volume, back up the volume directly instead of assuming host `./uploads` contains the data.
 
 Backup guide: [docs/BACKUP_RESTORE.md](docs/BACKUP_RESTORE.md)
 

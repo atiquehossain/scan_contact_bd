@@ -28,6 +28,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>ScanContact uses the camera only when you open the QR scanner.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>ScanContact uses the microphone only when you start a call.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

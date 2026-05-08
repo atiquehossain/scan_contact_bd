@@ -41,20 +41,20 @@ class TagsScreen extends ConsumerWidget {
               ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 4),
-            const Text('QR tags assigned to your owner phone number.'),
+            const Text('Your QR tags are public. Your phone number is not.'),
             const SizedBox(height: 16),
             if (items.isEmpty)
               AppEmptyState(
                 icon: Icons.qr_code_2_outlined,
-                title: 'No QR code yet',
+                title: 'No QR tag yet',
                 body: dashboard?.latestOrder == null
-                    ? 'Buy a QR sticker first. After admin prints and assigns it to your phone number, it will appear here.'
-                    : 'Order created. Admin will process and assign your QR.',
+                    ? 'Order a QR tag first. After admin prints and assigns it to your phone number, it will appear here.'
+                    : 'Order created. Admin will process and assign your QR tag.',
                 action: dashboard?.latestOrder == null
                     ? FilledButton.icon(
                         onPressed: onOpenShop,
                         icon: const Icon(Icons.shopping_bag_outlined),
-                        label: const Text('Buy QR Code'),
+                        label: const Text('Buy QR Tag'),
                       )
                     : OrderStatusCard(order: dashboard!.latestOrder!),
               )
@@ -136,7 +136,7 @@ class QRTagCard extends StatelessWidget {
             const SizedBox(height: 12),
             const PrivacyNoticeCard(
               message:
-                  'This QR contains only a public URL. Your phone and identity stay hidden.',
+                  'This QR tag contains only your public ScanContact BD link. It does not contain your phone number.',
             ),
             const SizedBox(height: 12),
             Wrap(
@@ -154,7 +154,7 @@ class QRTagCard extends StatelessWidget {
                     }
                   },
                   icon: const Icon(Icons.open_in_new),
-                  label: const Text('Open public URL'),
+                  label: const Text('Open public page'),
                 ),
               ],
             ),
