@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = scancontact_owner
+PRODUCT_NAME = nonumqr_owner
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.scancontactbd.scancontactOwner
+PRODUCT_BUNDLE_IDENTIFIER = com.nonumqr.nonumqrOwner
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 com.scancontactbd. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 com.nonumqr. All rights reserved.

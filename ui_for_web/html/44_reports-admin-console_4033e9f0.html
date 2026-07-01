@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AdminConsole | Reports &amp; Applications</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed": "#00201d",
+                    "on-primary-fixed-variant": "#005049",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#002116",
+                    "primary": "#00685f",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-tint": "#006a61",
+                    "error-container": "#ffdad6",
+                    "on-surface": "#131b2e",
+                    "surface-container": "#eaedff",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "surface-variant": "#dae2fd",
+                    "danger-red": "#DC2626",
+                    "surface-dim": "#d2d9f4",
+                    "on-primary-container": "#f4fffc",
+                    "on-tertiary-fixed-variant": "#773215",
+                    "secondary-container": "#a6f2d1",
+                    "warning-amber": "#D97706",
+                    "secondary-fixed-dim": "#8bd6b6",
+                    "primary-container": "#008378",
+                    "on-secondary-fixed-variant": "#00513b",
+                    "tertiary": "#924628",
+                    "on-tertiary-fixed": "#370e00",
+                    "on-surface-variant": "#3d4947",
+                    "ink-slate": "#1E293B",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#faf8ff",
+                    "inverse-on-surface": "#eef0ff",
+                    "on-secondary-container": "#237157",
+                    "inverse-primary": "#6bd8cb",
+                    "surface-container-highest": "#dae2fd",
+                    "on-error": "#ffffff",
+                    "info-blue": "#2563EB",
+                    "on-background": "#131b2e",
+                    "surface": "#faf8ff",
+                    "inverse-surface": "#283044",
+                    "on-error-container": "#93000a",
+                    "secondary": "#1b6b51",
+                    "surface-container-high": "#e2e7ff",
+                    "surface-container-low": "#f2f3ff",
+                    "outline-variant": "#bcc9c6",
+                    "secondary-fixed": "#a6f2d1",
+                    "surface-off-white": "#F8FAFC",
+                    "primary-fixed": "#89f5e7",
+                    "tertiary-container": "#b05e3d",
+                    "on-tertiary-container": "#fffbff",
+                    "outline": "#6d7a77",
+                    "tertiary-fixed-dim": "#ffb59a",
+                    "background": "#faf8ff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#ffdbce"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "16px",
+                    "container-max": "1200px",
+                    "unit": "4px",
+                    "margin-mobile": "16px",
+                    "stack-sm": "8px",
+                    "stack-lg": "32px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "label-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                    "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .drawer-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-surface-off-white font-body-md text-on-surface overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface-off-white border-r border-outline-variant flex flex-col py-6 px-4 z-50">
+<div class="mb-10 px-2">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">AdminConsole</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70">Internal Ops</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-sm">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-body-sm">Owners</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined">label</span>
+<span class="font-body-sm">Tags</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-body-sm">Orders</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-sm">Users</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary font-bold bg-secondary-container/30" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-body-sm">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined">dns</span>
+<span class="font-body-sm">Health &amp; Backups</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-body-sm">Audit Logs</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-outline-variant">
+<div class="flex items-center gap-3 px-2">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional headshot of a modern corporate administrator in a bright, clean studio setting. The lighting is soft and high-key, emphasizing a friendly yet authoritative professional persona. The overall color palette is composed of cool blues and clean whites, aligning with a high-end corporate minimalist aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSVhsudy58bRpYS6ya8tl-u2c-vLFTLaotPTvrnrZ7m_265toaAKYKUAWPsvIqmWctrcw3HFId114esTUiWZ-9rlJ8-C6pEwoTjAinyjMEMw7u3lLx04Nr5jL6-IjkNGn1Ie4cKzBu62R_0-DSsivrB4OJ5lcdixNSghpSvsBFpGp3OwdpVDXU7pU-lWgRNCvsyah897278npawmZz3U1wii-RSBkaVYzKAY876pJBRYWPHru0TzH_5pNiVWzJ5pH1pYJBQB17Uw_R"/>
+<div>
+<p class="font-label-lg text-label-lg text-ink-slate">Admin Profile</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">System Root</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-64 right-0 h-16 bg-surface border-b border-outline-variant flex items-center justify-between px-8 z-40">
+<div class="flex items-center gap-4 flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full pl-10 pr-4 py-2 text-label-lg focus:ring-2 focus:ring-primary/20 placeholder:text-outline" placeholder="Search reports, societies, or users..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-danger-red rounded-full"></span>
+</button>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<button class="flex items-center gap-2 text-primary font-bold transition-all hover:opacity-80">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-lg">New Task</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 mt-16 h-[calc(100vh-64px)] overflow-y-auto p-8 bg-surface-off-white">
+<!-- Header Section -->
+<div class="flex items-end justify-between mb-8">
+<div>
+<nav class="flex items-center gap-2 text-label-sm text-on-surface-variant mb-2">
+<span>Admin</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-semibold">Reports</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-ink-slate">Reports &amp; Applications</h2>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg text-label-lg text-ink-slate hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-[20px]">file_download</span>
+                    Export CSV
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg text-label-lg font-bold shadow-sm hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+                    Advanced Filters
+                </button>
+</div>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-4 gap-6 mb-10">
+<div class="glass-card p-6 rounded-xl border border-outline-variant shadow-sm transition-transform hover:scale-[1.02] duration-300">
+<div class="flex items-center justify-between mb-4">
+<span class="p-2 bg-warning-amber/10 text-warning-amber rounded-lg material-symbols-outlined">warning</span>
+<span class="text-secondary text-[12px] font-bold flex items-center">+12% <span class="material-symbols-outlined text-[16px]">trending_up</span></span>
+</div>
+<p class="text-on-surface-variant text-label-sm mb-1 uppercase tracking-tight">Active Abuse Reports</p>
+<h3 class="font-headline-lg text-headline-lg text-ink-slate">42</h3>
+</div>
+<div class="glass-card p-6 rounded-xl border border-outline-variant shadow-sm transition-transform hover:scale-[1.02] duration-300">
+<div class="flex items-center justify-between mb-4">
+<span class="p-2 bg-info-blue/10 text-info-blue rounded-lg material-symbols-outlined">outgoing_mail</span>
+<span class="text-danger-red text-[12px] font-bold flex items-center">-3% <span class="material-symbols-outlined text-[16px]">trending_down</span></span>
+</div>
+<p class="text-on-surface-variant text-label-sm mb-1 uppercase tracking-tight">Contact Requests</p>
+<h3 class="font-headline-lg text-headline-lg text-ink-slate">128</h3>
+</div>
+<div class="glass-card p-6 rounded-xl border border-outline-variant shadow-sm transition-transform hover:scale-[1.02] duration-300">
+<div class="flex items-center justify-between mb-4">
+<span class="p-2 bg-secondary/10 text-secondary rounded-lg material-symbols-outlined">storefront</span>
+<span class="text-secondary text-[12px] font-bold flex items-center">+5 <span class="material-symbols-outlined text-[16px]">add</span></span>
+</div>
+<p class="text-on-surface-variant text-label-sm mb-1 uppercase tracking-tight">Pending Resellers</p>
+<h3 class="font-headline-lg text-headline-lg text-ink-slate">15</h3>
+</div>
+<div class="glass-card p-6 rounded-xl border border-outline-variant shadow-sm transition-transform hover:scale-[1.02] duration-300">
+<div class="flex items-center justify-between mb-4">
+<span class="p-2 bg-primary/10 text-primary rounded-lg material-symbols-outlined">hub</span>
+<span class="text-on-surface-variant text-[12px] font-bold">Total</span>
+</div>
+<p class="text-on-surface-variant text-label-sm mb-1 uppercase tracking-tight">Verified Societies</p>
+<h3 class="font-headline-lg text-headline-lg text-ink-slate">89</h3>
+</div>
+</div>
+<!-- Tabbed Interface -->
+<div class="bg-surface rounded-2xl border border-outline-variant shadow-sm flex flex-col overflow-hidden">
+<div class="flex border-b border-outline-variant px-6">
+<button class="px-6 py-4 text-label-lg font-bold border-b-2 border-primary text-primary transition-all" id="tab-abuse" onclick="switchTab('abuse')">Abuse Reports</button>
+<button class="px-6 py-4 text-label-lg font-medium text-on-surface-variant hover:text-primary transition-all" id="tab-contact" onclick="switchTab('contact')">Contact Requests</button>
+<button class="px-6 py-4 text-label-lg font-medium text-on-surface-variant hover:text-primary transition-all" id="tab-reseller" onclick="switchTab('reseller')">Reseller Applications</button>
+<button class="px-6 py-4 text-label-lg font-medium text-on-surface-variant hover:text-primary transition-all" id="tab-societies" onclick="switchTab('societies')">Societies</button>
+</div>
+<div class="p-4 flex items-center justify-between bg-surface-container-low/30">
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-surface-container-highest rounded-full text-[12px] font-bold text-ink-slate">All (245)</span>
+<span class="px-3 py-1 hover:bg-surface-container-highest cursor-pointer rounded-full text-[12px] font-medium text-on-surface-variant">Reviewing (12)</span>
+<span class="px-3 py-1 hover:bg-surface-container-highest cursor-pointer rounded-full text-[12px] font-medium text-on-surface-variant">Resolved (180)</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-label-sm text-on-surface-variant">Showing 1-10 of 42</span>
+<div class="flex gap-1">
+<button class="p-1 rounded hover:bg-surface-container"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="p-1 rounded hover:bg-surface-container"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-lowest border-b border-outline-variant">
+<tr>
+<th class="px-6 py-4 font-label-lg text-on-surface-variant uppercase text-[11px] tracking-widest">Reporter / Subject</th>
+<th class="px-6 py-4 font-label-lg text-on-surface-variant uppercase text-[11px] tracking-widest">Type</th>
+<th class="px-6 py-4 font-label-lg text-on-surface-variant uppercase text-[11px] tracking-widest">Priority</th>
+<th class="px-6 py-4 font-label-lg text-on-surface-variant uppercase text-[11px] tracking-widest">Status</th>
+<th class="px-6 py-4 font-label-lg text-on-surface-variant uppercase text-[11px] tracking-widest">Date</th>
+<th class="px-6 py-4 font-label-lg text-on-surface-variant uppercase text-[11px] tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container-low/50 transition-colors cursor-pointer group" onclick="openDrawer('Report #AR-9402')">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-primary text-[12px]">JD</div>
+<div>
+<p class="font-label-lg text-ink-slate">John Doe</p>
+<p class="text-label-sm text-on-surface-variant">Hate Speech Violation</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4"><span class="text-label-sm">Community Abuse</span></td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-danger-red/10 text-danger-red text-[10px] font-bold rounded uppercase">High</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-warning-amber"></span>
+<span class="text-label-sm font-medium">Reviewing</span>
+</div>
+</td>
+<td class="px-6 py-4 text-label-sm text-on-surface-variant">Oct 12, 2023</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 opacity-0 group-hover:opacity-100 hover:bg-surface-container rounded-full transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Additional Rows -->
+<tr class="hover:bg-surface-container-low/50 transition-colors cursor-pointer group" onclick="openDrawer('Report #AR-9388')">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-primary text-[12px]">MS</div>
+<div>
+<p class="font-label-lg text-ink-slate">Maria Santos</p>
+<p class="text-label-sm text-on-surface-variant">Spam Content</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4"><span class="text-label-sm">Spam</span></td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-on-surface-variant/10 text-on-surface-variant text-[10px] font-bold rounded uppercase">Medium</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+<span class="text-label-sm font-medium">Pending</span>
+</div>
+</td>
+<td class="px-6 py-4 text-label-sm text-on-surface-variant">Oct 11, 2023</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 opacity-0 group-hover:opacity-100 hover:bg-surface-container rounded-full transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors cursor-pointer group" onclick="openDrawer('Report #AR-9345')">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-primary text-[12px]">RK</div>
+<div>
+<p class="font-label-lg text-ink-slate">Robert King</p>
+<p class="text-label-sm text-on-surface-variant">Copyright Infringement</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4"><span class="text-label-sm">IP Rights</span></td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-secondary/10 text-secondary text-[10px] font-bold rounded uppercase">Low</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-label-sm font-medium">Resolved</span>
+</div>
+</td>
+<td class="px-6 py-4 text-label-sm text-on-surface-variant">Oct 10, 2023</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 opacity-0 group-hover:opacity-100 hover:bg-surface-container rounded-full transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- Side Drawer (Slide-out) -->
+<div class="fixed inset-0 bg-ink-slate/20 backdrop-blur-[2px] z-[60] hidden opacity-0 transition-opacity duration-300 pointer-events-none" id="backdrop" onclick="closeDrawer()"></div>
+<aside class="fixed top-0 right-0 h-full w-[480px] bg-surface shadow-2xl z-[70] transform translate-x-full drawer-transition flex flex-col" id="report-drawer">
+<div class="p-6 border-b border-outline-variant flex items-center justify-between bg-surface-container-lowest">
+<div>
+<span class="text-label-sm font-bold text-primary uppercase tracking-widest" id="drawer-id">Report #AR-9402</span>
+<h3 class="font-headline-md text-headline-md text-ink-slate">Abuse Report Details</h3>
+</div>
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors" onclick="closeDrawer()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
+<!-- Summary Info -->
+<section class="grid grid-cols-2 gap-4">
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<p class="text-[10px] uppercase font-bold text-on-surface-variant mb-1">Status</p>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-warning-amber"></span>
+<span class="text-label-lg font-bold">Reviewing</span>
+</div>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<p class="text-[10px] uppercase font-bold text-on-surface-variant mb-1">Priority</p>
+<span class="px-2 py-0.5 bg-danger-red/10 text-danger-red text-[10px] font-bold rounded uppercase">Critical</span>
+</div>
+</section>
+<!-- Reporter Details -->
+<section>
+<h4 class="text-label-sm font-bold text-on-surface-variant uppercase mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">person</span> Reporter Information
+                </h4>
+<div class="flex items-center gap-4 p-4 rounded-xl border border-outline-variant">
+<img class="w-12 h-12 rounded-lg object-cover" data-alt="Close up profile picture of a user with a neutral and serious expression, set against a blurred city background. The lighting is natural and sophisticated, fitting into a high-end application interface. The color tones are warm and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxDLPK_PMxym8DBQvYv_cVVd2-htqaEtljqIW2wtHYq_K5NJTNzKpx2Td99ActAZqiH1v8kEPahps-AMomRuRWxL_KjAa0J0h7cCX-RO32GwafnAttoyn5z2Vbad22DBjJR5smKC91RFGY5ufxgrRF_qVNNLR6k87aVR8pdjGy6N9S5h8a93Lr_MduA1I1qRC5ul2oNqyQq8GlJzRXAWXeh2EmeVRuz85HrniCSOM7nns5tpRfaAtyaKTfpg_iGV_mTZSY4ZOKiHKO"/>
+<div>
+<p class="font-label-lg text-ink-slate">John Doe</p>
+<p class="text-body-sm text-on-surface-variant">john.doe@corporate.com</p>
+<p class="text-[10px] text-primary font-bold">Trust Level: Senior Contributor</p>
+</div>
+</div>
+</section>
+<!-- Report Content -->
+<section>
+<h4 class="text-label-sm font-bold text-on-surface-variant uppercase mb-3">Violation Details</h4>
+<div class="p-5 bg-surface-container-lowest border border-outline-variant rounded-xl leading-relaxed">
+<p class="text-body-md text-on-surface">"The user in question has been repeatedly posting content that violates our community guidelines regarding hate speech. Specifically, in the 'Societies' thread #129, multiple comments were made that target specific demographics. Attached evidence includes three screenshots of the deleted comments."</p>
+</div>
+</section>
+<!-- Evidence Gallery -->
+<section>
+<h4 class="text-label-sm font-bold text-on-surface-variant uppercase mb-3">Attached Evidence</h4>
+<div class="grid grid-cols-2 gap-3">
+<div class="relative group cursor-zoom-in">
+<img class="rounded-lg border border-outline-variant grayscale group-hover:grayscale-0 transition-all duration-300 h-32 w-full object-cover" data-alt="A screenshot of a digital dashboard interface showing analytics and data visualizations. The aesthetic is modern and minimalist with a dark-mode twist, featuring soft neon accents of teal and purple. High-quality UI design details are visible." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDKVlqP5vPxfjOrK498mnYr2YDLfcGNkXD2ADEIpAq6KPYoIlRbLoaEVKD90NGf_1iA1dhprzjG19cWX6USfwQBOfuOaFRTLZ79RjZ2PcMPxgfDbgn_LNv9tB-xAp91yFm9hERtKvya3py8M1kYt4qZB1yQ5VGZZWMXwmNS4LN0-P-h8dsM_pel5Ju4m69KvxdUK281b8wEG7-ssAaUi2Xq0qDH6ekk4kXPPKqegFRBim9Z5TsDLoyKbfX2-uYaYJdBoQeMh__2GFs"/>
+<span class="absolute bottom-2 right-2 bg-black/50 text-white text-[10px] px-2 py-1 rounded">evidence_01.jpg</span>
+</div>
+<div class="relative group cursor-zoom-in">
+<img class="rounded-lg border border-outline-variant grayscale group-hover:grayscale-0 transition-all duration-300 h-32 w-full object-cover" data-alt="Digital representation of complex data sets through clean, professional charts and graphs. The visual style is crisp, using a high-contrast palette of slate grey and pure white with teal data points. The mood is analytical and authoritative." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsXz7LpzqfatAbZ11KKVsnwztV9Eh1RVYKyhwNSxidM0KgwEv7I8I3RwLCoJbQgRmhU_b67n2-dieiHNq2a5TJKFp3Ms2IEQtmieiakRRAAxhs8DzMd8_ZP0NeGHHHD_GFBAz1VBPrJMYSov5s8oPuMml17JJr-MW2fglOrLUCCE-QMwx2_tqf-OWGzZAXHfoySWZAoaGk2pjFA9eMC2pNC51trcJMeYu42DTWceh5n_xT0CkET8c_0f9ON4ZH_Rf1tci0_a9IWWA9"/>
+<span class="absolute bottom-2 right-2 bg-black/50 text-white text-[10px] px-2 py-1 rounded">evidence_02.jpg</span>
+</div>
+</div>
+</section>
+<!-- Timeline/History -->
+<section>
+<h4 class="text-label-sm font-bold text-on-surface-variant uppercase mb-4">Activity Timeline</h4>
+<div class="space-y-4 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[1px] before:bg-outline-variant">
+<div class="relative pl-8">
+<div class="absolute left-0 top-1 w-[22px] h-[22px] rounded-full bg-surface-container-highest border-4 border-surface flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+</div>
+<p class="text-label-lg font-bold">Report Created</p>
+<p class="text-[11px] text-on-surface-variant">Oct 12, 2023 at 09:42 AM by John Doe</p>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-0 top-1 w-[22px] h-[22px] rounded-full bg-surface-container-highest border-4 border-surface flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-warning-amber"></span>
+</div>
+<p class="text-label-lg font-bold">Status changed to Reviewing</p>
+<p class="text-[11px] text-on-surface-variant">Oct 12, 2023 at 10:15 AM by System Bot</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Drawer Footer Actions -->
+<div class="p-6 border-t border-outline-variant bg-surface-container-low grid grid-cols-2 gap-4">
+<button class="px-4 py-2 border border-outline text-label-lg font-bold rounded-lg hover:bg-surface-container transition-colors" onclick="closeDrawer()">
+                Dismiss Report
+            </button>
+<button class="px-4 py-2 bg-primary text-on-primary text-label-lg font-bold rounded-lg shadow-sm hover:opacity-90 transition-all">
+                Mark Resolved
+            </button>
+</div>
+</aside>
+<script>
+        function openDrawer(id) {
+            const drawer = document.getElementById('report-drawer');
+            const backdrop = document.getElementById('backdrop');
+            const drawerIdLabel = document.getElementById('drawer-id');
+            
+            drawerIdLabel.textContent = id;
+            drawer.classList.remove('translate-x-full');
+            backdrop.classList.remove('hidden');
+            setTimeout(() => backdrop.classList.add('opacity-100'), 10);
+            backdrop.classList.add('pointer-events-auto');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDrawer() {
+            const drawer = document.getElementById('report-drawer');
+            const backdrop = document.getElementById('backdrop');
+            
+            drawer.classList.add('translate-x-full');
+            backdrop.classList.remove('opacity-100');
+            backdrop.classList.remove('pointer-events-auto');
+            setTimeout(() => backdrop.classList.add('hidden'), 300);
+            document.body.style.overflow = '';
+        }
+
+        function switchTab(tabId) {
+            const tabs = ['abuse', 'contact', 'reseller', 'societies'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('tab-' + t);
+                if (t === tabId) {
+                    btn.classList.add('border-b-2', 'border-primary', 'text-primary', 'font-bold');
+                    btn.classList.remove('text-on-surface-variant', 'font-medium');
+                } else {
+                    btn.classList.remove('border-b-2', 'border-primary', 'text-primary', 'font-bold');
+                    btn.classList.add('text-on-surface-variant', 'font-medium');
+                }
+            });
+            // Tab switching logic (content swap) would go here in a full app
+        }
+
+        // Add a subtle entrance animation to metrics
+        window.addEventListener('load', () => {
+            const metrics = document.querySelectorAll('.glass-card');
+            metrics.forEach((m, index) => {
+                m.style.opacity = '0';
+                m.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    m.style.transition = 'all 0.5s ease-out';
+                    m.style.opacity = '1';
+                    m.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body></html>

@@ -1,4 +1,4 @@
-# Security Checklist
+# NoNumQR Security Checklist
 
 - Use HTTPS through Caddy or another reverse proxy.
 - Set strong `JWT_SECRET`, `JWT_REFRESH_SECRET`, and `OTP_SECRET`.

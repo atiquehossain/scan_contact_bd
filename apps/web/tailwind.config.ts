@@ -5,13 +5,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        trust: "#0f766e",
-        leaf: "#16a34a",
-        signal: "#d97706",
-        ink: "#10201f"
+        trust: "var(--color-primary)",
+        leaf: "var(--color-secondary)",
+        signal: "var(--color-warning)",
+        ink: "var(--color-ink)",
+        surface: "var(--color-card-bg)",
+        page: "var(--color-page-bg)",
+        "page-soft": "var(--color-page-soft)",
+        muted: "var(--color-muted)",
+        border: "var(--color-border)",
+        info: "var(--color-info)",
+        danger: "var(--color-danger)"
+      },
+      borderRadius: {
+        soft: "var(--radius-card)",
+        card: "var(--radius-card-lg)",
+        hero: "var(--radius-hero)"
       },
       boxShadow: {
-        soft: "0 18px 40px rgba(16, 32, 31, 0.10)"
+        soft: "var(--shadow-card)",
+        lift: "var(--shadow-card-hover)"
+      },
+      fontFamily: {
+        sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"]
       }
     }
   },

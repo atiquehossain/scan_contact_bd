@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FAQ - Help Center | NoNumQR</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#924628",
+                        "secondary-container": "#a6f2d1",
+                        "surface-container-low": "#f2f3ff",
+                        "inverse-surface": "#283044",
+                        "background": "#faf8ff",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "surface-tint": "#006a61",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#131b2e",
+                        "inverse-on-surface": "#eef0ff",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#6bd8cb",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#1b6b51",
+                        "on-tertiary-fixed": "#370e00",
+                        "on-secondary-container": "#237157",
+                        "on-error": "#ffffff",
+                        "info-blue": "#2563EB",
+                        "surface-container": "#eaedff",
+                        "tertiary-container": "#b05e3d",
+                        "tertiary-fixed": "#ffdbce",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#002116",
+                        "warning-amber": "#D97706",
+                        "secondary-fixed-dim": "#8bd6b6",
+                        "on-error-container": "#93000a",
+                        "surface": "#faf8ff",
+                        "outline-variant": "#bcc9c6",
+                        "surface-variant": "#dae2fd",
+                        "on-primary-container": "#f4fffc",
+                        "surface-off-white": "#F8FAFC",
+                        "on-secondary-fixed-variant": "#00513b",
+                        "surface-dim": "#d2d9f4",
+                        "primary": "#00685f",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#a6f2d1",
+                        "primary-fixed": "#89f5e7",
+                        "on-surface": "#131b2e",
+                        "danger-red": "#DC2626",
+                        "surface-container-highest": "#dae2fd",
+                        "primary-container": "#008378",
+                        "on-surface-variant": "#3d4947",
+                        "surface-container-high": "#e2e7ff",
+                        "on-primary-fixed-variant": "#005049",
+                        "on-primary-fixed": "#00201d",
+                        "outline": "#6d7a77",
+                        "on-tertiary-fixed-variant": "#773215",
+                        "ink-slate": "#1E293B"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1200px",
+                        "stack-lg": "32px",
+                        "unit": "4px",
+                        "stack-md": "16px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-item.active .accordion-content {
+            max-height: 200px;
+            opacity: 1;
+        }
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col md:flex-row antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-gutter h-16 bg-surface shadow-sm">
+<div class="flex items-center gap-4">
+<!-- Mobile Menu Toggle (Decorative for this demo) -->
+<button class="md:hidden text-on-surface-variant p-2 -ml-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-headline-md text-headline-md font-bold text-primary tracking-tight">NoNumQR</div>
+</div>
+<div class="flex items-center gap-2">
+<button aria-label="notifications" class="p-2 rounded-full text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button aria-label="help" class="p-2 rounded-full text-primary bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button aria-label="settings" class="p-2 rounded-full text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<img alt="Admin Profile Avatar" class="w-8 h-8 rounded-full ml-2 border border-outline-variant/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZgiouZoeCLRAUpJlLagi5XmeYZdtEp9rp1SwlgLkMf8VVb17qlx6P7ugsBcQ62HNYoiSiFUAfo87zAqcfyiwbAFkbJIZKkZ684ADW0kHzPu2TThGW5CX5cS8dPtCX2P8cyZU70ZPHndWX5-H_GJCikRwTZnf5rkabVE6d7r5sGNhiXOf7OelgaGFHDDwdOcSiFI1TR5OUVHBfNztT7PMcBIXIml2zFjKiFU_GygHpefVDgYeog1bGETzFDToc3Gg4DViscYU3aDGr"/>
+</div>
+</header>
+<!-- SideNavBar (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col fixed left-0 top-16 bottom-0 w-64 p-4 z-40 bg-surface-off-white border-r border-outline-variant/20">
+<div class="mb-stack-lg px-4 pt-4">
+<div class="font-headline-md text-headline-md font-bold text-on-surface">Admin Console</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-1">Privacy &amp; Security Hub</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-lg text-label-lg rounded-lg py-3 px-4 mb-stack-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            Generate New QR
+        </button>
+<div class="flex-1 space-y-1 overflow-y-auto">
+<a class="flex items-center gap-3 text-on-surface-variant font-label-lg text-label-lg px-4 py-3 hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 text-on-surface-variant font-label-lg text-label-lg px-4 py-3 hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">qr_code_2</span>
+                QR Codes
+            </a>
+<a class="flex items-center gap-3 text-on-surface-variant font-label-lg text-label-lg px-4 py-3 hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">shield</span>
+                Privacy Vault
+            </a>
+<a class="flex items-center gap-3 text-on-surface-variant font-label-lg text-label-lg px-4 py-3 hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+                Communications
+            </a>
+<a class="flex items-center gap-3 text-on-surface-variant font-label-lg text-label-lg px-4 py-3 hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">local_shipping</span>
+                Orders
+            </a>
+<a class="flex items-center gap-3 text-on-surface-variant font-label-lg text-label-lg px-4 py-3 hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+                System Settings
+            </a>
+</div>
+<div class="mt-auto pt-4 border-t border-outline-variant/20 space-y-1">
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-lg px-4 py-3 font-label-lg text-label-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">help_outline</span>
+                Help Center
+            </a>
+<a class="flex items-center gap-3 text-on-surface-variant font-label-lg text-label-lg px-4 py-3 hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Sign Out
+            </a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 pt-16 md:pl-64 min-h-screen">
+<div class="max-w-3xl mx-auto px-margin-mobile md:px-gutter py-stack-lg md:py-16">
+<header class="mb-stack-lg text-center md:text-left">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface mb-2">Frequently Asked Questions</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Everything you need to know about NoNumQR's privacy-first communication platform.</p>
+</header>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.03)] border border-outline-variant/20 divide-y divide-outline-variant/10" id="faq-container">
+<!-- FAQ Item 1 -->
+<div class="accordion-item p-6">
+<button class="w-full flex justify-between items-center text-left focus:outline-none group">
+<span class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Will people see my phone number?</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary accordion-icon ml-4 flex-shrink-0">expand_more</span>
+</button>
+<div class="accordion-content">
+<p class="pt-4 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            No. Security through serenity is our core principle. Your personal phone number is never exposed. The QR code directs scanners to a secure, anonymous web interface where they can message you without ever seeing your actual contact details.
+                        </p>
+</div>
+</div>
+<!-- FAQ Item 2 -->
+<div class="accordion-item p-6">
+<button class="w-full flex justify-between items-center text-left focus:outline-none group">
+<span class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">What is inside the QR code?</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary accordion-icon ml-4 flex-shrink-0">expand_more</span>
+</button>
+<div class="accordion-content">
+<p class="pt-4 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            The QR code contains a unique, encrypted URL. When scanned, it acts as a secure bridge to our servers, routing the communication to your NoNumQR dashboard or app without transmitting any identifying personal data in the code itself.
+                        </p>
+</div>
+</div>
+<!-- FAQ Item 3 -->
+<div class="accordion-item p-6">
+<button class="w-full flex justify-between items-center text-left focus:outline-none group">
+<span class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Can a scanner continue the chat?</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary accordion-icon ml-4 flex-shrink-0">expand_more</span>
+</button>
+<div class="accordion-content">
+<p class="pt-4 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            Only as long as the session remains active. Once you close the conversation or the predefined time limit expires, the link becomes inactive. The scanner cannot initiate further contact using that specific session token.
+                        </p>
+</div>
+</div>
+<!-- FAQ Item 4 -->
+<div class="accordion-item p-6">
+<button class="w-full flex justify-between items-center text-left focus:outline-none group">
+<span class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Does the conversation expire?</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary accordion-icon ml-4 flex-shrink-0">expand_more</span>
+</button>
+<div class="accordion-content">
+<p class="pt-4 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            Yes. You have full control over the lifespan of your connections. You can configure QR codes to expire after a certain duration, after a single use, or manually terminate them at any time from your Privacy Vault.
+                        </p>
+</div>
+</div>
+<!-- FAQ Item 5 -->
+<div class="accordion-item p-6">
+<button class="w-full flex justify-between items-center text-left focus:outline-none group">
+<span class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Can I report abuse?</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary accordion-icon ml-4 flex-shrink-0">expand_more</span>
+</button>
+<div class="accordion-content">
+<p class="pt-4 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            Absolutely. Maintaining a respectful environment is paramount. You can instantly block any user and report abusive behavior directly from the chat interface. Our automated systems will flag the session and prevent future abuse.
+                        </p>
+</div>
+</div>
+<!-- FAQ Item 6 -->
+<div class="accordion-item p-6">
+<button class="w-full flex justify-between items-center text-left focus:outline-none group">
+<span class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Does NoNumQR support calls?</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary accordion-icon ml-4 flex-shrink-0">expand_more</span>
+</button>
+<div class="accordion-content">
+<p class="pt-4 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            We currently focus on asynchronous, text-based messaging to minimize intrusion and cognitive load. However, secure, anonymized VoIP calling is on our roadmap for enterprise tiers requiring immediate, voice-based resolution.
+                        </p>
+</div>
+</div>
+<!-- FAQ Item 7 -->
+<div class="accordion-item p-6">
+<button class="w-full flex justify-between items-center text-left focus:outline-none group">
+<span class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Is Cash on Delivery available?</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary accordion-icon ml-4 flex-shrink-0">expand_more</span>
+</button>
+<div class="accordion-content">
+<p class="pt-4 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            Cash on Delivery options are configurable within the "Orders" module for business accounts. You can enable or disable specific payment methods based on the nature of the transaction linked to the generated QR code.
+                        </p>
+</div>
+</div>
+<!-- FAQ Item 8 -->
+<div class="accordion-item p-6">
+<button class="w-full flex justify-between items-center text-left focus:outline-none group">
+<span class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Are online payments available?</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary accordion-icon ml-4 flex-shrink-0">expand_more</span>
+</button>
+<div class="accordion-content">
+<p class="pt-4 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            Yes. Verified merchant accounts can integrate secure payment gateways. This allows scanners to pay for services, tips, or goods directly through the anonymous chat interface via secure, tokenized payment links.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Still Need Help Contact Area -->
+<div class="mt-stack-lg bg-surface-container rounded-xl p-8 text-center border border-outline-variant/10">
+<span class="material-symbols-outlined text-[48px] text-primary mb-4" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Still need assistance?</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 max-w-md mx-auto">Our support team is ready to help resolve any specific issues or configuration questions.</p>
+<button class="bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg py-3 px-6 rounded-lg transition-colors inline-flex items-center gap-2 shadow-sm">
+                    Contact Support
+                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</main>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const accordionItems = document.querySelectorAll('.accordion-item');
+
+            accordionItems.forEach(item => {
+                const button = item.querySelector('button');
+                
+                button.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    
+                    // Close all items
+                    accordionItems.forEach(otherItem => {
+                        otherItem.classList.remove('active');
+                    });
+
+                    // If it wasn't active, open it
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body></html>

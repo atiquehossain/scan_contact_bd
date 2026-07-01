@@ -54,6 +54,6 @@ describe("production environment validation", () => {
   it("allows dev OTP exposure only for explicit local development", () => {
     expect(isLocalDevelopmentEnv({ nodeEnv: "development", appUrl: "http://localhost:3000", apiUrl: "http://localhost:4000" })).toBe(true);
     expect(isLocalDevelopmentEnv({ nodeEnv: "test", appUrl: "http://localhost:3000", apiUrl: "http://localhost:4000" })).toBe(false);
-    expect(isLocalDevelopmentEnv({ nodeEnv: "development", appUrl: "https://scancontact.example", apiUrl: "https://api.scancontact.example" })).toBe(false);
+    expect(isLocalDevelopmentEnv({ nodeEnv: "development", appUrl: "https://nonumqr.example", apiUrl: "https://api.nonumqr.example" })).toBe(false);
   });
 });

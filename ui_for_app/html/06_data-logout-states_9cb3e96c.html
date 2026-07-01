@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NoNumQR - Data Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#cfdaf2",
+                        "inverse-primary": "#8bd6b6",
+                        "surface-variant": "#d8e3fb",
+                        "secondary-fixed": "#89f5e7",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "surface-container-high": "#dee8ff",
+                        "inverse-surface": "#263143",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#dbe1ff",
+                        "secondary-container": "#86f2e4",
+                        "secondary": "#006a61",
+                        "on-primary-container": "#8bd6b7",
+                        "primary-fixed": "#a6f2d1",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#00174b",
+                        "on-surface": "#111c2d",
+                        "on-secondary-fixed-variant": "#005049",
+                        "on-primary-fixed-variant": "#00513b",
+                        "background": "#f9f9ff",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "error": "#ba1a1a",
+                        "primary": "#004532",
+                        "primary-container": "#065f46",
+                        "tertiary": "#003491",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "on-secondary-container": "#006f66",
+                        "surface-tint": "#1b6b51",
+                        "surface": "#f9f9ff",
+                        "surface-container": "#e7eeff",
+                        "on-background": "#111c2d",
+                        "tertiary-container": "#0049c3",
+                        "outline": "#6f7973",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#3f4944",
+                        "outline-variant": "#bec9c2",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-fixed": "#002116",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "on-tertiary-container": "#b5c6ff",
+                        "on-secondary-fixed": "#00201d",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter-mobile": "12px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "display-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .modal-enter { animation: modalEnter 0.3s ease-out forwards; }
+        @keyframes modalEnter {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .backdrop-blur-custom { backdrop-filter: blur(12px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-24">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-sm">
+<div class="flex justify-between items-center px-md h-16 w-full max-w-lg mx-auto">
+<button class="active:scale-95 transition-transform duration-200 text-primary p-2 rounded-full hover:bg-surface-variant/50">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-primary">Account</h1>
+<button class="active:scale-95 transition-transform duration-200 text-primary p-2 rounded-full hover:bg-surface-variant/50">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-md max-w-lg mx-auto space-y-lg">
+<!-- Profile Overview Section -->
+<section class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm">
+<div class="flex items-center gap-md">
+<div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-4xl" data-icon="person">person</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Alex Rivera</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">owner@nonumqr.com</p>
+</div>
+</div>
+</section>
+<!-- Data Management Section -->
+<section class="space-y-md">
+<h3 class="font-label-lg text-label-lg text-outline uppercase tracking-wider px-sm">Data Management</h3>
+<div class="grid grid-cols-1 gap-sm">
+<!-- Export Card -->
+<button class="group w-full flex items-center justify-between p-md bg-surface-container-lowest border border-outline-variant/30 rounded-xl hover:bg-surface-container-low transition-colors text-left active:scale-[0.98] duration-200" onclick="showToast('Preparing your data export...')">
+<div class="flex items-center gap-md">
+<div class="p-2 bg-primary-fixed text-on-primary-fixed rounded-lg">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</div>
+<div>
+<p class="font-title-lg text-on-surface">Export Data</p>
+<p class="font-body-md text-on-surface-variant">Download all your tags and activity logs.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Logout Card (Triggers Logout Modal) -->
+<button class="group w-full flex items-center justify-between p-md bg-surface-container-lowest border border-outline-variant/30 rounded-xl hover:bg-surface-container-low transition-colors text-left active:scale-[0.98] duration-200" onclick="toggleModal('logoutModal', true)">
+<div class="flex items-center gap-md">
+<div class="p-2 bg-surface-variant text-on-surface-variant rounded-lg">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+</div>
+<div>
+<p class="font-title-lg text-on-surface">Log Out</p>
+<p class="font-body-md text-on-surface-variant">Disconnect this device from your account.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Delete Account Card (Destructive) -->
+<button class="group w-full flex items-center justify-between p-md bg-error-container/20 border border-error/20 rounded-xl hover:bg-error-container/40 transition-colors text-left active:scale-[0.98] duration-200" onclick="toggleModal('deleteModal', true)">
+<div class="flex items-center gap-md">
+<div class="p-2 bg-error-container text-on-error-container rounded-lg">
+<span class="material-symbols-outlined" data-icon="delete_forever">delete_forever</span>
+</div>
+<div>
+<p class="font-title-lg text-on-error-container">Delete Account</p>
+<p class="font-body-md text-on-error-container/80">Permanently remove all your data.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-error/40 group-hover:translate-x-1 transition-transform" data-icon="warning">warning</span>
+</button>
+</div>
+</section>
+<!-- Privacy & Security Notice -->
+<section class="p-md bg-surface-container-high rounded-xl flex gap-md">
+<span class="material-symbols-outlined text-primary" data-icon="verified_user">verified_user</span>
+<p class="font-body-md text-on-surface-variant">Your privacy is our priority. NoNumQR does not sell your data or share your personal numbers with any third parties.</p>
+</section>
+</main>
+<!-- Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface/80 backdrop-blur-xl shadow-lg border-t border-outline-variant/30">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all duration-300 rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_2">qr_code_2</span>
+<span class="font-label-sm text-label-sm">Tags</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all duration-300 rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+<span class="font-label-sm text-label-sm">Shop</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all duration-300 rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="font-label-sm text-label-sm">Privacy</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm">Account</span>
+</a>
+</nav>
+<!-- Logout Modal -->
+<div class="fixed inset-0 z-[100] hidden" id="logoutModal">
+<div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm transition-opacity" onclick="toggleModal('logoutModal', false)"></div>
+<div class="absolute bottom-md left-md right-md sm:inset-0 sm:flex sm:items-center sm:justify-center">
+<div class="bg-surface-container-lowest rounded-xl shadow-2xl p-lg w-full max-w-sm mx-auto modal-enter">
+<div class="flex flex-col items-center text-center space-y-md">
+<div class="w-12 h-12 bg-surface-container-high text-on-surface-variant rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl" data-icon="logout">logout</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface">Log Out?</h4>
+<p class="font-body-md text-on-surface-variant mt-sm">This device will stop receiving push notifications after logout.</p>
+</div>
+<div class="w-full space-y-sm pt-md">
+<button class="w-full py-3 bg-secondary text-on-secondary rounded-full font-label-lg hover:shadow-lg transition-all active:scale-95" onclick="confirmLogout()">Logout</button>
+<button class="w-full py-3 bg-surface-container-high text-on-surface-variant rounded-full font-label-lg hover:bg-surface-container-highest transition-all active:scale-95" onclick="toggleModal('logoutModal', false)">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Account Deletion Modal -->
+<div class="fixed inset-0 z-[100] hidden" id="deleteModal">
+<div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm transition-opacity" onclick="toggleModal('deleteModal', false)"></div>
+<div class="absolute bottom-md left-md right-md sm:inset-0 sm:flex sm:items-center sm:justify-center">
+<div class="bg-surface-container-lowest rounded-xl shadow-2xl p-lg w-full max-w-sm mx-auto modal-enter border-t-4 border-error">
+<div class="flex flex-col items-center text-center space-y-md">
+<div class="w-12 h-12 bg-error-container text-on-error-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-error">Delete Account?</h4>
+<p class="font-body-md text-on-surface-variant mt-sm">This action is permanent. All your tags will be deactivated and data will be wiped.</p>
+</div>
+<div class="w-full space-y-sm pt-md">
+<button class="w-full py-3 bg-error text-on-error rounded-full font-label-lg hover:bg-on-error-container transition-all active:scale-95" onclick="confirmDelete()">Delete Permanently</button>
+<button class="w-full py-3 bg-surface-container-high text-on-surface-variant rounded-full font-label-lg hover:bg-surface-container-highest transition-all active:scale-95" onclick="toggleModal('deleteModal', false)">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Toast Component -->
+<div class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-on-surface text-surface py-2 px-6 rounded-full font-label-md shadow-lg transition-all opacity-0 pointer-events-none translate-y-4 z-[110]" id="toast">
+        Action successful
+    </div>
+<script>
+        function toggleModal(id, show) {
+            const modal = document.getElementById(id);
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+            toast.classList.add('opacity-1', 'translate-y-0');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+                toast.classList.remove('opacity-1', 'translate-y-0');
+            }, 3000);
+        }
+
+        function confirmLogout() {
+            toggleModal('logoutModal', false);
+            showToast('Logging out...');
+            // In a real app, logic to clear tokens would go here
+        }
+
+        function confirmDelete() {
+            toggleModal('deleteModal', false);
+            showToast('Account scheduled for deletion.');
+        }
+    </script>
+</body></html>

@@ -1,5 +1,7 @@
 # Dependencies
 node_modules/
+.npm/
+.pnpm-store/
 .pnp/
 .pnp.js
 
@@ -17,14 +19,18 @@ yarn-error.log*
 pnpm-debug.log*
 .api-*.log
 .web-*.log
+*.err.log
 
 # Node / Next.js / TypeScript
 .next/
+.nuxt/
 out/
 dist/
 build/
 coverage/
 *.tsbuildinfo
+.eslintcache
+.parcel-cache/
 .turbo/
 .vercel/
 
@@ -39,21 +45,25 @@ coverage/
 .packages
 .flutter-plugins
 .flutter-plugins-dependencies
-apps/mobile/build/
-apps/mobile/.dart_tool/
-apps/mobile/.metadata
-apps/mobile/android/.gradle/
-apps/mobile/android/local.properties
-apps/mobile/android/key.properties
-apps/mobile/android/app/google-services.json
-apps/mobile/android/app/*.jks
-apps/mobile/android/app/*.keystore
-apps/mobile/android/app/release/
-apps/mobile/ios/Pods/
-apps/mobile/ios/.symlinks/
-apps/mobile/ios/Flutter/ephemeral/
-apps/mobile/ios/Flutter/Generated.xcconfig
-apps/mobile/ios/Flutter/flutter_export_environment.sh
+**/.dart_tool/
+**/.metadata
+**/build/
+**/android/.gradle/
+**/android/local.properties
+**/android/key.properties
+**/android/app/google-services.json
+**/android/app/*.jks
+**/android/app/*.keystore
+**/android/app/release/
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/macos/Pods/
+**/macos/.symlinks/
+**/linux/flutter/ephemeral/
+**/windows/flutter/ephemeral/
 
 # Local runtime data
 tmp/
@@ -69,5 +79,6 @@ uploads/
 Thumbs.db
 .idea/
 .vscode/
+*.iml
 *.swp
 *.swo

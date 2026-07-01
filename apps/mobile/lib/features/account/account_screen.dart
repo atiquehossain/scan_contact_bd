@@ -61,7 +61,7 @@ class AccountScreen extends ConsumerWidget {
                   leading: Icon(Icons.health_and_safety_outlined),
                   title: Text('Privacy & safety'),
                   subtitle: Text(
-                    'Your phone number is hidden from scanners inside ScanContact BD.',
+                    'Your phone number is hidden from scanners inside NoNumQR.',
                   ),
                 ),
               ],

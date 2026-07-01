@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:scancontact_bd/core/config/app_config.dart';
-import 'package:scancontact_bd/features/auth/auth_screen.dart';
+import 'package:nonumqr_owner/core/config/app_config.dart';
+import 'package:nonumqr_owner/features/auth/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

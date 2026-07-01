@@ -26,16 +26,16 @@ export function hashNetworkValue(value?: string): string | undefined {
 export function signAccessToken(userId: string, roles: string[] = []): string {
   return jwt.sign({ roles }, env.jwtSecret, {
     subject: userId,
-    issuer: "scancontact-bd",
-    audience: "scancontact-users",
+    issuer: "nonumqr",
+    audience: "nonumqr-users",
     expiresIn: "15m"
   });
 }
 
 export function verifyAccessToken(token: string): { sub: string; roles?: string[] } {
   const decoded = jwt.verify(token, env.jwtSecret, {
-    issuer: "scancontact-bd",
-    audience: "scancontact-users"
+    issuer: "nonumqr",
+    audience: "nonumqr-users"
   });
   if (!decoded || typeof decoded !== "object" || !decoded.sub) {
     throw new Error("Invalid token");

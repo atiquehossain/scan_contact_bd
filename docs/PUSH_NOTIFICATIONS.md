@@ -1,4 +1,4 @@
-# Push Notification Integration Guide
+# NoNumQR Push Notification Integration Guide
 
 In-app notifications work first and are stored in PostgreSQL. Android push uses optional Firebase Cloud Messaging (FCM). The app still works if push is disabled or not configured.
 
@@ -13,7 +13,7 @@ apps/mobile/android/app/google-services.json
 This file is ignored by git. The current local file is for package:
 
 ```text
-com.example.scancontact_bd
+com.nonumqr.owner
 ```
 
 If the Android `applicationId` changes later, create a new Firebase Android app and download a matching `google-services.json`.
@@ -35,9 +35,9 @@ POST /devices/register
 You should see debug logs like:
 
 ```text
-[ScanContact Push] Firebase initialized
-[ScanContact Push] permission=authorized
-[ScanContact Push] device token registered token=xxxxxxx...xxxxx
+[NoNumQR Push] Firebase initialized
+[NoNumQR Push] permission=authorized
+[NoNumQR Push] device token registered token=xxxxxxx...xxxxx
 ```
 
 ## Backend sending

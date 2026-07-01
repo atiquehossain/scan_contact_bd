@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>NoNumQR Owner Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#1b6b51",
+                        "on-primary-fixed-variant": "#00513b",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#00201d",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "secondary": "#006a61",
+                        "background": "#f9f9ff",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#8bd6b6",
+                        "on-primary-fixed": "#002116",
+                        "surface-container": "#e7eeff",
+                        "surface-container-high": "#dee8ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#a6f2d1",
+                        "on-surface-variant": "#3f4944",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "outline-variant": "#bec9c2",
+                        "error": "#ba1a1a",
+                        "tertiary": "#003491",
+                        "surface-variant": "#d8e3fb",
+                        "outline": "#6f7973",
+                        "tertiary-fixed": "#dbe1ff",
+                        "on-secondary-fixed-variant": "#005049",
+                        "inverse-surface": "#263143",
+                        "surface-container-low": "#f0f3ff",
+                        "on-primary-container": "#8bd6b7",
+                        "primary": "#004532",
+                        "tertiary-container": "#0049c3",
+                        "surface-dim": "#cfdaf2",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f9f9ff",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary-container": "#006f66",
+                        "secondary-container": "#86f2e4",
+                        "primary-container": "#065f46",
+                        "secondary-fixed": "#89f5e7",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "on-tertiary-container": "#b5c6ff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-background": "#111c2d",
+                        "on-surface": "#111c2d",
+                        "on-tertiary-fixed": "#00174b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "gutter-mobile": "12px"
+                    },
+                    "fontFamily": {
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "display-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .safe-pb {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-xl border-b border-outline-variant/30">
+<div class="flex items-center justify-between px-md h-16 w-full max-w-screen-xl mx-auto">
+<button class="material-symbols-outlined text-primary dark:text-primary-fixed p-2 hover:bg-surface-variant/50 transition-colors active:scale-95 transition-transform" data-icon="arrow_back">arrow_back</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">NoNumQR Owner</h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</div>
+</header>
+<main class="pt-20 pb-28 px-md max-w-screen-xl mx-auto space-y-lg">
+<!-- Greeting Section -->
+<section class="animate-in fade-in duration-700">
+<h2 class="font-headline-lg text-headline-lg text-primary">Welcome, Alex</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Your secure communication hub is ready.</p>
+</section>
+<!-- Privacy Status Card -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.03)] flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+<span class="font-label-lg text-label-lg text-on-surface">Privacy Protection: <span class="text-secondary font-bold">ACTIVE</span></span>
+</div>
+<span class="material-symbols-outlined text-secondary" data-icon="verified_user">verified_user</span>
+</div>
+<!-- Quick Stats Grid (Empty State) -->
+<div class="grid grid-cols-2 gap-md">
+<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/20">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Active Tags</p>
+<p class="font-display-sm text-display-sm text-primary mt-xs">0</p>
+</div>
+<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/20">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Requests</p>
+<p class="font-display-sm text-display-sm text-outline mt-xs">0</p>
+</div>
+</div>
+<!-- Empty State Hero Card -->
+<section class="relative overflow-hidden bg-primary rounded-2xl p-lg text-white shadow-lg">
+<div class="relative z-10 space-y-md">
+<div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-4xl" data-icon="qr_code_scanner">qr_code_scanner</span>
+</div>
+<div>
+<h3 class="font-headline-lg text-headline-lg text-white">Get Started with NoNumQR</h3>
+<p class="font-body-md text-body-md text-primary-fixed mt-sm opacity-90">
+                        You haven't added any QR tags yet. Order your first tag to start receiving private requests without sharing your phone number.
+                    </p>
+</div>
+<button class="w-full bg-white text-primary font-title-lg py-3 rounded-xl active:scale-95 transition-transform shadow-md">
+                    Buy QR Tag
+                </button>
+</div>
+<!-- Decorative background elements -->
+<div class="absolute -right-8 -bottom-8 w-48 h-48 bg-primary-container rounded-full blur-3xl opacity-30"></div>
+<div class="absolute -left-12 -top-12 w-32 h-32 bg-secondary-container rounded-full blur-2xl opacity-20"></div>
+</section>
+<!-- Quick Actions List -->
+<section class="space-y-sm">
+<h4 class="font-label-lg text-label-lg text-on-surface-variant px-sm">Quick Actions</h4>
+<div class="grid grid-cols-1 gap-sm">
+<button class="flex items-center gap-md p-md bg-white border border-outline-variant/30 rounded-xl hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined text-primary bg-primary-fixed/30 p-2 rounded-lg" data-icon="shopping_cart">shopping_cart</span>
+<div class="text-left">
+<p class="font-label-lg text-label-lg">Order New Tags</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Get physical stickers or cards</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-outline" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="flex items-center gap-md p-md bg-white border border-outline-variant/30 rounded-xl hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined text-secondary bg-secondary-container/30 p-2 rounded-lg" data-icon="add_a_photo">add_a_photo</span>
+<div class="text-left">
+<p class="font-label-lg text-label-lg">Scan NoNumQR</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Activate a tag you already own</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-outline" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- Illustration/Mood Image -->
+<div class="rounded-2xl overflow-hidden aspect-video shadow-sm border border-outline-variant/20">
+<img alt="Privacy Illustration" class="w-full h-full object-cover" data-alt="A professional, clean digital illustration of a smartphone displaying a stylized QR code with an emerald green glow. In the background, a minimalist office workspace with soft morning light filtering through a window, creating a serene and trustworthy atmosphere. The overall style is high-end minimalism with a focus on deep emerald greens, soft whites, and slate grays, conveying security and modern professional efficiency." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC59juX32TjFznFi_6mtUEnU2yQWUdWHLRRM2GxTWq0v4Z57kkv9M-H7MOpA7O3O7lV2NnTmIH0wFNywOwWDfa7Tn4kVmnBfCne2sW0i3I5Z4DFb2_LWVrC2SOe-BVwOEjSM71lkwFEYg9_dA10k_W4pQqn9CGdmS8ANK6DiEt8iugq70OIiSx-ogGqhm0R7I513yJ4Hqe3KXDkhiJc8ExyzHxRtBTcw9uy-KTJay0_5N3IbDfVzLheAkRwi4wWASeyo_QDBTSZZgc"/>
+</div>
+<!-- Footer Tip -->
+<footer class="text-center py-lg space-y-sm">
+<div class="flex items-center justify-center gap-xs text-primary/60">
+<span class="material-symbols-outlined text-sm" data-icon="lock">lock</span>
+<p class="font-label-sm text-label-sm">Your privacy is our priority. Your number stays hidden.</p>
+</div>
+</footer>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface/90 dark:bg-surface-container-highest/90 backdrop-blur-lg shadow-[0_-4px_12px_rgba(0,0,0,0.03)] dark:shadow-none">
+<div class="flex justify-around items-center h-20 px-4 pb-safe-area w-full">
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed bg-secondary-container/30 dark:bg-secondary-container/10 rounded-full px-4 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-secondary-container/20 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label-md text-label-md">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-secondary-container/20 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-secondary-container/20 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+</nav>
+<script>
+        // Simple scroll behavior for the TopAppBar
+        let lastScrollTop = 0;
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > 10) {
+                header.classList.add('shadow-sm');
+            } else {
+                header.classList.remove('shadow-sm');
+            }
+            lastScrollTop = scrollTop;
+        });
+
+        // Click interaction for cards
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Potential for adding micro-feedback here
+            });
+        });
+    </script>
+</body></html>

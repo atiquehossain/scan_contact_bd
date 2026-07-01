@@ -168,8 +168,8 @@ const pinLoginLimiter = rateLimit({
 });
 
 const privateResponseKeys = new Set(["passwordHash", "pinHash"]);
-const accessCookieName = "scancontact_access";
-const refreshCookieName = "scancontact_refresh";
+const accessCookieName = "nonumqr_access";
+const refreshCookieName = "nonumqr_refresh";
 
 function isPrivateResponseKey(key: string) {
   return privateResponseKeys.has(key) || key.endsWith("Hash");
@@ -291,7 +291,7 @@ function debugLog(area: string, fields: Record<string, unknown> = {}) {
       return `${key}=${JSON.stringify(value)}`;
     })
     .join(" ");
-  console.info(`[ScanContact Debug] ${area}${details ? ` ${details}` : ""}`);
+  console.info(`[NoNumQR Debug] ${area}${details ? ` ${details}` : ""}`);
 }
 
 type OwnerPushPayload = {
@@ -570,7 +570,7 @@ function configuredIceServers(now = new Date()): IceServerDto[] {
     const ttlSeconds =
       Number.isFinite(env.webrtcTurnTtlSeconds) && env.webrtcTurnTtlSeconds > 0 ? env.webrtcTurnTtlSeconds : 3600;
     const expiresAt = Math.floor(now.getTime() / 1000) + ttlSeconds;
-    const username = `${expiresAt}:scancontact`;
+    const username = `${expiresAt}:nonumqr`;
     const credential = createHmac("sha1", env.webrtcTurnSharedSecret).update(username).digest("base64");
     servers.push({ urls: iceUrls(turnUrls), username, credential, credentialType: "password" });
     return servers;
@@ -1457,7 +1457,7 @@ async function makeSafePublicTag(slug: string) {
 }
 
 app.get("/health", (_req, res) => {
-  res.json({ ok: true, service: "scancontact-api", time: new Date().toISOString() });
+  res.json({ ok: true, service: "nonumqr-api", time: new Date().toISOString() });
 });
 
 app.post(
@@ -4280,6 +4280,6 @@ export { app, isPublicTagActive, safePublicTagDto };
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(env.port, () => {
-    console.info(`ScanContact BD API listening on http://localhost:${env.port}`);
+    console.info(`NoNumQR API listening on http://localhost:${env.port}`);
   });
 }

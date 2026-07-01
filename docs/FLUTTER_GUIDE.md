@@ -1,6 +1,6 @@
-# Flutter Owner App Setup Guide
+# NoNumQR Flutter Owner App Setup Guide
 
-The separate owner app lives in `apps/owner_app`. It is the owner-facing app for login/signup, assigned QR tags, notifications, private chat, and COD QR sticker orders.
+The current owner app lives in `apps/mobile`. It is the owner-facing app for login/signup, assigned QR tags, notifications, private chat, and COD QR sticker orders.
 
 - OTP login/signup with the owner phone number
 - Secure token storage with Flutter Secure Storage
@@ -12,16 +12,16 @@ The separate owner app lives in `apps/owner_app`. It is the owner-facing app for
 ## Android
 
 ```bash
-cd apps/owner_app
-flutter run --dart-define=APP_NAME="ScanContact Owner" --dart-define=API_BASE_URL=http://10.0.2.2:4000
+cd apps/mobile
+flutter run --dart-define=APP_NAME="NoNumQR Owner" --dart-define=API_BASE_URL=http://10.0.2.2:4000
 flutter build apk --release --obfuscate --split-debug-info=build/debug-info
 ```
 
 ## iOS
 
 ```bash
-cd apps/owner_app
-flutter run -d ios --dart-define=APP_NAME="ScanContact Owner" --dart-define=API_BASE_URL=http://localhost:4000
+cd apps/mobile
+flutter run -d ios --dart-define=APP_NAME="NoNumQR Owner" --dart-define=API_BASE_URL=http://localhost:4000
 flutter build ios --release --obfuscate --split-debug-info=build/debug-info
 ```
 

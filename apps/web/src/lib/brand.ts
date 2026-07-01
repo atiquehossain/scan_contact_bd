@@ -1,4 +1,6 @@
-export const BRAND_PROMISE = "Scan QR. Contact privately. Phone numbers stay hidden.";
+export const BRAND_NAME = "NoNumQR";
+export const BRAND_PROMISE = "Contact without revealing your number.";
+export const BRAND_TAGLINE = "Private QR contact for cars, bikes, homes, shops, and lost items.";
 export const PRIVATE_QR_CONTACT = "Private QR Contact";
 
 const internalLabelPattern = /\b(debug|test|demo|dummy|sample|flow)\b/i;

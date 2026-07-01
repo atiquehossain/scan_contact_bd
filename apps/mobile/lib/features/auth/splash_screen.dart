@@ -6,6 +6,7 @@ import '../../core/config/app_config.dart';
 import '../../core/network/api_client.dart';
 import '../../core/push/push_notification_service.dart';
 import '../../core/services/owner_services.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_widgets.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -62,34 +63,93 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const ScanContactBrandMark(),
-                const SizedBox(height: 16),
-                Text(
-                  AppConfig.appName,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w900,
-                  ),
+        child: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFFF0FDFA), AppColors.page],
+            ),
+          ),
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSpacing.xxl),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 360),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const NoNumQRBrandMark(size: 88),
+                    const SizedBox(height: AppSpacing.xxl),
+                    Text(
+                      AppConfig.appName,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.charcoal,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'Private QR contact, made simple.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.slate,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.section),
+                    AppSurface(
+                      padding: const EdgeInsets.all(AppSpacing.xl),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (validating) ...[
+                            const SizedBox.square(
+                              dimension: 34,
+                              child: CircularProgressIndicator(strokeWidth: 3),
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            Text(
+                              'Checking secure session',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: AppColors.slate,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                            ),
+                          ],
+                          if (error != null) ...[
+                            AppInfoBanner(
+                              title: 'No connection',
+                              message: error!,
+                              icon: Icons.wifi_off_outlined,
+                              tone: AppBannerTone.warning,
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            PrimaryButton(
+                              label: 'Retry',
+                              icon: Icons.refresh,
+                              onPressed: validateSession,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxl),
+                    Text(
+                      'Secure owner access',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color: AppColors.muted,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 6),
-                const Text('Private QR contact for owners'),
-                const SizedBox(height: 20),
-                if (validating) const CircularProgressIndicator(),
-                if (error != null) ...[
-                  Text(error!, textAlign: TextAlign.center),
-                  const SizedBox(height: 16),
-                  FilledButton.icon(
-                    onPressed: validateSession,
-                    icon: const Icon(Icons.refresh),
-                    label: const Text('Retry'),
-                  ),
-                ],
-              ],
+              ),
             ),
           ),
         ),

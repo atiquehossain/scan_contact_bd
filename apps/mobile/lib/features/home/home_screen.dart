@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/models/owner_models.dart';
 import '../../core/network/api_client.dart';
 import '../../core/services/owner_services.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_widgets.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -25,7 +27,7 @@ class HomeScreen extends ConsumerWidget {
     final dashboard = ref.watch(dashboardProvider);
 
     return dashboard.when(
-      loading: () => const AppLoadingView(label: 'Loading dashboard...'),
+      loading: () => const AppSkeletonList(),
       error: (error, _) => AppErrorView(
         message: apiErrorMessage(error),
         onRetry: () => ref.invalidate(dashboardProvider),
@@ -36,59 +38,45 @@ class HomeScreen extends ConsumerWidget {
           padding: appPadding,
           children: [
             owner.maybeWhen(
-              data: (profile) => Text(
-                'Hello, ${profile.name}',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w900,
-                ),
+              data: (profile) => _DashboardHero(
+                ownerName: profile.name,
+                activeQrCount: data.activeQrCount,
+                unreadRequestCount: data.unreadRequestCount,
+                onScan: () => context.push('/scan'),
               ),
-              orElse: () => Text(
-                'Hello, Owner',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w900,
-                ),
+              orElse: () => _DashboardHero(
+                ownerName: 'Owner',
+                activeQrCount: data.activeQrCount,
+                unreadRequestCount: data.unreadRequestCount,
+                onScan: () => context.push('/scan'),
               ),
             ),
-            const SizedBox(height: 4),
-            const Text('Your phone stays hidden from scanners.'),
-            const SizedBox(height: 16),
-            _PriorityCard(
-              data: data,
-              onOpenRequests: () => onOpenTab(2),
-              onBuyQr: () => context.push('/shop'),
-              onOpenOrders: () => context.push('/orders'),
+            const SizedBox(height: AppSpacing.lg),
+            const PrivacyNoticeCard(
+              title: 'Privacy status',
+              message: 'Your phone number is hidden by default.',
             ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton.icon(
-                    onPressed: () => context.push('/scan'),
-                    icon: const Icon(Icons.qr_code_scanner),
-                    label: const Text('Scan QR'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => context.push('/shop'),
-                    icon: const Icon(Icons.shopping_bag_outlined),
-                    label: const Text('Buy QR Tag'),
-                  ),
-                ),
-              ],
+            const SizedBox(height: AppSpacing.md),
+            const AppInfoBanner(
+              title: 'Owner tip',
+              message:
+                  'Reply privately. Scanners do not see your phone number.',
+              icon: Icons.lock_outline,
+              tone: AppBannerTone.info,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
+            const AppSectionHeader(title: 'Today at a glance'),
+            const SizedBox(height: AppSpacing.sm),
             GridView.count(
               crossAxisCount: 2,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
+              mainAxisSpacing: AppSpacing.md,
+              crossAxisSpacing: AppSpacing.md,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              childAspectRatio: 1.2,
+              childAspectRatio: 1.08,
               children: [
                 StatCard(
-                  label: 'Active tags',
+                  label: 'Active QR tags',
                   value: '${data.activeQrCount}',
                   icon: Icons.qr_code_2,
                 ),
@@ -101,31 +89,67 @@ class HomeScreen extends ConsumerWidget {
                   label: 'Unread requests',
                   value: '${data.unreadRequestCount}',
                   icon: Icons.markunread_outlined,
+                  accent: AppColors.info,
                 ),
                 StatCard(
-                  label: 'Alerts',
+                  label: 'Unread alerts',
                   value: '${data.unreadNotificationCount}',
                   icon: Icons.notifications_outlined,
+                  accent: AppColors.amber,
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            Row(
+            const SizedBox(height: AppSpacing.lg),
+            _PriorityCard(
+              data: data,
+              onOpenRequests: () => onOpenTab(2),
+              onBuyQr: () => context.push('/shop'),
+              onOpenOrders: () => context.push('/orders'),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            const AppSectionHeader(title: 'Quick actions'),
+            const SizedBox(height: AppSpacing.sm),
+            GridView.count(
+              crossAxisCount: 2,
+              mainAxisSpacing: AppSpacing.md,
+              crossAxisSpacing: AppSpacing.md,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              childAspectRatio: 1.72,
               children: [
-                Expanded(
-                  child: Text(
-                    'Recent private requests',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
+                QuickActionTile(
+                  icon: Icons.qr_code_2_outlined,
+                  label: 'My QR Tags',
+                  subtitle: 'Preview links',
+                  onTap: () => onOpenTab(1),
                 ),
-                TextButton(
-                  onPressed: () => onOpenTab(2),
-                  child: const Text('View all'),
+                QuickActionTile(
+                  icon: Icons.forum_outlined,
+                  label: 'Private Requests',
+                  subtitle: 'Reply privately',
+                  onTap: () => onOpenTab(2),
+                ),
+                QuickActionTile(
+                  icon: Icons.shopping_bag_outlined,
+                  label: 'Buy QR Tag',
+                  subtitle: 'COD available',
+                  onTap: () => context.push('/shop'),
+                ),
+                QuickActionTile(
+                  icon: Icons.qr_code_scanner,
+                  label: 'Scan a NoNumQR',
+                  subtitle: 'Open contact page',
+                  onTap: () => context.push('/scan'),
                 ),
               ],
             ),
+            const SizedBox(height: AppSpacing.lg),
+            AppSectionHeader(
+              title: 'Recent private requests',
+              actionLabel: 'View all',
+              onAction: () => onOpenTab(2),
+            ),
+            const SizedBox(height: AppSpacing.sm),
             if (data.recentRequests.isEmpty)
               const AppEmptyState(
                 icon: Icons.forum_outlined,
@@ -143,23 +167,151 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ),
             if (data.latestOrder != null) ...[
-              const SizedBox(height: 8),
-              Text(
-                'Latest order',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+              const SizedBox(height: AppSpacing.sm),
+              AppSectionHeader(
+                title: 'Latest order',
+                actionLabel: 'Orders',
+                onAction: () => context.push('/orders'),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               OrderStatusCard(
                 order: data.latestOrder!,
                 onTap: () => context.push('/orders'),
               ),
             ],
-            const SizedBox(height: 16),
-            const PrivacyNoticeCard(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _DashboardHero extends StatelessWidget {
+  const _DashboardHero({
+    required this.ownerName,
+    required this.activeQrCount,
+    required this.unreadRequestCount,
+    required this.onScan,
+  });
+
+  final String ownerName;
+  final int activeQrCount;
+  final int unreadRequestCount;
+  final VoidCallback onScan;
+
+  @override
+  Widget build(BuildContext context) {
+    final safeName = ownerName.trim().isEmpty ? 'Owner' : ownerName.trim();
+    return AppSurface(
+      color: AppColors.charcoal,
+      borderColor: AppColors.emeraldDark,
+      boxShadow: AppShadows.card,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: AppColors.emeraldSoft,
+                  borderRadius: BorderRadius.circular(AppRadii.md),
+                ),
+                child: const Icon(
+                  Icons.qr_code_2,
+                  color: AppColors.emeraldDark,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Hello, $safeName',
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                          ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'Manage private QR contact from your phone.',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.78),
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              IconButton.filledTonal(
+                tooltip: 'Scan a NoNumQR',
+                onPressed: onScan,
+                icon: const Icon(Icons.qr_code_scanner),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: [
+              _HeroPill(
+                icon: Icons.visibility_off_outlined,
+                label: 'Phone hidden',
+              ),
+              _HeroPill(
+                icon: Icons.qr_code_2_outlined,
+                label: '$activeQrCount active tags',
+              ),
+              _HeroPill(
+                icon: Icons.markunread_outlined,
+                label: '$unreadRequestCount unread',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeroPill extends StatelessWidget {
+  const _HeroPill({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppRadii.pill),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: AppColors.tealSoft),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -173,7 +325,7 @@ class _PriorityCard extends StatelessWidget {
     required this.onOpenOrders,
   });
 
-  final dynamic data;
+  final OwnerDashboard data;
   final VoidCallback onOpenRequests;
   final VoidCallback onBuyQr;
   final VoidCallback onOpenOrders;
@@ -181,29 +333,35 @@ class _PriorityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (data.unreadRequestCount > 0) {
-      return Card(
-        color: Theme.of(context).colorScheme.primaryContainer,
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'You have ${data.unreadRequestCount} new private request(s)',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
-              ),
-              const SizedBox(height: 8),
-              const Text('Reply privately without showing your phone number.'),
-              const SizedBox(height: 16),
-              FilledButton.icon(
+      return AppSurface(
+        color: AppColors.emeraldSoft,
+        borderColor: AppColors.tealSoft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            StatusChip(
+              label: '${data.unreadRequestCount} unread',
+              icon: Icons.markunread_outlined,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'New private requests need attention',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            const Text('Reply privately. Your phone number stays hidden.'),
+            const SizedBox(height: AppSpacing.lg),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
                 onPressed: onOpenRequests,
                 icon: const Icon(Icons.forum),
                 label: const Text('Open private chats'),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     }
@@ -213,14 +371,12 @@ class _PriorityCard extends StatelessWidget {
     if (!data.hasAssignedQr && data.latestOrder != null) {
       return OrderStatusCard(order: data.latestOrder!, onTap: onOpenOrders);
     }
-    return const Card(
-      child: ListTile(
-        leading: Icon(Icons.check_circle_outline),
-        title: Text('No new private requests'),
-        subtitle: Text(
-          'You are all caught up. We will show scan/contact updates here.',
-        ),
-      ),
+    return const AppInfoBanner(
+      title: 'No new private requests',
+      message:
+          'You are all caught up. Scan and contact updates will appear here.',
+      icon: Icons.check_circle_outline,
+      tone: AppBannerTone.success,
     );
   }
 }
@@ -232,34 +388,35 @@ class _NoQrCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'No QR tag yet',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Order a QR tag so people can contact you privately. After admin prints and assigns it to your phone number, it will appear here.',
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              '1. Order QR tag\n2. Admin prints and assigns it\n3. You receive private requests',
-            ),
-            const SizedBox(height: 16),
-            FilledButton.icon(
+    return AppSurface(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const StatusChip(
+            label: 'Setup needed',
+            icon: Icons.qr_code_2_outlined,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'No QR tag yet',
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          const Text(
+            'Order a QR tag so people can contact you privately. Your QR tag will be assigned after order processing.',
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
               onPressed: onBuyQr,
               icon: const Icon(Icons.shopping_bag_outlined),
               label: const Text('Buy QR Tag'),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

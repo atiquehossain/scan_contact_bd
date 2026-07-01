@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notification Settings - NoNumQR</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#cfdaf2",
+                        "inverse-primary": "#8bd6b6",
+                        "surface-variant": "#d8e3fb",
+                        "secondary-fixed": "#89f5e7",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "surface-container-high": "#dee8ff",
+                        "inverse-surface": "#263143",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#dbe1ff",
+                        "secondary-container": "#86f2e4",
+                        "secondary": "#006a61",
+                        "on-primary-container": "#8bd6b7",
+                        "primary-fixed": "#a6f2d1",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#00174b",
+                        "on-surface": "#111c2d",
+                        "on-secondary-fixed-variant": "#005049",
+                        "on-primary-fixed-variant": "#00513b",
+                        "background": "#f9f9ff",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "error": "#ba1a1a",
+                        "primary": "#004532",
+                        "primary-container": "#065f46",
+                        "tertiary": "#003491",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "on-secondary-container": "#006f66",
+                        "surface-tint": "#1b6b51",
+                        "surface": "#f9f9ff",
+                        "surface-container": "#e7eeff",
+                        "on-background": "#111c2d",
+                        "tertiary-container": "#0049c3",
+                        "outline": "#6f7973",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#3f4944",
+                        "outline-variant": "#bec9c2",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-fixed": "#002116",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "on-tertiary-container": "#b5c6ff",
+                        "on-secondary-fixed": "#00201d",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter-mobile": "12px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "display-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #f9f9ff; }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #bec9c2;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input:checked + .slider { background-color: #006a61; }
+        input:checked + .slider:before { transform: translateX(20px); }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-sm h-16">
+<div class="flex justify-between items-center px-md h-full w-full max-w-lg mx-auto">
+<button class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform" data-icon="arrow_back">arrow_back</button>
+<h1 class="font-title-lg text-title-lg text-on-surface">Notifications</h1>
+<button class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform" data-icon="account_circle">account_circle</button>
+</div>
+</header>
+<main class="pt-20 pb-24 px-md max-w-lg mx-auto space-y-md">
+<!-- Master Toggle Card -->
+<section class="glass-card rounded-xl p-md flex items-center justify-between shadow-sm border border-outline-variant/30">
+<div>
+<h2 class="font-headline-md text-headline-md text-primary">Push Notifications</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Enable all alert sounds and badges</p>
+</div>
+<label class="switch">
+<input checked="" onchange="toggleMaster(this)" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</section>
+<!-- Granular Controls -->
+<div class="space-y-sm transition-opacity duration-300" id="granular-controls">
+<h3 class="font-label-lg text-label-lg text-on-surface-variant px-sm pt-md">Alert Categories</h3>
+<!-- Request Alerts -->
+<div class="bg-surface-container-lowest rounded-xl p-md flex items-start gap-md border border-outline-variant/20 shadow-sm">
+<span class="material-symbols-outlined text-secondary pt-1" data-icon="qr_code_scanner">qr_code_scanner</span>
+<div class="flex-1">
+<div class="flex justify-between items-center">
+<span class="font-title-lg text-on-surface">Request Alerts</span>
+<label class="switch">
+<input checked="" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Get notified when someone scans your NoNumQR tag.</p>
+</div>
+</div>
+<!-- Message Alerts -->
+<div class="bg-surface-container-lowest rounded-xl p-md flex items-start gap-md border border-outline-variant/20 shadow-sm">
+<span class="material-symbols-outlined text-secondary pt-1" data-icon="chat_bubble">chat_bubble</span>
+<div class="flex-1">
+<div class="flex justify-between items-center">
+<span class="font-title-lg text-on-surface">Message Alerts</span>
+<label class="switch">
+<input checked="" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Direct inquiries from people who found your contact info.</p>
+</div>
+</div>
+<!-- Call Alerts -->
+<div class="bg-surface-container-lowest rounded-xl p-md flex items-start gap-md border border-outline-variant/20 shadow-sm">
+<span class="material-symbols-outlined text-secondary pt-1" data-icon="call">call</span>
+<div class="flex-1">
+<div class="flex justify-between items-center">
+<span class="font-title-lg text-on-surface">Call Alerts</span>
+<label class="switch">
+<input checked="" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Alerts for inbound anonymous calls through the platform.</p>
+</div>
+</div>
+<!-- Order Alerts -->
+<div class="bg-surface-container-lowest rounded-xl p-md flex items-start gap-md border border-outline-variant/20 shadow-sm">
+<span class="material-symbols-outlined text-secondary pt-1" data-icon="shopping_cart">shopping_cart</span>
+<div class="flex-1">
+<div class="flex justify-between items-center">
+<span class="font-title-lg text-on-surface">Order Alerts</span>
+<label class="switch">
+<input checked="" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Status updates on your replacement tags and premium upgrades.</p>
+</div>
+</div>
+<!-- System Alerts -->
+<div class="bg-surface-container-lowest rounded-xl p-md flex items-start gap-md border border-outline-variant/20 shadow-sm">
+<span class="material-symbols-outlined text-secondary pt-1" data-icon="settings_suggest">settings_suggest</span>
+<div class="flex-1">
+<div class="flex justify-between items-center">
+<span class="font-title-lg text-on-surface">System Alerts</span>
+<label class="switch">
+<input checked="" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Important security updates and account maintenance info.</p>
+</div>
+</div>
+</div>
+<!-- Illustration Card (Bento Style) -->
+<div class="relative overflow-hidden rounded-xl bg-primary-container p-lg h-40 flex items-end">
+<div class="absolute top-0 right-0 p-4 opacity-20">
+<span class="material-symbols-outlined text-[120px]" data-icon="notifications_active">notifications_active</span>
+</div>
+<div class="relative z-10">
+<h4 class="font-headline-md text-headline-md text-on-primary-container">Stay Secure</h4>
+<p class="font-body-md text-on-primary-container/80">Real-time alerts help you respond to scans immediately.</p>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-t border-outline-variant/30 shadow-lg">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full px-4 py-1 transition-all">
+<span class="material-symbols-outlined" data-icon="qr_code_2">qr_code_2</span>
+<span class="font-label-sm text-label-sm">Tags</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full px-4 py-1 transition-all">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+<span class="font-label-sm text-label-sm">Shop</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full px-4 py-1 transition-all">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="font-label-sm text-label-sm">Privacy</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 transition-all">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Account</span>
+</div>
+</nav>
+<script>
+        function toggleMaster(checkbox) {
+            const container = document.getElementById('granular-controls');
+            const inputs = container.querySelectorAll('input[type="checkbox"]');
+            
+            if (checkbox.checked) {
+                container.style.opacity = '1';
+                container.style.pointerEvents = 'auto';
+                inputs.forEach(input => input.checked = true);
+            } else {
+                container.style.opacity = '0.5';
+                container.style.pointerEvents = 'none';
+                inputs.forEach(input => input.checked = false);
+            }
+        }
+
+        // Simple haptic-like effect for toggles
+        document.querySelectorAll('.switch input').forEach(input => {
+            input.addEventListener('change', () => {
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate(10);
+                }
+            });
+        });
+    </script>
+</body></html>

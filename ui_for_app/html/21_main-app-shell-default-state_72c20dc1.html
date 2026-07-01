@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>NoNumQR Owner Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-glass {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-high": "#dee8ff",
+                      "on-tertiary-container": "#b5c6ff",
+                      "on-tertiary-fixed": "#00174b",
+                      "surface-variant": "#d8e3fb",
+                      "on-secondary-fixed-variant": "#005049",
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed": "#00201d",
+                      "secondary": "#006a61",
+                      "primary": "#004532",
+                      "on-primary-container": "#8bd6b7",
+                      "tertiary-container": "#0049c3",
+                      "surface-tint": "#1b6b51",
+                      "primary-container": "#065f46",
+                      "tertiary-fixed-dim": "#b4c5ff",
+                      "surface-dim": "#cfdaf2",
+                      "outline-variant": "#bec9c2",
+                      "on-surface": "#111c2d",
+                      "on-secondary-container": "#006f66",
+                      "secondary-fixed": "#89f5e7",
+                      "tertiary": "#003491",
+                      "primary-fixed-dim": "#8bd6b6",
+                      "background": "#f9f9ff",
+                      "primary-fixed": "#a6f2d1",
+                      "surface-container-highest": "#d8e3fb",
+                      "secondary-container": "#86f2e4",
+                      "on-surface-variant": "#3f4944",
+                      "secondary-fixed-dim": "#6bd8cb",
+                      "on-tertiary": "#ffffff",
+                      "surface-container": "#e7eeff",
+                      "error-container": "#ffdad6",
+                      "error": "#ba1a1a",
+                      "surface-bright": "#f9f9ff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed": "#002116",
+                      "inverse-on-surface": "#ecf1ff",
+                      "on-secondary": "#ffffff",
+                      "inverse-surface": "#263143",
+                      "tertiary-fixed": "#dbe1ff",
+                      "on-primary": "#ffffff",
+                      "outline": "#6f7973",
+                      "surface-container-low": "#f0f3ff",
+                      "surface": "#f9f9ff",
+                      "on-tertiary-fixed-variant": "#003ea8",
+                      "inverse-primary": "#8bd6b6",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed-variant": "#00513b",
+                      "on-background": "#111c2d"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "xs": "4px",
+                      "md": "16px",
+                      "lg": "24px",
+                      "gutter-mobile": "12px",
+                      "xl": "32px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "display-sm": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "title-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar Shell -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl docked full-width top-0 sticky z-50 bg-surface/80 shadow-sm">
+<div class="flex justify-between items-center px-margin-mobile h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" data-icon="security">security</span>
+<h1 class="font-display-sm text-display-sm font-bold text-primary dark:text-primary-fixed">NoNumQR Owner</h1>
+</div>
+<div class="relative active:scale-95 duration-150 transition-transform cursor-pointer">
+<span class="material-symbols-outlined text-on-surface-variant dark:text-outline" data-icon="notifications">notifications</span>
+<span class="absolute top-0.5 right-0.5 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow px-margin-mobile pt-lg pb-xl space-y-lg max-w-7xl mx-auto w-full">
+<!-- Welcome Section -->
+<section class="space-y-xs">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Welcome back, Sarah</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Here is what's happening with your tags today.</p>
+</section>
+<!-- Summary Card: Bento Style -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Primary Summary Card -->
+<div class="col-span-1 md:col-span-2 p-lg bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-sm space-y-lg">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<p class="font-label-lg text-label-lg text-on-surface-variant">Active QR Tags</p>
+<p class="font-display-sm text-display-sm text-primary">24 Active</p>
+</div>
+<div class="bg-primary-container p-sm rounded-lg">
+<span class="material-symbols-outlined text-on-primary-fixed-variant" data-icon="qr_code_2">qr_code_2</span>
+</div>
+</div>
+<div class="h-[120px] w-full bg-surface-container-low rounded-lg relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent"></div>
+<!-- Placeholder for dynamic chart/graphic -->
+<div class="absolute bottom-0 left-0 right-0 h-16 flex items-end px-md pb-md gap-2">
+<div class="flex-1 bg-primary/20 h-8 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-12 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/60 h-16 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/30 h-10 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/50 h-14 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/80 h-20 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-12 rounded-t-sm"></div>
+</div>
+</div>
+</div>
+<!-- Secondary Detail Card -->
+<div class="p-lg bg-secondary-container text-on-secondary-container rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<span class="material-symbols-outlined" data-icon="privacy_tip">privacy_tip</span>
+<p class="mt-md font-title-lg text-title-lg">Privacy Guard</p>
+<p class="font-body-md text-body-md opacity-80">98.2% of interactions were securely handled this week.</p>
+</div>
+<button class="mt-lg w-full py-md bg-on-secondary-container text-secondary-container font-label-lg text-label-lg rounded-full active:scale-95 transition-transform">
+                    View Security Audit
+                </button>
+</div>
+</div>
+<!-- Recent Activity Header -->
+<div class="flex justify-between items-center pt-md">
+<h3 class="font-title-lg text-title-lg text-on-surface">Quick Actions</h3>
+<button class="font-label-lg text-label-lg text-primary hover:underline">See all</button>
+</div>
+<!-- Action Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+<div class="p-md bg-surface-container-lowest border border-outline-variant/30 rounded-xl flex flex-col items-center text-center gap-sm hover:bg-surface-variant/50 transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="add_circle">add_circle</span>
+</div>
+<p class="font-label-md text-label-md">New Tag</p>
+</div>
+<div class="p-md bg-surface-container-lowest border border-outline-variant/30 rounded-xl flex flex-col items-center text-center gap-sm hover:bg-surface-variant/50 transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="inventory">inventory</span>
+</div>
+<p class="font-label-md text-label-md">Manage</p>
+</div>
+<div class="p-md bg-surface-container-lowest border border-outline-variant/30 rounded-xl flex flex-col items-center text-center gap-sm hover:bg-surface-variant/50 transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="analytics">analytics</span>
+</div>
+<p class="font-label-md text-label-md">Analytics</p>
+</div>
+<div class="p-md bg-surface-container-lowest border border-outline-variant/30 rounded-xl flex flex-col items-center text-center gap-sm hover:bg-surface-variant/50 transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="support_agent">support_agent</span>
+</div>
+<p class="font-label-md text-label-md">Support</p>
+</div>
+</div>
+<!-- Image Decoration / Context -->
+<div class="relative w-full h-48 rounded-xl overflow-hidden mt-xl">
+<img class="w-full h-full object-cover" data-alt="A sophisticated macro photograph of a sleek, minimalist carbon fiber tag with a laser-etched QR code. The tag sits on a polished marble surface in a high-end, contemporary workspace. The lighting is dramatic and directional, creating deep emerald shadows and crisp highlights. The overall atmosphere is one of professional security, quiet luxury, and advanced technological reliability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfNw4XFkxRsZwT6HxGQjef2lu2MbuNv2hby1ERXk2dclWR_xssLg5KUH8yWAHNIEGNMFLaH9GzJ158qwpYB4zS0fj2BSXhpxoQ5ucqrfKfrpIDdpP8663vruFHYVjL7Q7_aR0Z7Ooftajam6YAenowjwOqxEkpGhchomSiarE9PhTkkp-XLlHFqmZ-MrdIF5KzMSPS6QUwjy7f-FfCpPNkjW98dOgKAQQDds60RgGnjmBVYqKMIJSYVkX-FygjKor2XQNW2SSr9Bk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-lg">
+<p class="text-white font-title-lg text-title-lg">Secure Your Assets</p>
+<p class="text-white/80 font-body-md text-body-md">Order custom physical tags for your high-value equipment.</p>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-margin-mobile w-14 h-14 bg-primary text-on-primary rounded-xl shadow-lg flex items-center justify-center active:scale-90 duration-200 z-40">
+<span class="material-symbols-outlined !text-[28px]" data-icon="qr_code_scanner">qr_code_scanner</span>
+</button>
+<!-- BottomNavBar Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface dark:bg-surface-container-lowest border-t border-outline-variant/30 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] px-2 pt-2 pb-safe">
+<div class="flex justify-around items-center w-full max-w-7xl mx-auto">
+<!-- Home: Active -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<!-- Tags -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant rounded-full px-4 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="label">label</span>
+<span class="font-label-sm text-label-sm">Tags</span>
+</a>
+<!-- Requests -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant rounded-full px-4 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="solicit">call_to_action</span>
+<span class="font-label-sm text-label-sm">Requests</span>
+</a>
+<!-- Alerts -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant rounded-full px-4 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<!-- Account -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant rounded-full px-4 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Account</span>
+</a>
+</div>
+</nav>
+<!-- Spacer for Bottom Nav and FAB -->
+<div class="h-24"></div>
+<script>
+        // Simple micro-interaction for cards
+        document.querySelectorAll('.active\\:scale-95').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.classList.add('scale-95');
+            });
+            button.addEventListener('mouseup', () => {
+                button.classList.remove('scale-95');
+            });
+            button.addEventListener('mouseleave', () => {
+                button.classList.remove('scale-95');
+            });
+        });
+    </script>
+</body></html>

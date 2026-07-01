@@ -73,6 +73,8 @@ class QrTag {
     required this.scanCount,
     required this.publicUrl,
     required this.qrImageUrl,
+    this.lastScannedAt,
+    this.createdAt,
   });
 
   final String id;
@@ -82,6 +84,8 @@ class QrTag {
   final int scanCount;
   final String publicUrl;
   final String qrImageUrl;
+  final DateTime? lastScannedAt;
+  final DateTime? createdAt;
 
   factory QrTag.fromJson(Map<String, dynamic> json) {
     return QrTag(
@@ -92,6 +96,8 @@ class QrTag {
       scanCount: (json['scanCount'] as num?)?.toInt() ?? 0,
       publicUrl: json['publicUrl']?.toString() ?? '',
       qrImageUrl: json['qrImageUrl']?.toString() ?? '',
+      lastScannedAt: DateTime.tryParse(json['lastScannedAt']?.toString() ?? ''),
+      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),
     );
   }
 }
@@ -108,8 +114,11 @@ class ContactRequestSummary {
     required this.status,
     required this.canReply,
     this.scannerName,
+    this.tagType,
+    this.lastActivityAt,
     this.expiresAt,
     this.expiredAt,
+    this.closedAt,
     this.deleteAt,
   });
 
@@ -123,8 +132,11 @@ class ContactRequestSummary {
   final String status;
   final bool canReply;
   final String? scannerName;
+  final String? tagType;
+  final DateTime? lastActivityAt;
   final DateTime? expiresAt;
   final DateTime? expiredAt;
+  final DateTime? closedAt;
   final DateTime? deleteAt;
 
   bool get isExpired => status.toLowerCase() == 'expired';
@@ -146,8 +158,13 @@ class ContactRequestSummary {
       status: json['status']?.toString() ?? 'open',
       canReply: json['canReply'] != false,
       scannerName: json['scannerName']?.toString(),
+      tagType: json['tagType']?.toString(),
+      lastActivityAt: DateTime.tryParse(
+        json['lastActivityAt']?.toString() ?? '',
+      ),
       expiresAt: DateTime.tryParse(json['expiresAt']?.toString() ?? ''),
       expiredAt: DateTime.tryParse(json['expiredAt']?.toString() ?? ''),
+      closedAt: DateTime.tryParse(json['closedAt']?.toString() ?? ''),
       deleteAt: DateTime.tryParse(json['deleteAt']?.toString() ?? ''),
     );
   }
@@ -271,6 +288,8 @@ class OwnerOrder {
     required this.productName,
     required this.priceBdt,
     required this.createdAt,
+    this.paymentStatus,
+    this.deliveryStatus,
   });
 
   final String id;
@@ -280,6 +299,8 @@ class OwnerOrder {
   final String productName;
   final int priceBdt;
   final DateTime createdAt;
+  final String? paymentStatus;
+  final String? deliveryStatus;
 
   factory OwnerOrder.fromJson(Map<String, dynamic> json) {
     return OwnerOrder(
@@ -292,6 +313,8 @@ class OwnerOrder {
       createdAt:
           DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
           DateTime.now(),
+      paymentStatus: json['paymentStatus']?.toString(),
+      deliveryStatus: json['deliveryStatus']?.toString(),
     );
   }
 }

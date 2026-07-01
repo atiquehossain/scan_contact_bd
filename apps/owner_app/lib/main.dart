@@ -8,7 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-const appName = String.fromEnvironment('APP_NAME', defaultValue: 'ScanContact Owner');
+const appName = String.fromEnvironment('APP_NAME', defaultValue: 'NoNumQR Owner');
 const apiBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: 'http://10.0.2.2:4000');
 
 void main() {
@@ -650,7 +650,7 @@ class _AccountScreenState extends State<AccountScreen> {
           const Card(
             child: Padding(
               padding: EdgeInsets.all(16),
-              child: Text('Privacy default: your phone number is hidden from scanners. Chat stays inside ScanContact unless you choose another channel.'),
+              child: Text('Privacy default: your phone number is hidden from scanners. Chat stays inside NoNumQR unless you choose another channel.'),
             ),
           ),
           const SizedBox(height: 12),

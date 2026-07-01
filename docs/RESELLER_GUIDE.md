@@ -1,4 +1,4 @@
-# Reseller Guide
+# NoNumQR Reseller Guide
 
 1. Login as a user.
 2. Apply from the reseller panel.

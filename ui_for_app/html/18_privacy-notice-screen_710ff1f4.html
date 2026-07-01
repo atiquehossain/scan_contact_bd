@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NoNumQR - Privacy &amp; Security</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error-container": "#93000a",
+                      "surface-dim": "#cfdaf2",
+                      "inverse-primary": "#8bd6b6",
+                      "surface-variant": "#d8e3fb",
+                      "secondary-fixed": "#89f5e7",
+                      "surface-container-low": "#f0f3ff",
+                      "on-tertiary-fixed-variant": "#003ea8",
+                      "surface-container-high": "#dee8ff",
+                      "inverse-surface": "#263143",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed": "#dbe1ff",
+                      "secondary-container": "#86f2e4",
+                      "secondary": "#006a61",
+                      "on-primary-container": "#8bd6b7",
+                      "primary-fixed": "#a6f2d1",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-fixed": "#00174b",
+                      "on-surface": "#111c2d",
+                      "on-secondary-fixed-variant": "#005049",
+                      "on-primary-fixed-variant": "#00513b",
+                      "background": "#f9f9ff",
+                      "tertiary-fixed-dim": "#b4c5ff",
+                      "error": "#ba1a1a",
+                      "primary": "#004532",
+                      "primary-container": "#065f46",
+                      "tertiary": "#003491",
+                      "secondary-fixed-dim": "#6bd8cb",
+                      "on-secondary-container": "#006f66",
+                      "surface-tint": "#1b6b51",
+                      "surface": "#f9f9ff",
+                      "surface-container": "#e7eeff",
+                      "on-background": "#111c2d",
+                      "tertiary-container": "#0049c3",
+                      "outline": "#6f7973",
+                      "on-tertiary": "#ffffff",
+                      "inverse-on-surface": "#ecf1ff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-surface-variant": "#3f4944",
+                      "outline-variant": "#bec9c2",
+                      "error-container": "#ffdad6",
+                      "surface-bright": "#f9f9ff",
+                      "on-primary-fixed": "#002116",
+                      "primary-fixed-dim": "#8bd6b6",
+                      "on-tertiary-container": "#b5c6ff",
+                      "on-secondary-fixed": "#00201d",
+                      "surface-container-highest": "#d8e3fb",
+                      "on-error": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "xl": "32px",
+                      "xs": "4px",
+                      "sm": "8px",
+                      "md": "16px",
+                      "gutter-mobile": "12px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "label-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "display-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                      "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl shadow-sm h-16 flex justify-center items-center">
+<div class="flex justify-between items-center px-md h-full w-full max-w-lg mx-auto">
+<button class="p-2 hover:bg-surface-variant/50 active:scale-95 transition-transform duration-200 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-primary">Privacy &amp; Security</h1>
+<button class="p-2 hover:bg-surface-variant/50 active:scale-95 transition-transform duration-200 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<main class="pt-24 px-md max-w-lg mx-auto space-y-lg">
+<!-- Hero Header -->
+<section class="text-center space-y-sm mb-xl">
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary-container text-on-secondary-container mb-md">
+<span class="material-symbols-outlined text-[32px]" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Your Identity, Protected</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[280px] mx-auto">
+                NoNumQR is built on a foundation of absolute privacy. We ensure you stay in control of your personal data at all times.
+            </p>
+</section>
+<!-- Privacy Pillars (Bento-style layout) -->
+<div class="grid grid-cols-1 gap-md">
+<!-- Public Anonymity -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm flex items-start gap-md">
+<div class="p-3 bg-primary-fixed text-on-primary-fixed rounded-lg">
+<span class="material-symbols-outlined" data-icon="visibility_off">visibility_off</span>
+</div>
+<div class="space-y-xs">
+<h3 class="font-label-lg text-label-lg text-on-surface">Public Anonymity</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Your generated QR codes contain only a temporary, secure URL. No personal information is embedded in the code itself.
+                    </p>
+</div>
+</div>
+<!-- Hidden Identity -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm flex items-start gap-md">
+<div class="p-3 bg-secondary-fixed text-on-secondary-fixed rounded-lg">
+<span class="material-symbols-outlined" data-icon="shield_person">shield_person</span>
+</div>
+<div class="space-y-xs">
+<h3 class="font-label-lg text-label-lg text-on-surface">Hidden Identity</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Your phone number is hidden by default. Scanners can only communicate with you through our secure relay system.
+                    </p>
+</div>
+</div>
+<!-- Secure Comms -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm flex items-start gap-md">
+<div class="p-3 bg-tertiary-fixed text-on-tertiary-fixed rounded-lg">
+<span class="material-symbols-outlined" data-icon="lock_clock">lock_clock</span>
+</div>
+<div class="space-y-xs">
+<h3 class="font-label-lg text-label-lg text-on-surface">Secure Comms</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        All scanner conversations are token-protected and automatically expire after a set period of inactivity.
+                    </p>
+</div>
+</div>
+<!-- Abuse Protection -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm flex items-start gap-md">
+<div class="p-3 bg-error-container text-on-error-container rounded-lg">
+<span class="material-symbols-outlined" data-icon="gpp_bad">gpp_bad</span>
+</div>
+<div class="space-y-xs">
+<h3 class="font-label-lg text-label-lg text-on-surface">Abuse Protection</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Integrated tools allow you to instantly block suspicious scanners and report abusive interactions to our safety team.
+                    </p>
+</div>
+</div>
+</div>
+<!-- Visual Trust Element -->
+<div class="relative overflow-hidden rounded-xl h-48 bg-primary mt-lg group">
+<img class="w-full h-full object-cover opacity-50 mix-blend-overlay" data-alt="A high-tech digital security landscape with glowing green data streams and geometric patterns floating in a deep dark space. The aesthetic is professional, futuristic, and calm, using a palette of deep emerald and black to signify strength and reliability in cyber protection. The lighting is low-key with vibrant luminous accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4YqwaL4EwCHLDiaTJvIiK9XuUiyWY2rzZmWc0ssqU_5-TPddscN4qkbSkEM0RYqPFr7iuCDWN7EE6u0KojS-pU4DaQxTsmqKKaGqzukESQde3SdGmeUnPobISoHXTiJfOV9fpa6-uuSTKwiyNqMLLTv09sOUQL92nZB-o9WlFj5-YxW4X_gp8oi8UIT1F-ls8w_WX-4u_ghCw11MW3GpnJ0DX9vUZfnrEIAaaTOeGvqJ24T07eTtbk1YkQVdDAu9tdK9g7n3QKdc"/>
+<div class="absolute inset-0 flex flex-col items-center justify-center p-md text-center">
+<span class="font-label-sm text-label-sm text-primary-fixed-dim uppercase tracking-widest mb-2">End-to-End Protection</span>
+<p class="font-title-lg text-title-lg text-on-primary">Encrypted. Anonymous. Safe.</p>
+</div>
+</div>
+<!-- Data Controls -->
+<section class="space-y-md pt-lg">
+<h4 class="font-label-lg text-label-lg text-on-surface-variant px-sm">Data Management</h4>
+<div class="space-y-sm">
+<button class="w-full flex items-center justify-between p-md bg-surface-container rounded-xl hover:bg-surface-container-high transition-colors active:scale-[0.98]">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="file_download">file_download</span>
+<span class="font-body-lg text-body-lg text-on-surface">Request Data Export</span>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-md bg-error-container/20 border border-error/10 rounded-xl hover:bg-error-container/30 transition-colors active:scale-[0.98]">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-error" data-icon="delete_forever">delete_forever</span>
+<span class="font-body-lg text-body-lg text-error">Request Account Deletion</span>
+</div>
+<span class="material-symbols-outlined text-error" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant text-center px-lg py-md">
+                Account deletion is permanent and will remove all QR links and associated data within 30 days.
+            </p>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-t border-outline-variant/30 shadow-lg flex justify-around items-center px-4 pb-4 pt-2">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_2">qr_code_2</span>
+<span class="font-label-sm text-label-sm">Tags</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+<span class="font-label-sm text-label-sm">Shop</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="font-label-sm text-label-sm">Privacy</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Account</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('click', (e) => {
+                // Haptic feedback simulation if applicable or just visual ripple logic
+            });
+        });
+
+        // Simple scroll behavior for header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 10) {
+                header.classList.add('shadow-md');
+            } else {
+                header.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body></html>

@@ -1,6 +1,6 @@
-# ScanContact BD Owner App
+# NoNumQR Owner App
 
-Flutter owner app for ScanContact BD. Owners use this app to sign in with OTP,
+Flutter owner app for NoNumQR. Owners use this app to sign in with OTP,
 view assigned QR tags, receive private scanner requests, and reply without
 showing their phone number.
 
@@ -17,7 +17,7 @@ Web: http://10.0.2.2:3000
 Run from the mobile app directory:
 
 ```powershell
-cd C:\Users\atique.hossain\StudioProjects\ScanContact\apps\mobile
+cd C:\Users\atique.hossain\StudioProjects\NoNumQR\apps\mobile
 flutter run
 ```
 
@@ -44,12 +44,12 @@ release. The Android release build also validates these dart-defines during
 the Gradle build and fails if either URL is missing or not HTTPS.
 
 ```powershell
-$env:SCANCONTACT_APPLICATION_ID = "com.yourcompany.scancontact.owner"
+$env:NONUMQR_APPLICATION_ID = "com.yourcompany.nonumqr.owner"
 
 flutter build appbundle --release `
   --dart-define=ENVIRONMENT=production `
-  --dart-define=API_BASE_URL=https://api.your-domain.example `
-  --dart-define=WEB_BASE_URL=https://app.your-domain.example `
+  --dart-define=API_BASE_URL=https://api.nonumqr.com `
+  --dart-define=WEB_BASE_URL=https://nonumqr.com `
   --dart-define=ENABLE_PUSH=true `
   --dart-define=ENABLE_ANALYTICS=true
 ```
@@ -60,11 +60,11 @@ URLs must use `https://`.
 ## Android Application ID
 
 The Gradle build reads the permanent Play Store application ID from
-`SCANCONTACT_APPLICATION_ID`. Set it either as an environment variable, as shown
+`NONUMQR_APPLICATION_ID`. Set it either as an environment variable, as shown
 above, or as a Gradle property in `android/gradle.properties`:
 
 ```properties
-SCANCONTACT_APPLICATION_ID=com.yourcompany.scancontact.owner
+NONUMQR_APPLICATION_ID=com.yourcompany.nonumqr.owner
 ```
 
 Choose this before the first Play release. The package name cannot be changed

@@ -1,6 +1,8 @@
-# Database Notes
+# NoNumQR Database Notes
 
 The Prisma schema in `apps/api/prisma/schema.prisma` models users, OTPs, sessions, roles, permissions, QR tags, contact settings, scans, contact requests, notifications, products, carts, orders, payments, reseller flows, society/parking flows, CMS pages, audit logs, consent logs, deletion requests, uploads, backup logs, cities, and districts.
+
+NoNumQR QR codes store only public URL slugs; private owner data stays in PostgreSQL behind authenticated API access.
 
 Important rules:
 

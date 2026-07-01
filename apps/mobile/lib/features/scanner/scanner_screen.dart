@@ -28,7 +28,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     if (handledScan) return;
     final slug = extractPublicSlug(rawCode ?? '');
     if (slug == null) {
-      setState(() => error = 'This is not a ScanContact QR code.');
+      setState(() => error = 'This is not a NoNumQR QR code.');
       return;
     }
     handledScan = true;
@@ -39,7 +39,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
   void handleManual() {
     final slug = extractPublicSlug(manualController.text);
     if (slug == null) {
-      setState(() => error = 'Enter a valid ScanContact QR URL or code.');
+      setState(() => error = 'Enter a valid NoNumQR QR URL or code.');
       return;
     }
     context.push('/scanner/contact/$slug');
@@ -53,7 +53,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
         padding: appPadding,
         children: [
           Text(
-            'Scan a ScanContact QR',
+            'Scan a NoNumQR QR',
             style: Theme.of(
               context,
             ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
@@ -117,7 +117,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
             controller: manualController,
             decoration: const InputDecoration(
               labelText: 'QR URL or code',
-              helperText: 'Example: https://yourdomain.com/t/publicSlug',
+              helperText: 'Example: https://nonumqr.com/t/publicSlug',
             ),
             textInputAction: TextInputAction.done,
             onSubmitted: (_) => handleManual(),

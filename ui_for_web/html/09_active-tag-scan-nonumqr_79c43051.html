@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Active Tag - NoNumQR</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed": "#89f5e7",
+                    "on-secondary-fixed-variant": "#00513b",
+                    "surface-container": "#eaedff",
+                    "primary-container": "#008378",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#eef0ff",
+                    "secondary-container": "#a6f2d1",
+                    "surface-off-white": "#F8FAFC",
+                    "on-error": "#ffffff",
+                    "surface": "#faf8ff",
+                    "inverse-primary": "#6bd8cb",
+                    "tertiary": "#924628",
+                    "surface-container-low": "#f2f3ff",
+                    "on-tertiary-fixed": "#370e00",
+                    "on-surface-variant": "#3d4947",
+                    "warning-amber": "#D97706",
+                    "tertiary-container": "#b05e3d",
+                    "on-secondary-fixed": "#002116",
+                    "error-container": "#ffdad6",
+                    "outline": "#6d7a77",
+                    "outline-variant": "#bcc9c6",
+                    "ink-slate": "#1E293B",
+                    "surface-container-high": "#e2e7ff",
+                    "on-primary-fixed": "#00201d",
+                    "surface-variant": "#dae2fd",
+                    "danger-red": "#DC2626",
+                    "surface-dim": "#d2d9f4",
+                    "secondary-fixed-dim": "#8bd6b6",
+                    "on-primary-container": "#f4fffc",
+                    "info-blue": "#2563EB",
+                    "surface-container-highest": "#dae2fd",
+                    "on-tertiary-container": "#fffbff",
+                    "on-primary-fixed-variant": "#005049",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#a6f2d1",
+                    "on-secondary-container": "#237157",
+                    "secondary": "#1b6b51",
+                    "on-surface": "#131b2e",
+                    "inverse-surface": "#283044",
+                    "tertiary-fixed": "#ffdbce",
+                    "surface-tint": "#006a61",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#ffb59a",
+                    "on-tertiary-fixed-variant": "#773215",
+                    "on-secondary": "#ffffff",
+                    "background": "#faf8ff",
+                    "primary": "#00685f",
+                    "on-background": "#131b2e",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "surface-bright": "#faf8ff",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "stack-md": "16px",
+                    "container-max": "1200px",
+                    "stack-sm": "8px",
+                    "stack-lg": "32px",
+                    "gutter": "24px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "label-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf8ff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        /* Shimmer Effect for Card */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer-card {
+            background: linear-gradient(90deg, #ffffff 25%, #f4fffc 50%, #ffffff 75%);
+            background-size: 200% 100%;
+            animation: shimmer 4s infinite linear;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen text-on-surface">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 bg-surface-container-lowest shadow-sm flex items-center justify-between px-margin-mobile w-full h-16 transition-all duration-200">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[28px]" data-icon="qr_code_2">qr_code_2</span>
+<span class="font-headline-md text-headline-md font-bold text-primary">NoNumQR</span>
+</div>
+<button class="text-on-surface-variant hover:bg-surface-container p-2 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</header>
+<main class="flex-grow w-full max-w-[600px] mx-auto px-margin-mobile pt-stack-lg pb-stack-lg">
+<!-- Tag Context Card -->
+<section class="shimmer-card rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-stack-md border border-outline-variant mb-stack-lg overflow-hidden relative">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined text-[32px]" data-icon="directions_car">directions_car</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Car Sticker</p>
+<h2 class="font-headline-md text-headline-md text-ink-slate">White Corolla (AB-1234)</h2>
+</div>
+</div>
+<div class="flex items-center bg-secondary-container/30 px-3 py-1 rounded-full border border-secondary-container">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2 animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-on-secondary-container">Active</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">Scan to contact owner privately.</p>
+<div class="flex items-start gap-2 pt-3 border-t border-outline-variant/30">
+<span class="material-symbols-outlined text-info-blue text-[18px]" data-icon="privacy_tip">privacy_tip</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">The owner’s phone number is hidden.</p>
+</div>
+</section>
+<!-- Message Form -->
+<div class="bg-surface-container-lowest rounded-xl p-stack-md border border-outline-variant shadow-sm">
+<h3 class="font-headline-md text-headline-md mb-stack-md text-ink-slate">Send Message</h3>
+<!-- Contact Reason Chips -->
+<p class="font-label-lg text-label-lg mb-3 text-on-surface-variant">Reason for contact</p>
+<div class="flex flex-wrap gap-2 mb-stack-lg">
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface hover:bg-primary-container/10 transition-colors font-label-lg text-label-lg text-on-surface-variant active:scale-95" onclick="selectChip(this)">Vehicle blocking</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface hover:bg-primary-container/10 transition-colors font-label-lg text-label-lg text-on-surface-variant active:scale-95" onclick="selectChip(this)">Light on</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface hover:bg-primary-container/10 transition-colors font-label-lg text-label-lg text-on-surface-variant active:scale-95" onclick="selectChip(this)">Vehicle damaged</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface hover:bg-primary-container/10 transition-colors font-label-lg text-label-lg text-on-surface-variant active:scale-95" onclick="selectChip(this)">Found item</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface hover:bg-primary-container/10 transition-colors font-label-lg text-label-lg text-on-surface-variant active:scale-95" onclick="selectChip(this)">Delivery contact</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface hover:bg-primary-container/10 transition-colors font-label-lg text-label-lg text-on-surface-variant active:scale-95" onclick="selectChip(this)">Business inquiry</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface hover:bg-primary-container/10 transition-colors font-label-lg text-label-lg text-on-surface-variant active:scale-95" onclick="selectChip(this)">Other</button>
+</div>
+<form class="space-y-stack-md">
+<div>
+<label class="block font-label-lg text-label-lg mb-2 text-on-surface-variant">Your Name (Optional)</label>
+<input class="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-container/50 focus:border-primary transition-all font-body-md text-body-md" placeholder="e.g. Neighbor, Concierge" type="text"/>
+</div>
+<div>
+<label class="block font-label-lg text-label-lg mb-2 text-on-surface-variant">Enter your message...</label>
+<textarea class="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-container/50 focus:border-primary transition-all font-body-md text-body-md resize-none" placeholder="How can the owner help you?" rows="4"></textarea>
+</div>
+<div class="flex flex-col gap-3 pt-2">
+<button class="w-full h-12 bg-primary text-on-primary font-label-lg text-label-lg rounded-lg shadow-md hover:bg-primary-container transition-all active:scale-[0.98] flex items-center justify-center gap-2" type="submit">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+                        Send Private Message
+                    </button>
+<button class="w-full h-12 border border-primary text-primary font-label-lg text-label-lg rounded-lg bg-transparent hover:bg-primary-container/5 transition-all active:scale-[0.98] flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined" data-icon="call" data-weight="fill">call</span>
+                        Start Private Call
+                    </button>
+</div>
+</form>
+</div>
+<!-- Privacy & QR Note -->
+<div class="mt-stack-lg space-y-4">
+<div class="flex items-start gap-3 p-4 bg-surface-container-high/30 rounded-xl border border-outline-variant/20">
+<span class="material-symbols-outlined text-outline mt-0.5" data-icon="info">info</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+<span class="font-semibold block mb-1">QR Privacy Note</span>
+                    This QR contains only a public URL. It does not contain the owner’s phone number.
+                </p>
+</div>
+<p class="font-body-sm text-body-sm text-center text-outline-variant italic">
+                Your message will be sent privately. Do not share sensitive info.
+            </p>
+</div>
+</main>
+<!-- Footer -->
+<footer class="mt-auto border-t border-outline-variant flex flex-col items-center gap-stack-sm py-stack-lg px-margin-mobile w-full text-center bg-surface">
+<p class="font-label-sm text-label-sm text-on-surface-variant">© 2024 NoNumQR. Privacy First.</p>
+<div class="flex gap-4">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">How it Works</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-danger-red hover:opacity-80 transition-all active:scale-95" href="#">Report Abuse</a>
+</div>
+</footer>
+<script>
+        function selectChip(button) {
+            // Deselect all chips in the same group
+            const chips = button.parentElement.querySelectorAll('button');
+            chips.forEach(chip => {
+                chip.classList.remove('bg-primary-container', 'text-on-primary-container', 'border-primary');
+                chip.classList.add('bg-surface', 'text-on-surface-variant', 'border-outline-variant');
+            });
+            // Select clicked chip
+            button.classList.remove('bg-surface', 'text-on-surface-variant', 'border-outline-variant');
+            button.classList.add('bg-primary-container', 'text-on-primary-container', 'border-primary');
+        }
+
+        // Form Submission Micro-interaction
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalHtml = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="progress_activity">progress_activity</span> Sending...';
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span> Sent!';
+                btn.classList.replace('bg-primary', 'bg-secondary');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                    btn.classList.replace('bg-secondary', 'bg-primary');
+                }, 3000);
+            }, 1500);
+        });
+    </script>
+</body></html>

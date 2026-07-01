@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Order Success - SecureTag</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .success-shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes pop-in {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop-in {
+            animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#1b6b51",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "on-surface": "#111c2d",
+                        "secondary-fixed": "#89f5e7",
+                        "surface-variant": "#d8e3fb",
+                        "surface-container-high": "#dee8ff",
+                        "on-primary-fixed-variant": "#00513b",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-background": "#111c2d",
+                        "on-secondary-fixed": "#00201d",
+                        "on-tertiary-fixed": "#00174b",
+                        "inverse-surface": "#263143",
+                        "secondary": "#006a61",
+                        "surface": "#f9f9ff",
+                        "on-primary-fixed": "#002116",
+                        "on-surface-variant": "#3f4944",
+                        "primary-fixed": "#a6f2d1",
+                        "on-secondary-fixed-variant": "#005049",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#003491",
+                        "inverse-primary": "#8bd6b6",
+                        "tertiary-container": "#0049c3",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f9f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "outline": "#6f7973",
+                        "surface-container-highest": "#d8e3fb",
+                        "surface-container": "#e7eeff",
+                        "outline-variant": "#bec9c2",
+                        "surface-dim": "#cfdaf2",
+                        "primary-container": "#065f46",
+                        "tertiary-fixed": "#dbe1ff",
+                        "on-tertiary-container": "#b5c6ff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "on-primary-container": "#8bd6b7",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#86f2e4",
+                        "primary": "#004532",
+                        "on-secondary-container": "#006f66"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-secondary-container">
+<!-- Top App Bar (Shared Component Execution) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm flex items-center justify-between px-md py-sm">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/50 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-primary">Order Confirmed</h1>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/50 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-primary">shopping_bag</span>
+</button>
+</header>
+<main class="pt-24 pb-32 px-margin-mobile max-w-md mx-auto space-y-lg">
+<!-- Celebration Visual -->
+<section class="flex flex-col items-center text-center py-lg animate-pop-in">
+<div class="relative w-32 h-32 mb-lg">
+<div class="absolute inset-0 bg-primary-container rounded-full opacity-10 animate-pulse"></div>
+<div class="absolute inset-2 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-[64px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Thank you for your order!</h2>
+<p class="text-on-surface-variant font-body-md">Your SecureTag stickers are on their way to keeping your vehicle private.</p>
+</section>
+<!-- Tracking Card -->
+<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-lg shadow-sm">
+<div class="flex justify-between items-center mb-md">
+<span class="text-on-surface-variant font-label-md">TRACKING CODE</span>
+<span class="text-secondary font-label-sm px-sm py-xs bg-secondary-container rounded-full">EST. DELIVERY: 3 DAYS</span>
+</div>
+<div class="flex items-center justify-between bg-surface-container-low rounded-lg p-md border border-outline-variant/10">
+<span class="font-display-sm text-primary tracking-tight">NNQR-2026-4829</span>
+<button class="text-primary hover:bg-primary-container/10 p-sm rounded-full transition-colors active:scale-90" onclick="copyTracking()">
+<span class="material-symbols-outlined" id="copy-icon">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Order Summary Card -->
+<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-lg shadow-sm">
+<h3 class="font-title-lg text-primary mb-md">Order Summary</h3>
+<div class="flex items-center gap-md">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex-shrink-0 overflow-hidden border border-outline-variant/20">
+<img class="w-full h-full object-cover" data-alt="A premium close-up of a high-quality, weather-resistant vehicle sticker with a modern QR code printed on it. The sticker is set against a sleek, dark metallic car surface, reflecting soft ambient street lights. The aesthetic is clean and professional, using deep emerald and teal tones to convey security and premium quality in a light-mode environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpeVk12jlGo6XaBSjlt7qjZ0bb4da1K7hT5eP-VTm2GECNowghuSn68It3SFtmGZd9ngn7BbxYo4fAuXF4-UvmKq6PSArMl6wp-a1isl_ulxaIIctHsWWTDxaV4ao0xV3cAPJ4tJ9KjaF6_6kIe5RaRCWg_-ldOKRHBDWp1IYjxa5QC4OM5lpPNpXAz8xd8OSvMztlQSW2o_fWCdHDUiJlSKvFaEtYjIa7d46MSEL_7OD7oh4uOvVQFtyveYU_We45yYVEWiZa1Vg"/>
+</div>
+<div class="flex-1">
+<p class="font-label-lg text-on-surface">NoNumQR Car Sticker</p>
+<p class="text-on-surface-variant font-body-md">Quantity: x1</p>
+</div>
+<div class="text-right">
+<p class="font-title-lg text-primary">$12.99</p>
+</div>
+</div>
+</div>
+<!-- Timeline -->
+<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-lg shadow-sm">
+<h3 class="font-title-lg text-primary mb-lg">Next Steps</h3>
+<div class="space-y-xl relative">
+<!-- Timeline Line -->
+<div class="absolute left-[11px] top-2 bottom-2 w-0.5 bg-outline-variant/30"></div>
+<!-- Step 1: Completed -->
+<div class="flex gap-md relative">
+<div class="z-10 w-6 h-6 rounded-full bg-primary flex items-center justify-center border-4 border-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div>
+<p class="font-label-lg text-on-surface">We confirm your order</p>
+<p class="text-primary font-label-sm">Completed</p>
+</div>
+</div>
+<!-- Step 2: Pending -->
+<div class="flex gap-md relative">
+<div class="z-10 w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center border-4 border-surface-container-lowest">
+<div class="w-1.5 h-1.5 rounded-full bg-outline"></div>
+</div>
+<div>
+<p class="font-label-lg text-on-surface-variant">Your QR tag is printed or assigned</p>
+<p class="text-outline font-label-sm">Pending</p>
+</div>
+</div>
+<!-- Step 3: Pending -->
+<div class="flex gap-md relative">
+<div class="z-10 w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center border-4 border-surface-container-lowest">
+<div class="w-1.5 h-1.5 rounded-full bg-outline"></div>
+</div>
+<div>
+<p class="font-label-lg text-on-surface-variant">Delivery is arranged</p>
+<p class="text-outline font-label-sm">Pending</p>
+</div>
+</div>
+<!-- Step 4: Pending -->
+<div class="flex gap-md relative">
+<div class="z-10 w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center border-4 border-surface-container-lowest">
+<div class="w-1.5 h-1.5 rounded-full bg-outline"></div>
+</div>
+<div>
+<p class="font-label-lg text-on-surface-variant">You activate and use NoNumQR</p>
+<p class="text-outline font-label-sm">Pending</p>
+</div>
+</div>
+</div>
+</div>
+<!-- CTAs -->
+<div class="flex flex-col gap-md pt-lg">
+<button class="w-full h-[56px] bg-primary text-white font-title-lg rounded-xl shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform flex items-center justify-center gap-sm">
+                Track Order
+                <span class="material-symbols-outlined">local_shipping</span>
+</button>
+<button class="w-full h-[56px] border-2 border-secondary text-secondary font-title-lg rounded-xl hover:bg-secondary/5 active:scale-[0.98] transition-all flex items-center justify-center gap-sm">
+                Back to Home
+            </button>
+</div>
+</main>
+<script>
+        function copyTracking() {
+            const icon = document.getElementById('copy-icon');
+            icon.innerText = 'check';
+            icon.classList.add('text-secondary');
+            
+            setTimeout(() => {
+                icon.innerText = 'content_copy';
+                icon.classList.remove('text-secondary');
+            }, 2000);
+            
+            // Interaction feedback
+            navigator.vibrate?.(10);
+        }
+
+        // Simple enter animation for items
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.bg-surface-container-lowest');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = `all 0.5s ease-out ${0.2 + (index * 0.1)}s`;
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        });
+    </script>
+</body></html>

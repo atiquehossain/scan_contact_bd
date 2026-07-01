@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NoNumQR - Authentication States</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#dbe1ff",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#00513b",
+                    "primary-fixed": "#a6f2d1",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "surface-container-high": "#dee8ff",
+                    "on-surface-variant": "#3f4944",
+                    "background": "#f9f9ff",
+                    "surface-container-highest": "#d8e3fb",
+                    "on-secondary-fixed-variant": "#005049",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#065f46",
+                    "on-secondary-fixed": "#00201d",
+                    "inverse-primary": "#8bd6b6",
+                    "on-error-container": "#93000a",
+                    "surface-tint": "#1b6b51",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#bec9c2",
+                    "secondary": "#006a61",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f0f3ff",
+                    "secondary-fixed": "#89f5e7",
+                    "on-tertiary-container": "#b5c6ff",
+                    "on-primary-container": "#8bd6b7",
+                    "inverse-surface": "#263143",
+                    "surface-dim": "#cfdaf2",
+                    "surface-container": "#e7eeff",
+                    "surface": "#f9f9ff",
+                    "on-tertiary-fixed": "#00174b",
+                    "secondary-container": "#86f2e4",
+                    "primary": "#004532",
+                    "outline": "#6f7973",
+                    "tertiary": "#003491",
+                    "surface-bright": "#f9f9ff",
+                    "tertiary-container": "#0049c3",
+                    "on-secondary-container": "#006f66",
+                    "surface-variant": "#d8e3fb",
+                    "on-tertiary": "#ffffff",
+                    "on-surface": "#111c2d",
+                    "on-tertiary-fixed-variant": "#003ea8",
+                    "on-primary-fixed": "#002116",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#8bd6b6",
+                    "inverse-on-surface": "#ecf1ff",
+                    "error": "#ba1a1a",
+                    "on-background": "#111c2d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "md": "16px",
+                    "gutter-mobile": "12px",
+                    "margin-mobile": "16px",
+                    "sm": "8px",
+                    "lg": "24px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "title-lg": ["Inter"],
+                    "display-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer-bg {
+            background: linear-gradient(90deg, #f0f3ff 25%, #dee8ff 50%, #f0f3ff 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden">
+<!-- Screen Wrapper -->
+<main class="flex-grow flex flex-col items-center justify-center p-margin-mobile">
+<!-- Toggle Switch for Demo Purposes -->
+<div class="fixed top-4 right-4 z-[100] flex bg-white/50 backdrop-blur-md p-1 rounded-full border border-outline-variant/30">
+<button class="px-4 py-1.5 rounded-full text-label-md font-label-md bg-primary text-white transition-all" id="btn-loading" onclick="showLoading()">Loading</button>
+<button class="px-4 py-1.5 rounded-full text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant transition-all" id="btn-error" onclick="showError()">Error</button>
+</div>
+<!-- 1. LOADING STATE SCREEN -->
+<div class="w-full max-w-[400px] flex flex-col items-center fade-in" id="loading-screen">
+<!-- Brand Logo Anchor -->
+<div class="mb-xl flex flex-col items-center">
+<div class="w-16 h-16 bg-primary-container rounded-xl flex items-center justify-center mb-md shadow-lg">
+<span class="material-symbols-outlined text-on-primary-container text-4xl" data-icon="qr_code_2">qr_code_2</span>
+</div>
+<h1 class="font-headline-md text-headline-md font-extrabold text-primary tracking-tight">NoNumQR</h1>
+</div>
+<!-- Form Skeleton -->
+<div class="w-full bg-white rounded-xl p-lg shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-outline-variant/20">
+<!-- Title Skeleton -->
+<div class="shimmer-bg h-6 w-32 rounded mb-xl"></div>
+<!-- Input Skeletons -->
+<div class="space-y-lg mb-xl">
+<div class="space-y-xs">
+<div class="shimmer-bg h-4 w-20 rounded"></div>
+<div class="shimmer-bg h-12 w-full rounded-lg"></div>
+</div>
+<div class="space-y-xs">
+<div class="shimmer-bg h-4 w-24 rounded"></div>
+<div class="shimmer-bg h-12 w-full rounded-lg"></div>
+</div>
+</div>
+<!-- Button Skeleton -->
+<div class="shimmer-bg h-12 w-full rounded-lg"></div>
+<!-- Link Skeleton -->
+<div class="flex justify-center mt-md">
+<div class="shimmer-bg h-4 w-40 rounded"></div>
+</div>
+</div>
+</div>
+<!-- 2. ERROR STATE SCREEN (Hidden by default) -->
+<div class="hidden w-full max-w-[400px] flex flex-col items-center fade-in" id="error-screen">
+<!-- Brand Logo Anchor -->
+<div class="mb-xl flex flex-col items-center">
+<div class="w-16 h-16 bg-primary-container rounded-xl flex items-center justify-center mb-md shadow-lg">
+<span class="material-symbols-outlined text-on-primary-container text-4xl" data-icon="qr_code_2">qr_code_2</span>
+</div>
+<h1 class="font-headline-md text-headline-md font-extrabold text-primary tracking-tight">NoNumQR</h1>
+</div>
+<!-- Error Content -->
+<div class="w-full bg-white rounded-xl p-lg shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-outline-variant/20">
+<div class="flex flex-col items-center text-center space-y-md">
+<!-- Error Icon Container -->
+<div class="w-14 h-14 bg-error-container/50 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-3xl" data-icon="cloud_off">cloud_off</span>
+</div>
+<div class="space-y-xs">
+<h2 class="font-title-lg text-title-lg text-on-surface">Connection Failed</h2>
+<p class="font-body-md text-on-surface-variant max-w-[240px]">Unable to connect. Please check your internet or try again.</p>
+</div>
+<!-- Retry Button -->
+<button class="w-full h-12 bg-primary text-white rounded-lg font-label-lg flex items-center justify-center gap-2 active:scale-95 transition-transform" onclick="showLoading()">
+<span class="material-symbols-outlined" data-icon="refresh">refresh</span>
+                        Retry
+                    </button>
+<!-- Back to Login -->
+<button class="text-secondary font-label-md hover:underline transition-colors py-2">
+                        Back to Login
+                    </button>
+</div>
+</div>
+<!-- Support Footer -->
+<p class="mt-xl text-label-sm text-outline font-label-sm text-center">
+                Experiencing persistent issues? <br/>
+<a class="text-secondary font-semibold" href="#">Contact Support</a>
+</p>
+</div>
+</main>
+<!-- Interactive Logic -->
+<script>
+        const loadingScreen = document.getElementById('loading-screen');
+        const errorScreen = document.getElementById('error-screen');
+        const btnLoading = document.getElementById('btn-loading');
+        const btnError = document.getElementById('btn-error');
+
+        function showLoading() {
+            loadingScreen.classList.remove('hidden');
+            errorScreen.classList.add('hidden');
+            
+            btnLoading.classList.add('bg-primary', 'text-white');
+            btnLoading.classList.remove('text-on-surface-variant');
+            btnError.classList.remove('bg-primary', 'text-white');
+            btnError.classList.add('text-on-surface-variant');
+        }
+
+        function showError() {
+            loadingScreen.classList.add('hidden');
+            errorScreen.classList.remove('hidden');
+
+            btnError.classList.add('bg-primary', 'text-white');
+            btnError.classList.remove('text-on-surface-variant');
+            btnLoading.classList.remove('bg-primary', 'text-white');
+            btnLoading.classList.add('text-on-surface-variant');
+        }
+    </script>
+</body></html>

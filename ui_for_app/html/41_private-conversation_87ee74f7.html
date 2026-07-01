@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>NoNumQR - Private Conversation</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#d8e3fb",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "surface-bright": "#f9f9ff",
+                        "on-background": "#111c2d",
+                        "surface-container-low": "#f0f3ff",
+                        "error": "#ba1a1a",
+                        "background": "#f9f9ff",
+                        "secondary": "#006a61",
+                        "on-primary-container": "#8bd6b7",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#005049",
+                        "tertiary-fixed": "#dbe1ff",
+                        "tertiary-container": "#0049c3",
+                        "surface-dim": "#cfdaf2",
+                        "tertiary": "#003491",
+                        "inverse-on-surface": "#ecf1ff",
+                        "surface-container": "#e7eeff",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "on-secondary-fixed": "#00201d",
+                        "primary": "#004532",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#006f66",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#dee8ff",
+                        "on-primary-fixed": "#002116",
+                        "outline": "#6f7973",
+                        "on-tertiary-container": "#b5c6ff",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#3f4944",
+                        "inverse-surface": "#263143",
+                        "on-surface": "#111c2d",
+                        "surface-tint": "#1b6b51",
+                        "primary-container": "#065f46",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "outline-variant": "#bec9c2",
+                        "primary-fixed": "#a6f2d1",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "inverse-primary": "#8bd6b6",
+                        "secondary-fixed": "#89f5e7",
+                        "on-tertiary-fixed": "#00174b",
+                        "surface": "#f9f9ff",
+                        "on-primary-fixed-variant": "#00513b",
+                        "secondary-container": "#86f2e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter-mobile": "12px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "title-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chat-bubble-received {
+            position: relative;
+        }
+        .chat-bubble-received::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 12px;
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            clip-path: polygon(100% 0, 0 50%, 100% 100%);
+        }
+        .chat-bubble-sent {
+            position: relative;
+        }
+        .chat-bubble-sent::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 12px;
+            width: 12px;
+            height: 12px;
+            background: #004532;
+            clip-path: polygon(0 0, 100% 50%, 0 100%);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-xl shadow-sm flex items-center justify-between px-margin-mobile h-16 w-full">
+<div class="flex items-center gap-md">
+<button class="transition-all duration-300 active:scale-95 text-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<h1 class="font-title-lg text-title-lg text-primary">NoNumQR Chat</h1>
+<span class="font-label-md text-label-md text-outline">Tag ID: #A982-K</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="transition-all duration-300 active:scale-95 text-primary">
+<span class="material-symbols-outlined">shield</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-20 pb-24 px-margin-mobile overflow-y-auto hide-scrollbar">
+<!-- Privacy Banner -->
+<div class="mb-lg p-md bg-surface-container-low rounded-xl border border-outline-variant flex items-start gap-md">
+<span class="material-symbols-outlined text-secondary text-[20px]" style="font-variation-settings: 'FILL' 1;">lock</span>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                Token-protected private link. Messages are encrypted and temporary.
+            </p>
+</div>
+<!-- Chat Flow -->
+<div class="flex flex-col gap-lg pb-10">
+<!-- Received Message -->
+<div class="flex items-start gap-sm max-w-[85%] self-start">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-outline text-[18px]">person</span>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="chat-bubble-received bg-white p-md rounded-xl rounded-tl-none shadow-sm text-on-surface border border-surface-container">
+                        Hello, I found your backpack at the airport lounge. I'm near Terminal B.
+                    </div>
+<span class="font-label-sm text-label-sm text-outline px-1">10:42 AM</span>
+</div>
+</div>
+<!-- Sent Message -->
+<div class="flex flex-col gap-xs max-w-[85%] self-end items-end">
+<div class="chat-bubble-sent bg-primary p-md rounded-xl rounded-tr-none shadow-md text-on-primary">
+                    Oh, thank goodness! I'm actually still in Terminal B. Where exactly are you sitting?
+                </div>
+<div class="flex items-center gap-xs px-1">
+<span class="font-label-sm text-label-sm text-outline">10:43 AM</span>
+<span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<!-- Received Message -->
+<div class="flex items-start gap-sm max-w-[85%] self-start">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-outline text-[18px]">person</span>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="chat-bubble-received bg-white p-md rounded-xl rounded-tl-none shadow-sm text-on-surface border border-surface-container">
+                        I'm right by the Starbucks near Gate B12. I'll keep it with me for the next 15 minutes.
+                    </div>
+<span class="font-label-sm text-label-sm text-outline px-1">10:44 AM</span>
+</div>
+</div>
+<!-- Sent Message -->
+<div class="flex flex-col gap-xs max-w-[85%] self-end items-end">
+<div class="chat-bubble-sent bg-primary p-md rounded-xl rounded-tr-none shadow-md text-on-primary">
+                    On my way! I'll be there in 5 minutes. Wearing a blue hoodie.
+                </div>
+<div class="flex items-center gap-xs px-1">
+<span class="font-label-sm text-label-sm text-outline">10:45 AM</span>
+<span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<!-- System States Visualizer (For Demonstration) -->
+<div class="mt-xl flex flex-col gap-md">
+<div class="h-[1px] bg-outline-variant w-full my-md"></div>
+<p class="font-label-md text-label-md text-outline uppercase tracking-wider text-center">System State Previews</p>
+<!-- Expired Overlay -->
+<div class="p-md bg-surface-container-high/60 backdrop-blur-md rounded-xl border border-dashed border-outline text-center">
+<span class="material-symbols-outlined text-outline mb-xs">timer_off</span>
+<p class="font-body-md text-body-md text-on-surface-variant italic">This conversation has expired for your privacy.</p>
+</div>
+<!-- Closed Overlay -->
+<div class="p-md bg-error-container/20 rounded-xl border border-error/20 text-center">
+<span class="material-symbols-outlined text-error mb-xs">block</span>
+<p class="font-body-md text-body-md text-error-container font-medium" style="color: var(--on-error-container);">Conversation closed by owner.</p>
+</div>
+<!-- Unavailable Overlay -->
+<div class="p-md bg-surface-dim rounded-xl border border-outline-variant text-center">
+<span class="material-symbols-outlined text-outline mb-xs">delete_forever</span>
+<p class="font-body-md text-body-md text-on-surface-variant">This tag is no longer available.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Chat Input Area -->
+<div class="fixed bottom-0 left-0 w-full bg-surface/90 backdrop-blur-xl p-md pb-safe">
+<div class="flex items-center gap-md">
+<div class="flex-grow flex items-center bg-surface-container-lowest rounded-full border border-outline-variant px-md h-12 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+<input class="bg-transparent border-none focus:ring-0 w-full text-body-md placeholder:text-outline h-full" placeholder="Type a message..." type="text"/>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">sentiment_satisfied</span>
+</button>
+</div>
+<button class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+<!-- Background Decoration -->
+<div class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none opacity-30">
+<div class="absolute top-[10%] right-[10%] w-64 h-64 bg-primary-fixed-dim/20 blur-[100px] rounded-full"></div>
+<div class="absolute bottom-[20%] left-[5%] w-80 h-80 bg-secondary-container/20 blur-[120px] rounded-full"></div>
+</div>
+<!-- Script for Micro-interactions -->
+<script>
+        // Simple message sending animation simulation
+        document.querySelector('button.bg-primary').addEventListener('click', function() {
+            const input = document.querySelector('input');
+            if (input.value.trim() !== '') {
+                const chatContainer = document.querySelector('.flex-col.gap-lg.pb-10');
+                const newMsg = document.createElement('div');
+                newMsg.className = 'flex flex-col gap-xs max-w-[85%] self-end items-end animate-in fade-in slide-in-from-bottom-2 duration-300';
+                newMsg.innerHTML = `
+                    <div class="chat-bubble-sent bg-primary p-md rounded-xl rounded-tr-none shadow-md text-on-primary">
+                        ${input.value}
+                    </div>
+                    <div class="flex items-center gap-xs px-1">
+                        <span class="font-label-sm text-label-sm text-outline">Just now</span>
+                        <span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                    </div>
+                `;
+                chatContainer.appendChild(newMsg);
+                input.value = '';
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+        });
+
+        // Allow Enter key to send
+        document.querySelector('input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.querySelector('button.bg-primary').click();
+            }
+        });
+    </script>
+</body></html>

@@ -36,7 +36,7 @@ class ShopScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Order a ScanContact BD QR tag. After it is printed and assigned to your phone number, it will appear in your app.',
+                'Order a NoNumQR QR tag. After it is printed and assigned to your phone number, it will appear in your app.',
               ),
               const SizedBox(height: 12),
               const PrivacyNoticeCard(

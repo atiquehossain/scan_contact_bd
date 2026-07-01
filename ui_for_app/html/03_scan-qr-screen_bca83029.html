@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#d8e3fb",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#8bd6b6",
+                    "surface-bright": "#f9f9ff",
+                    "on-background": "#111c2d",
+                    "surface-container-low": "#f0f3ff",
+                    "error": "#ba1a1a",
+                    "background": "#f9f9ff",
+                    "secondary": "#006a61",
+                    "on-primary-container": "#8bd6b7",
+                    "surface-container-highest": "#d8e3fb",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#005049",
+                    "tertiary-fixed": "#dbe1ff",
+                    "tertiary-container": "#0049c3",
+                    "surface-dim": "#cfdaf2",
+                    "tertiary": "#003491",
+                    "inverse-on-surface": "#ecf1ff",
+                    "surface-container": "#e7eeff",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "on-secondary-fixed": "#00201d",
+                    "primary": "#004532",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#006f66",
+                    "error-container": "#ffdad6",
+                    "surface-container-high": "#dee8ff",
+                    "on-primary-fixed": "#002116",
+                    "outline": "#6f7973",
+                    "on-tertiary-container": "#b5c6ff",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#3f4944",
+                    "inverse-surface": "#263143",
+                    "on-surface": "#111c2d",
+                    "surface-tint": "#1b6b51",
+                    "primary-container": "#065f46",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "outline-variant": "#bec9c2",
+                    "primary-fixed": "#a6f2d1",
+                    "on-tertiary-fixed-variant": "#003ea8",
+                    "inverse-primary": "#8bd6b6",
+                    "secondary-fixed": "#89f5e7",
+                    "on-tertiary-fixed": "#00174b",
+                    "surface": "#f9f9ff",
+                    "on-primary-fixed-variant": "#00513b",
+                    "secondary-container": "#86f2e4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter-mobile": "12px",
+                    "xl": "32px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "title-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanner-frame {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+        }
+        .scanner-corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-color: #a6f2d1; /* primary-fixed */
+            border-style: solid;
+        }
+        .corner-tl { top: -2px; left: -2px; border-width: 4px 0 0 4px; border-top-left-radius: 24px; }
+        .corner-tr { top: -2px; right: -2px; border-width: 4px 4px 0 0; border-top-right-radius: 24px; }
+        .corner-bl { bottom: -2px; left: -2px; border-width: 0 0 4px 4px; border-bottom-left-radius: 24px; }
+        .corner-br { bottom: -2px; right: -2px; border-width: 0 4px 4px 0; border-bottom-right-radius: 24px; }
+
+        @keyframes scan-line {
+            0% { transform: translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(280px); opacity: 0; }
+        }
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #8bd6b6, transparent);
+            box-shadow: 0 0 15px #8bd6b6;
+            animation: scan-line 2.5s infinite linear;
+        }
+        .camera-bg {
+            background: #000;
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+        }
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-black text-on-primary-fixed overflow-hidden">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-margin-mobile h-16 w-full bg-surface/10 backdrop-blur-md">
+<button aria-label="Back" class="transition-all duration-300 active:scale-95 flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10">
+<span class="material-symbols-outlined text-white">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-white">Scan Tag</h1>
+<button aria-label="Privacy" class="transition-all duration-300 active:scale-95 flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10">
+<span class="material-symbols-outlined text-white">shield</span>
+</button>
+</header>
+<!-- Main Viewfinder Area -->
+<main class="relative h-screen w-full flex flex-col items-center justify-center">
+<!-- Mock Camera View -->
+<div class="camera-bg overflow-hidden">
+<img alt="Camera background" class="w-full h-full object-cover opacity-60 grayscale-[0.5]" data-alt="A POV high-angle shot from a smartphone camera looking down at a modern workstation table. In focus is a small, matte-black NoNumQR sticker applied to a metallic surface. The lighting is moody and low-key with a subtle emerald green tint, reflecting the NoNumQR brand identity. The environment is a clean, minimalist interior with soft shadows and high-end tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTiv5U9AvaznTxmECNfGotv0drUAZ3CFe8Dfwny0k1tNj5wlp3lBR_WMWgbN_YIva4dGRkGDCiEKwTXvnIuuLJEzLD6JtZ9yRHpnu51cFtGKIiNNKBa03yS0Fsy6CZLnWCrONNKDKbddIf-es9KThcn50tstC84y8pS5rx4bwzWYKPfUcRNAoCYYBV6h5kfd4wzDU4C_BVStpHszvyfymjVPTCKbrd4RRlI7DDKMoW7h5npxGcKFHbZnDhERyXnYONykA1eXPC4HY"/>
+</div>
+<!-- Scanner Frame -->
+<div class="scanner-frame transition-transform duration-500 scale-110 md:scale-100">
+<div class="scanner-corner corner-tl"></div>
+<div class="scanner-corner corner-tr"></div>
+<div class="scanner-corner corner-bl"></div>
+<div class="scanner-corner corner-br"></div>
+<div class="scan-line"></div>
+</div>
+<!-- Tooltip / Guide -->
+<p class="mt-8 font-body-md text-body-md text-white/80 bg-black/40 px-4 py-2 rounded-full backdrop-blur-sm">
+            Align QR code within the frame
+        </p>
+<!-- Flashlight Button -->
+<button class="mt-12 w-14 h-14 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center transition-all duration-300 active:scale-90 hover:bg-white/20" id="flashToggle">
+<span class="material-symbols-outlined text-white text-[28px]" id="flashIcon">flashlight_on</span>
+</button>
+</main>
+<!-- Bottom Actions & Info -->
+<footer class="fixed bottom-0 left-0 w-full px-margin-mobile safe-bottom z-50">
+<div class="flex flex-col items-center gap-4 mb-8">
+<button class="transition-all duration-300 active:scale-95 px-6 py-3 bg-white/10 backdrop-blur-md rounded-xl text-white font-title-lg text-title-lg border border-white/10">
+                Enter Manually
+            </button>
+<p class="font-label-md text-label-md text-white/50 text-center max-w-[280px]">
+                Scan a NoNumQR tag to send a private message.
+            </p>
+</div>
+</footer>
+<!-- Bottom Navigation (Shared Component Logic - Suppressed because this is a focused task screen) -->
+<!-- Navigation is hidden as per "Task-Focused" suppression rule in instructions -->
+<script>
+        // Toggle Flashlight UI
+        const flashBtn = document.getElementById('flashToggle');
+        const flashIcon = document.getElementById('flashIcon');
+        let isFlashOn = false;
+
+        flashBtn.addEventListener('click', () => {
+            isFlashOn = !isFlashOn;
+            if (isFlashOn) {
+                flashIcon.textContent = 'flashlight_off';
+                flashBtn.classList.add('bg-primary-fixed', 'text-on-primary-fixed');
+                flashIcon.classList.add('text-primary');
+                flashIcon.classList.remove('text-white');
+                flashBtn.style.fontVariationSettings = "'FILL' 1";
+            } else {
+                flashIcon.textContent = 'flashlight_on';
+                flashBtn.classList.remove('bg-primary-fixed', 'text-on-primary-fixed');
+                flashIcon.classList.remove('text-primary');
+                flashIcon.classList.add('text-white');
+                flashBtn.style.fontVariationSettings = "'FILL' 0";
+            }
+        });
+
+        // Subtle parallax movement for the viewfinder frame based on mouse/gyro (simulation)
+        document.addEventListener('mousemove', (e) => {
+            const frame = document.querySelector('.scanner-frame');
+            const x = (e.clientX / window.innerWidth - 0.5) * 10;
+            const y = (e.clientY / window.innerHeight - 0.5) * 10;
+            frame.style.transform = `translate(${x}px, ${y}px)`;
+        });
+    </script>
+</body></html>

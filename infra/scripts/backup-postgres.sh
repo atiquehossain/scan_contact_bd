@@ -38,11 +38,11 @@ fi
 
 mkdir -p "$BACKUP_DIR"
 
-TMP_GZ_BASE="$(mktemp "$BACKUP_DIR/.scancontact-$TIMESTAMP.XXXXXX")"
+TMP_GZ_BASE="$(mktemp "$BACKUP_DIR/.nonumqr-$TIMESTAMP.XXXXXX")"
 TMP_GZ="$TMP_GZ_BASE.sql.gz"
 mv "$TMP_GZ_BASE" "$TMP_GZ"
 TMP_ENC=""
-OUT="$BACKUP_DIR/scancontact-$TIMESTAMP.sql.gz"
+OUT="$BACKUP_DIR/nonumqr-$TIMESTAMP.sql.gz"
 
 cleanup() {
   if [ -n "${TMP_GZ:-}" ]; then
@@ -57,7 +57,7 @@ trap cleanup EXIT
 pg_dump "$PG_DATABASE_URL" | gzip -c > "$TMP_GZ"
 
 if [ -n "${BACKUP_ENCRYPTION_PASSWORD:-}" ]; then
-  TMP_ENC_BASE="$(mktemp "$BACKUP_DIR/.scancontact-$TIMESTAMP.XXXXXX")"
+  TMP_ENC_BASE="$(mktemp "$BACKUP_DIR/.nonumqr-$TIMESTAMP.XXXXXX")"
   TMP_ENC="$TMP_ENC_BASE.sql.gz.enc"
   mv "$TMP_ENC_BASE" "$TMP_ENC"
   openssl enc -aes-256-cbc -salt -pbkdf2 \
@@ -75,7 +75,7 @@ else
 fi
 
 find "$BACKUP_DIR" -type f \
-  \( -name 'scancontact-*.sql.gz' -o -name 'scancontact-*.sql.gz.enc' \) \
+  \( -name 'nonumqr-*.sql.gz' -o -name 'nonumqr-*.sql.gz.enc' \) \
   -mtime +"$RETENTION_DAYS" \
   -delete
 

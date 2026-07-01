@@ -3,15 +3,15 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-scancontact}
-      POSTGRES_USER: ${POSTGRES_USER:-scancontact}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-scancontact_local_password}
+      POSTGRES_DB: ${POSTGRES_DB:-nonumqr}
+      POSTGRES_USER: ${POSTGRES_USER:-nonumqr}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nonumqr_local_password}
     ports:
       - "${POSTGRES_BIND_IP:-127.0.0.1}:${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-scancontact} -d ${POSTGRES_DB:-scancontact}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nonumqr} -d ${POSTGRES_DB:-nonumqr}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -41,7 +41,7 @@ services:
     env_file:
       - apps/api/.env
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-scancontact}:${POSTGRES_PASSWORD:-scancontact_local_password}@postgres:5432/${POSTGRES_DB:-scancontact}?schema=public
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nonumqr}:${POSTGRES_PASSWORD:-nonumqr_local_password}@postgres:5432/${POSTGRES_DB:-nonumqr}?schema=public
       REDIS_URL: ${API_REDIS_URL:-}
       NODE_OPTIONS: ${API_NODE_OPTIONS:---max-old-space-size=384}
     ports:
@@ -66,7 +66,7 @@ services:
     env_file:
       - apps/api/.env
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-scancontact}:${POSTGRES_PASSWORD:-scancontact_local_password}@postgres:5432/${POSTGRES_DB:-scancontact}?schema=public
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nonumqr}:${POSTGRES_PASSWORD:-nonumqr_local_password}@postgres:5432/${POSTGRES_DB:-nonumqr}?schema=public
     depends_on:
       postgres:
         condition: service_healthy
@@ -76,7 +76,7 @@ services:
       context: .
       dockerfile: infra/caddy/Dockerfile
       args:
-        NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-ScanContact BD}
+        NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-NoNumQR}
         NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
         NEXT_PUBLIC_API_URL: ${STATIC_NEXT_PUBLIC_API_URL:-/api}
     restart: unless-stopped

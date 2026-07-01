@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Connected Call | NoNumQR Owner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#d8e3fb",
+                        "primary-container": "#065f46",
+                        "tertiary-container": "#0049c3",
+                        "on-surface-variant": "#3f4944",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#8bd6b7",
+                        "inverse-on-surface": "#ecf1ff",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "outline-variant": "#bec9c2",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "on-error-container": "#93000a",
+                        "outline": "#6f7973",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#b5c6ff",
+                        "on-secondary-fixed": "#00201d",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d8e3fb",
+                        "on-background": "#111c2d",
+                        "surface-tint": "#1b6b51",
+                        "surface-dim": "#cfdaf2",
+                        "surface-container-low": "#f0f3ff",
+                        "on-secondary-container": "#006f66",
+                        "inverse-primary": "#8bd6b6",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#89f5e7",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#e7eeff",
+                        "primary": "#004532",
+                        "background": "#f9f9ff",
+                        "surface-bright": "#f9f9ff",
+                        "secondary": "#006a61",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#a6f2d1",
+                        "on-surface": "#111c2d",
+                        "on-secondary-fixed-variant": "#005049",
+                        "tertiary": "#003491",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "surface-container-high": "#dee8ff",
+                        "surface": "#f9f9ff",
+                        "tertiary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#00174b",
+                        "secondary-container": "#86f2e4",
+                        "inverse-surface": "#263143",
+                        "on-primary-fixed": "#002116",
+                        "on-primary-fixed-variant": "#00513b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "gutter-mobile": "12px",
+                        "sm": "8px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        .call-btn-active {
+            @apply bg-secondary-container text-on-secondary-container;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen">
+<!-- Top Navigation Bar (Shared Component Strategy) -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl shadow-sm docked full-width top-0 sticky z-50 flex justify-between items-center px-margin-mobile h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary" data-icon="security">security</span>
+<span class="font-display-sm text-display-sm font-bold text-primary">NoNumQR Owner</span>
+</div>
+<div class="flex items-center">
+<button class="p-2 rounded-full hover:bg-surface-variant/50 transition-transform active:scale-95 duration-150">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center justify-center px-margin-mobile pt-lg pb-xl max-w-lg mx-auto w-full">
+<!-- Status & Identity Section -->
+<section class="text-center space-y-md mb-xl">
+<div class="flex flex-col items-center gap-sm">
+<div class="inline-flex items-center gap-xs px-3 py-1 bg-primary/10 rounded-full">
+<span class="w-2 h-2 bg-primary rounded-full pulse-animation"></span>
+<span class="font-label-md text-label-md text-primary tracking-wide">PRIVATE CALL</span>
+</div>
+<h1 class="font-display-sm text-display-sm text-on-surface tabular-nums" id="call-timer">00:00</h1>
+</div>
+<div class="flex flex-col items-center gap-xs mt-lg">
+<div class="w-24 h-24 rounded-full bg-surface-container-high flex items-center justify-center mb-md border border-outline-variant/30 overflow-hidden relative">
+<img alt="Private Caller Avatar" class="w-full h-full object-cover opacity-80" data-alt="A sophisticated, minimalist abstract digital art piece depicting a human silhouette in soft, ethereal lighting. The aesthetic uses a palette of muted slates and warm whites, creating a professional yet anonymous persona. High-end lighting illuminates the edges, suggesting a premium and secure digital atmosphere for a private communication application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRTftMj5Bjoh68b4K4O_SRXDn5Re0LWN7TYpWVbfjd5chEclhwSE3r43yevVMny-Vr49mXdRQs3wMz45C6g4EoUIB-9iUVFHU2WKBa-qXWmvf-3f1dOnq0ro7q8yNH5AEXe4aRciS0wO2F4k5kUQVysjC_vIjVuz5_RUAW5elWfofAVKwIGz5KgNa82aRINMXX3j7DCoIEzvPVUopNKjfXkwf5lMrF2LRLDsAIn4cY64Z77aeIElYYTgydgJO1e0PT3xW0LBf_6AA"/>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Private Caller</h2>
+</div>
+</section>
+<!-- Context Card -->
+<section class="w-full mb-xl">
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-md shadow-sm flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-icon="directions_car">directions_car</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Associated Tag</span>
+<span class="font-title-lg text-title-lg text-on-surface">Toyota Corolla (A-123)</span>
+</div>
+</div>
+</section>
+<!-- Call Controls -->
+<section class="w-full flex flex-col items-center gap-xl mt-auto">
+<div class="flex justify-center gap-xl items-end">
+<!-- Mute -->
+<div class="flex flex-col items-center gap-xs">
+<button class="w-16 h-16 rounded-full border border-outline-variant flex items-center justify-center transition-all hover:bg-surface-variant/50 active:scale-90" id="mute-btn" onclick="toggleControl(this)">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="mic_off">mic_off</span>
+</button>
+<span class="font-label-md text-label-md text-on-surface-variant">Mute</span>
+</div>
+<!-- End Call (Primary) -->
+<div class="flex flex-col items-center gap-xs">
+<button class="w-20 h-20 rounded-full bg-error text-on-error flex items-center justify-center shadow-lg active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined text-[32px]" data-icon="call_end">call_end</span>
+</button>
+</div>
+<!-- Speaker -->
+<div class="flex flex-col items-center gap-xs">
+<button class="w-16 h-16 rounded-full border border-outline-variant flex items-center justify-center transition-all hover:bg-surface-variant/50 active:scale-90" id="speaker-btn" onclick="toggleControl(this)">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="volume_up">volume_up</span>
+</button>
+<span class="font-label-md text-label-md text-on-surface-variant">Speaker</span>
+</div>
+</div>
+<!-- Privacy Assurance -->
+<div class="flex items-center gap-sm bg-surface-container-low px-lg py-md rounded-full border border-outline-variant/20">
+<span class="material-symbols-outlined text-primary text-[18px]" data-icon="verified_user">verified_user</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant">
+                    This call happens through NoNumQR. Your number is not displayed.
+                </p>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Hidden on Call Screen) -->
+<!-- Suppressed per UX guidelines for task-focused context -->
+<script>
+        // Simple Call Timer
+        let seconds = 0;
+        const timerElement = document.getElementById('call-timer');
+        
+        setInterval(() => {
+            seconds++;
+            const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const secs = (seconds % 60).toString().padStart(2, '0');
+            timerElement.textContent = `${mins}:${secs}`;
+        }, 1000);
+
+        // Control Toggle Logic
+        function toggleControl(btn) {
+            const isActive = btn.classList.contains('bg-secondary-container');
+            if (isActive) {
+                btn.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+                btn.classList.add('border-outline-variant');
+                btn.querySelector('span').classList.remove('text-on-secondary-container');
+                btn.querySelector('span').classList.add('text-on-surface-variant');
+            } else {
+                btn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+                btn.classList.remove('border-outline-variant');
+                btn.querySelector('span').classList.add('text-on-secondary-container');
+                btn.querySelector('span').classList.remove('text-on-surface-variant');
+            }
+        }
+    </script>
+</body></html>

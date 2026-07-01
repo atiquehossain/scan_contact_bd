@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NoNumQR - Private Call</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-container": "#a6f2d1",
+                      "tertiary": "#924628",
+                      "on-secondary": "#ffffff",
+                      "surface-bright": "#faf8ff",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "surface-tint": "#006a61",
+                      "surface-container-low": "#f2f3ff",
+                      "inverse-surface": "#283044",
+                      "background": "#faf8ff",
+                      "inverse-on-surface": "#eef0ff",
+                      "error": "#ba1a1a",
+                      "on-tertiary": "#ffffff",
+                      "on-background": "#131b2e",
+                      "on-tertiary-container": "#fffbff",
+                      "inverse-primary": "#6bd8cb",
+                      "secondary": "#1b6b51",
+                      "on-tertiary-fixed": "#370e00",
+                      "on-secondary-container": "#237157",
+                      "surface-container": "#eaedff",
+                      "on-error": "#ffffff",
+                      "info-blue": "#2563EB",
+                      "tertiary-fixed": "#ffdbce",
+                      "tertiary-container": "#b05e3d",
+                      "tertiary-fixed-dim": "#ffb59a",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed": "#002116",
+                      "on-primary": "#ffffff",
+                      "surface-variant": "#dae2fd",
+                      "outline-variant": "#bcc9c6",
+                      "warning-amber": "#D97706",
+                      "secondary-fixed-dim": "#8bd6b6",
+                      "on-error-container": "#93000a",
+                      "surface": "#faf8ff",
+                      "surface-dim": "#d2d9f4",
+                      "primary": "#00685f",
+                      "on-secondary-fixed-variant": "#00513b",
+                      "on-primary-container": "#f4fffc",
+                      "surface-off-white": "#F8FAFC",
+                      "danger-red": "#DC2626",
+                      "surface-container-highest": "#dae2fd",
+                      "primary-fixed": "#89f5e7",
+                      "on-surface": "#131b2e",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#a6f2d1",
+                      "primary-container": "#008378",
+                      "on-primary-fixed-variant": "#005049",
+                      "on-primary-fixed": "#00201d",
+                      "surface-container-high": "#e2e7ff",
+                      "on-surface-variant": "#3d4947",
+                      "outline": "#6d7a77",
+                      "ink-slate": "#1E293B",
+                      "on-tertiary-fixed-variant": "#773215"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1200px",
+                      "stack-lg": "32px",
+                      "stack-sm": "8px",
+                      "unit": "4px",
+                      "stack-md": "16px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar Section -->
+<header class="w-full top-0 sticky bg-surface z-50">
+<div class="flex items-center justify-between px-margin-mobile h-16 w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-stack-sm cursor-pointer active:scale-95 transition-transform" onclick="window.history.back()">
+<span class="material-symbols-outlined text-primary" data-icon="security">security</span>
+<h1 class="font-headline-md text-headline-md-mobile font-bold text-primary">NoNumQR</h1>
+</div>
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:opacity-80 transition-opacity" data-icon="help_outline">help_outline</span>
+</div>
+</div>
+</header>
+<!-- Call Connection Indicator (Floating Pill) -->
+<div class="w-full flex justify-center mt-stack-sm px-margin-mobile">
+<div class="bg-secondary-container px-4 py-1.5 rounded-full flex items-center gap-2 shadow-sm border border-secondary/10">
+<span class="w-2 h-2 bg-secondary rounded-full pulse-animation"></span>
+<span class="text-on-secondary-container font-label-lg text-label-lg">Secure Connection Active</span>
+</div>
+</div>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center justify-center px-margin-mobile py-stack-lg max-w-md mx-auto w-full">
+<!-- Central Call Card -->
+<div class="bg-surface-container-lowest w-full rounded-[24px] p-stack-lg shadow-[0_4px_20px_rgba(15,23,42,0.05)] border border-surface-variant/30 flex flex-col items-center text-center relative overflow-hidden">
+<!-- Subtle shimmer background -->
+<div class="absolute inset-0 shimmer opacity-10 pointer-events-none"></div>
+<!-- Avatar Placeholder -->
+<div class="w-24 h-24 bg-surface-container-high rounded-full flex items-center justify-center mb-stack-md relative z-10">
+<span class="material-symbols-outlined text-4xl text-outline" data-icon="person">person</span>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-unit z-10">Anonymous Caller</h2>
+<div class="font-headline-md text-headline-md text-primary mb-stack-md tabular-nums z-10" id="call-timer">02:14</div>
+<p class="font-body-md text-on-surface-variant mb-stack-lg z-10">Connected</p>
+<!-- Interaction Controls -->
+<div class="grid grid-cols-2 gap-stack-md w-full mb-stack-lg z-10">
+<button class="flex flex-col items-center justify-center p-stack-md rounded-xl transition-all duration-200 bg-surface-container hover:bg-surface-container-high active:scale-95 group" id="mute-btn" onclick="toggleMute()">
+<span class="material-symbols-outlined text-on-surface-variant group-[.active]:text-primary mb-1" data-icon="mic_off" id="mic-icon">mic_off</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant group-[.active]:text-primary">Mute</span>
+</button>
+<button class="flex flex-col items-center justify-center p-stack-md rounded-xl transition-all duration-200 bg-secondary-container active:scale-95 group active" id="speaker-btn" onclick="toggleSpeaker()" style="background-color: #a6f2d1">
+<span class="material-symbols-outlined text-on-secondary-container mb-1" data-icon="volume_up" style="font-variation-settings: 'FILL' 1;">volume_up</span>
+<span class="font-label-sm text-label-sm text-on-secondary-container">Speaker</span>
+</button>
+</div>
+<!-- Privacy Notice Footer -->
+<div class="flex items-start gap-2 text-left bg-surface-bright p-stack-sm rounded-lg border border-outline-variant/20 z-10">
+<span class="material-symbols-outlined text-info-blue text-[18px]" data-icon="verified_user">verified_user</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Your phone number is not shown on this page. All metadata is encrypted.</p>
+</div>
+</div>
+<!-- Call Action (End Call) -->
+<div class="w-full mt-stack-lg px-margin-mobile">
+<button class="w-full bg-danger-red text-white py-4 rounded-xl font-headline-md text-headline-md flex items-center justify-center gap-stack-sm shadow-md active:scale-95 transition-transform" onclick="endCall()">
+<span class="material-symbols-outlined" data-icon="call_end" style="font-variation-settings: 'FILL' 1;">call_end</span>
+                End Call
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation (Filtered: Hidden on transactional screen) -->
+<!-- The prompt implies a focused state, so Nav is suppressed per "UX Goal" instruction -->
+<!-- Micro-interactions Script -->
+<script>
+        let seconds = 134; // 02:14
+        const timerElement = document.getElementById('call-timer');
+
+        function updateTimer() {
+            seconds++;
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            timerElement.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        const timerInterval = setInterval(updateTimer, 1000);
+
+        function toggleMute() {
+            const btn = document.getElementById('mute-btn');
+            const icon = document.getElementById('mic-icon');
+            const isActive = btn.classList.toggle('active');
+            
+            if (isActive) {
+                btn.style.backgroundColor = '#eaedff'; // surface-container
+                icon.textContent = 'mic';
+                icon.style.fontVariationSettings = "'FILL' 1";
+            } else {
+                btn.style.backgroundColor = '';
+                icon.textContent = 'mic_off';
+                icon.style.fontVariationSettings = "'FILL' 0";
+            }
+        }
+
+        function toggleSpeaker() {
+            const btn = document.getElementById('speaker-btn');
+            const isActive = btn.classList.toggle('active');
+            
+            if (isActive) {
+                btn.style.backgroundColor = '#a6f2d1';
+            } else {
+                btn.style.backgroundColor = '#eaedff';
+            }
+        }
+
+        function endCall() {
+            clearInterval(timerInterval);
+            const main = document.querySelector('main');
+            main.innerHTML = `
+                <div class="text-center animate-pulse">
+                    <div class="w-20 h-20 bg-danger-red/10 rounded-full flex items-center justify-center mx-auto mb-stack-md">
+                        <span class="material-symbols-outlined text-danger-red text-4xl" data-icon="call_end">call_end</span>
+                    </div>
+                    <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Call Ended</h2>
+                    <p class="font-body-md text-on-surface-variant mt-2">Returning to home...</p>
+                </div>
+            `;
+            setTimeout(() => {
+                window.location.reload(); // Simple refresh for demo
+            }, 2000);
+        }
+    </script>
+</body></html>

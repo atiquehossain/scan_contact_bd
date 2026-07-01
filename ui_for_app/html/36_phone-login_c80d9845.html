@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>NoNumQR Owner - Sign In</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#dbe1ff",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#00513b",
+                    "primary-fixed": "#a6f2d1",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "surface-container-high": "#dee8ff",
+                    "on-surface-variant": "#3f4944",
+                    "background": "#f9f9ff",
+                    "surface-container-highest": "#d8e3fb",
+                    "on-secondary-fixed-variant": "#005049",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#065f46",
+                    "on-secondary-fixed": "#00201d",
+                    "inverse-primary": "#8bd6b6",
+                    "on-error-container": "#93000a",
+                    "surface-tint": "#1b6b51",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#bec9c2",
+                    "secondary": "#006a61",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f0f3ff",
+                    "secondary-fixed": "#89f5e7",
+                    "on-tertiary-container": "#b5c6ff",
+                    "on-primary-container": "#8bd6b7",
+                    "inverse-surface": "#263143",
+                    "surface-dim": "#cfdaf2",
+                    "surface-container": "#e7eeff",
+                    "surface": "#f9f9ff",
+                    "on-tertiary-fixed": "#00174b",
+                    "secondary-container": "#86f2e4",
+                    "primary": "#004532",
+                    "outline": "#6f7973",
+                    "tertiary": "#003491",
+                    "surface-bright": "#f9f9ff",
+                    "tertiary-container": "#0049c3",
+                    "on-secondary-container": "#006f66",
+                    "surface-variant": "#d8e3fb",
+                    "on-tertiary": "#ffffff",
+                    "on-surface": "#111c2d",
+                    "on-tertiary-fixed-variant": "#003ea8",
+                    "on-primary-fixed": "#002116",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#8bd6b6",
+                    "inverse-on-surface": "#ecf1ff",
+                    "error": "#ba1a1a",
+                    "on-background": "#111c2d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "md": "16px",
+                    "gutter-mobile": "12px",
+                    "margin-mobile": "16px",
+                    "sm": "8px",
+                    "lg": "24px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "title-lg": ["Inter"],
+                    "display-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .safe-area-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .glass-header {
+            background: rgba(249, 249, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopAppBar (Transactional Suppression Rule: Global Nav hidden, Branding retained) -->
+<header class="fixed top-0 w-full z-50 border-b border-outline-variant/30 glass-header">
+<div class="flex items-center justify-between px-md h-16 w-full max-w-screen-xl mx-auto">
+<button class="p-2 -ml-2 rounded-full hover:bg-surface-variant/50 transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">NoNumQR Owner</h1>
+<div class="w-10"></div> <!-- Spacer for center alignment -->
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center justify-center px-margin-mobile pt-24 pb-12 w-full max-w-md mx-auto">
+<!-- Hero Section -->
+<div class="w-full text-center mb-xl">
+<div class="inline-flex items-center justify-center w-20 h-20 bg-primary-container rounded-3xl mb-lg shadow-sm">
+<span class="material-symbols-outlined text-on-primary-container !text-4xl" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<h2 class="font-display-sm text-display-sm text-primary mb-xs">Welcome Back</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Secure access to your business QR codes.</p>
+</div>
+<!-- Login Form -->
+<div class="w-full space-y-md">
+<!-- Phone Input Component -->
+<div class="group">
+<label class="block font-label-lg text-label-lg text-on-surface-variant mb-xs ml-1" for="phone">Phone Number</label>
+<div class="relative flex items-center bg-surface-container-lowest border-2 border-outline-variant rounded-xl overflow-hidden focus-within:border-primary transition-all duration-300 shadow-sm">
+<div class="flex items-center px-md border-r border-outline-variant bg-surface-container-low h-16">
+<img alt="Bangladesh Flag" class="w-6 h-auto rounded-sm mr-xs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhPjPYxKasckxRAMtH2bmO3j9Q4Mk3js7Hy7LwL5awAPiqIzNASoNvDrXEVk4_Ecp3p8Y24EiPdvYIo53LKLgpZPZAHWNZ_nUeZNTN8s7fSqgwc2WYRCU4xHJ6y3W8LpRuaFGaav0veQz1XVQObLQFuAUVXWUZDkWi0TpNEt8zvbtu5Du5XE7G9wkWMIi-LF6zXfzrNvSW3pVLIIhau-uVzyTr4hAVLYQEHz46d32I5FwEqJmVFDuSzMJ2c88hN-lg1Uu9lGe0E6E"/>
+<span class="font-title-lg text-title-lg text-primary">+880</span>
+</div>
+<input class="w-full h-16 px-md bg-transparent border-none focus:ring-0 font-title-lg text-title-lg tracking-wider placeholder:text-outline/50" id="phone" maxlength="10" placeholder="01XXX-XXXXXX" type="tel"/>
+</div>
+</div>
+<!-- Continue Button -->
+<button class="w-full h-16 bg-primary text-on-primary font-headline-md text-headline-md rounded-xl shadow-lg hover:shadow-xl active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2">
+<span>Continue</span>
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Privacy Notice Card -->
+<div class="bg-surface-container-low border border-outline-variant/30 rounded-xl p-md flex gap-md items-start mt-xl">
+<div class="p-2 bg-secondary-container/30 rounded-lg">
+<span class="material-symbols-outlined text-secondary !text-2xl" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div>
+<p class="font-body-md text-body-md text-on-surface">
+                        Your number is used for owner login. It is not shown to scanners by default.
+                    </p>
+</div>
+</div>
+</div>
+<!-- Decorative Aesthetic Element (Asymmetric Bento-lite style) -->
+<div class="grid grid-cols-2 gap-sm w-full mt-xl opacity-40">
+<div class="h-24 rounded-2xl bg-gradient-to-br from-primary-fixed-dim to-primary-container relative overflow-hidden">
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-fixed !text-4xl opacity-20" data-icon="qr_code_2">qr_code_2</span>
+</div>
+</div>
+<div class="h-24 rounded-2xl bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary !text-4xl opacity-20" data-icon="shield_lock">shield_lock</span>
+</div>
+</div>
+</main>
+<!-- Small Footer Links -->
+<footer class="mt-auto safe-area-bottom px-margin-mobile py-lg w-full max-w-md mx-auto text-center">
+<p class="font-label-md text-label-md text-on-surface-variant">
+            By continuing, you agree to our 
+            <a class="text-primary font-semibold hover:underline decoration-primary/30" href="#">Terms of Service</a> 
+            and 
+            <a class="text-primary font-semibold hover:underline decoration-primary/30" href="#">Privacy Policy</a>.
+        </p>
+</footer>
+<!-- Interactive Layer for Feedback -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const phoneInput = document.getElementById('phone');
+            const continueBtn = document.querySelector('button.bg-primary');
+
+            // Micro-interaction: Focus state pulse
+            phoneInput.addEventListener('focus', () => {
+                phoneInput.closest('.relative').classList.add('shadow-[0_0_0_4px_rgba(0,69,50,0.1)]');
+            });
+            phoneInput.addEventListener('blur', () => {
+                phoneInput.closest('.relative').classList.remove('shadow-[0_0_0_4px_rgba(0,69,50,0.1)]');
+            });
+
+            // Prevent non-numeric characters
+            phoneInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                
+                // Toggle active state visual
+                if (e.target.value.length >= 10) {
+                    continueBtn.classList.remove('opacity-70');
+                    continueBtn.classList.add('opacity-100');
+                } else {
+                    continueBtn.classList.add('opacity-70');
+                }
+            });
+
+            // Initial button state
+            continueBtn.classList.add('opacity-70');
+        });
+    </script>
+</body></html>

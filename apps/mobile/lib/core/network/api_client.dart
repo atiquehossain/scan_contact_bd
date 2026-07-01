@@ -132,7 +132,7 @@ class ApiClient {
 void _debugRequest(RequestOptions options) {
   if (!kDebugMode) return;
   debugPrint(
-    '[ScanContact API] --> ${options.method} ${options.uri} '
+    '[NoNumQR API] --> ${options.method} ${options.uri} '
     'auth=${options.headers.containsKey('Authorization')} '
     'data=${_safeDataShape(options.data)}',
   );
@@ -141,7 +141,7 @@ void _debugRequest(RequestOptions options) {
 void _debugResponse(Response<dynamic> response) {
   if (!kDebugMode) return;
   debugPrint(
-    '[ScanContact API] <-- ${response.statusCode} '
+    '[NoNumQR API] <-- ${response.statusCode} '
     '${response.requestOptions.method} ${response.requestOptions.uri}',
   );
 }
@@ -149,16 +149,14 @@ void _debugResponse(Response<dynamic> response) {
 void _debugError(DioException error) {
   if (!kDebugMode) return;
   debugPrint(
-    '[ScanContact API] xx ${error.type.name} '
+    '[NoNumQR API] xx ${error.type.name} '
     '${error.requestOptions.method} ${error.requestOptions.uri} '
     'status=${error.response?.statusCode ?? 'none'} '
     'message=${error.message}',
   );
   final data = error.response?.data;
   if (data is Map && (data['message'] is String || data['error'] is String)) {
-    debugPrint(
-      '[ScanContact API] serverError=${data['message'] ?? data['error']}',
-    );
+    debugPrint('[NoNumQR API] serverError=${data['message'] ?? data['error']}');
   }
 }
 
@@ -181,10 +179,10 @@ String apiErrorMessage(Object error) {
       return 'Connection problem. Check internet and try again.';
     }
     if (data is Map && data['message'] is String) {
-      return data['message'] as String;
+      return _safeServerMessage(data['message'] as String);
     }
     if (data is Map && data['error'] is String) {
-      return data['error'] as String;
+      return _safeServerMessage(data['error'] as String);
     }
     if (error.response?.statusCode == 401) {
       return 'Session expired. Please log in again.';
@@ -194,4 +192,20 @@ String apiErrorMessage(Object error) {
     }
   }
   return 'Something went wrong. Try again.';
+}
+
+String _safeServerMessage(String message) {
+  final normalized = message.toLowerCase();
+  final exposesInternalDetails =
+      message.contains('\n') ||
+      message.contains('\\') ||
+      normalized.contains('prisma.') ||
+      normalized.contains('invocation') ||
+      normalized.contains('database server') ||
+      normalized.contains('stack') ||
+      normalized.contains('src/');
+  if (exposesInternalDetails) {
+    return 'Something went wrong. Try again.';
+  }
+  return message;
 }

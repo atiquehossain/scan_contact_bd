@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NoNumQR | Securing Connection</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Shared Components Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed": "#89f5e7",
+                    "on-secondary-fixed-variant": "#00513b",
+                    "surface-container": "#eaedff",
+                    "primary-container": "#008378",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#eef0ff",
+                    "secondary-container": "#a6f2d1",
+                    "surface-off-white": "#F8FAFC",
+                    "on-error": "#ffffff",
+                    "surface": "#faf8ff",
+                    "inverse-primary": "#6bd8cb",
+                    "tertiary": "#924628",
+                    "surface-container-low": "#f2f3ff",
+                    "on-tertiary-fixed": "#370e00",
+                    "on-surface-variant": "#3d4947",
+                    "warning-amber": "#D97706",
+                    "tertiary-container": "#b05e3d",
+                    "on-secondary-fixed": "#002116",
+                    "error-container": "#ffdad6",
+                    "outline": "#6d7a77",
+                    "outline-variant": "#bcc9c6",
+                    "ink-slate": "#1E293B",
+                    "surface-container-high": "#e2e7ff",
+                    "on-primary-fixed": "#00201d",
+                    "surface-variant": "#dae2fd",
+                    "danger-red": "#DC2626",
+                    "surface-dim": "#d2d9f4",
+                    "secondary-fixed-dim": "#8bd6b6",
+                    "on-primary-container": "#f4fffc",
+                    "info-blue": "#2563EB",
+                    "surface-container-highest": "#dae2fd",
+                    "on-tertiary-container": "#fffbff",
+                    "on-primary-fixed-variant": "#005049",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#a6f2d1",
+                    "on-secondary-container": "#237157",
+                    "secondary": "#1b6b51",
+                    "on-surface": "#131b2e",
+                    "inverse-surface": "#283044",
+                    "tertiary-fixed": "#ffdbce",
+                    "surface-tint": "#006a61",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#ffb59a",
+                    "on-tertiary-fixed-variant": "#773215",
+                    "on-secondary": "#ffffff",
+                    "background": "#faf8ff",
+                    "primary": "#00685f",
+                    "on-background": "#131b2e",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "surface-bright": "#faf8ff",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "stack-md": "16px",
+                    "container-max": "1200px",
+                    "stack-sm": "8px",
+                    "stack-lg": "32px",
+                    "gutter": "24px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "label-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+        }
+        
+        /* Custom Shimmer Effect */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+
+        /* Spinner Animation */
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+        .spinner-ring {
+            animation: spinner 0.8s linear infinite;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md">
+<!-- TopAppBar Component -->
+<header class="bg-surface-container-lowest dark:bg-surface-container-lowest shadow-sm fixed top-0 w-full z-50 h-16 flex items-center justify-between px-margin-mobile">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" style="font-size: 24px;">qr_code_2</span>
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">NoNumQR</span>
+</div>
+<div class="hidden md:flex gap-stack-md">
+<nav class="flex gap-stack-md">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-container transition-colors px-2 py-1 rounded" href="#">How it Works</a>
+</nav>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-grow flex flex-col items-center justify-center px-margin-mobile py-stack-lg mt-16">
+<!-- Center-Focused Loading Area -->
+<div class="w-full max-container-max flex flex-col items-center">
+<!-- Context Card Skeleton (Tag Shape) -->
+<div class="w-full max-w-[360px] bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden p-stack-md flex flex-col items-center gap-stack-md border border-outline-variant">
+<!-- QR Placeholder (Shimmer) -->
+<div class="w-48 h-48 rounded-lg shimmer"></div>
+<!-- Identification Skeleton -->
+<div class="w-full space-y-stack-sm">
+<div class="h-6 w-3/4 bg-surface-container shimmer rounded mx-auto"></div>
+<div class="h-4 w-1/2 bg-surface-container shimmer rounded mx-auto"></div>
+</div>
+<!-- Action Button Skeleton -->
+<div class="w-full h-12 bg-surface-container shimmer rounded-lg mt-stack-md"></div>
+</div>
+<!-- Feedback UI: Spinner & Message -->
+<div class="mt-stack-lg flex flex-col items-center gap-stack-md">
+<div class="relative w-12 h-12">
+<!-- Modern Brand Spinner -->
+<svg class="spinner-ring w-full h-full text-primary" viewbox="0 0 24 24">
+<circle class="opacity-25" cx="12" cy="12" fill="none" r="10" stroke="currentColor" stroke-width="3"></circle>
+<path class="opacity-100" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+<!-- Small inner pulse -->
+<div class="absolute inset-0 m-auto w-2 h-2 bg-primary rounded-full animate-ping"></div>
+</div>
+<div class="text-center">
+<h2 class="font-headline-md text-headline-md text-ink-slate">Securing your connection...</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Establishing a private end-to-end link</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Success-focused Visual Cues (Floating Elements) -->
+<div class="fixed bottom-margin-mobile left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 bg-ink-slate text-surface-off-white rounded-full shadow-lg opacity-0 transition-opacity duration-1000 delay-500 animate-in fade-in fill-mode-forwards">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+<span class="font-label-sm text-label-sm">Privacy Verified by NoNumQR</span>
+</div>
+<!-- Footer Component -->
+<footer class="bg-surface dark:bg-surface border-t border-outline-variant dark:border-outline flex flex-col items-center gap-stack-sm py-stack-lg px-margin-mobile w-full text-center">
+<div class="flex gap-stack-md mb-2">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Report Abuse</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">How it Works</a>
+</div>
+<p class="font-label-sm text-label-sm text-secondary dark:text-secondary-fixed">
+            © 2024 NoNumQR. Privacy First.
+        </p>
+</footer>
+<script>
+        // Atmospheric effect: Soft fade-in for the "Privacy Verified" toast
+        document.addEventListener('DOMContentLoaded', () => {
+            const toast = document.querySelector('.animate-in');
+            setTimeout(() => {
+                toast.style.opacity = '1';
+            }, 800);
+        });
+
+        // Simulate a state transition after 5 seconds for visual demo if needed
+        // In a real app, this would be triggered by an API response.
+    </script>
+</body></html>

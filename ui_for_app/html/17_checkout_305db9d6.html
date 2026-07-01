@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Checkout - SecureTag</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#1b6b51",
+                    "primary-fixed-dim": "#8bd6b6",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "on-surface": "#111c2d",
+                    "secondary-fixed": "#89f5e7",
+                    "surface-variant": "#d8e3fb",
+                    "surface-container-high": "#dee8ff",
+                    "on-primary-fixed-variant": "#00513b",
+                    "surface-bright": "#f9f9ff",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f0f3ff",
+                    "on-background": "#111c2d",
+                    "on-secondary-fixed": "#00201d",
+                    "on-tertiary-fixed": "#00174b",
+                    "inverse-surface": "#263143",
+                    "secondary": "#006a61",
+                    "surface": "#f9f9ff",
+                    "on-primary-fixed": "#002116",
+                    "on-surface-variant": "#3f4944",
+                    "primary-fixed": "#a6f2d1",
+                    "on-secondary-fixed-variant": "#005049",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#003491",
+                    "inverse-primary": "#8bd6b6",
+                    "tertiary-container": "#0049c3",
+                    "on-tertiary": "#ffffff",
+                    "background": "#f9f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "outline": "#6f7973",
+                    "surface-container-highest": "#d8e3fb",
+                    "surface-container": "#e7eeff",
+                    "outline-variant": "#bec9c2",
+                    "surface-dim": "#cfdaf2",
+                    "primary-container": "#065f46",
+                    "tertiary-fixed": "#dbe1ff",
+                    "on-tertiary-container": "#b5c6ff",
+                    "inverse-on-surface": "#ecf1ff",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "on-tertiary-fixed-variant": "#003ea8",
+                    "on-primary-container": "#8bd6b7",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "secondary-container": "#86f2e4",
+                    "primary": "#004532",
+                    "on-secondary-container": "#006f66"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "gutter-mobile": "12px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "xs": "4px",
+                    "margin-mobile": "16px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F8FAFC;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface select-none">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 flex items-center justify-between px-md py-sm bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm">
+<button class="p-xs hover:bg-surface-variant/50 transition-colors active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-primary">Checkout</h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</nav>
+<!-- Main Content -->
+<main class="pt-20 pb-40 px-margin-mobile max-w-lg mx-auto space-y-md">
+<!-- Section 1: Product Summary -->
+<section class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant/20 shadow-[0px_4px_12px_rgba(0,0,0,0.03)]">
+<h2 class="font-label-lg text-label-lg text-outline mb-sm">Order Summary</h2>
+<div class="flex items-center gap-md">
+<div class="w-16 h-16 rounded-lg bg-surface-container overflow-hidden flex-shrink-0">
+<img alt="NoNumQR Car Sticker" class="w-full h-full object-cover" data-alt="A premium close-up of a high-tech minimalist QR code car sticker applied to a clean car window. The sticker is sleek with deep emerald and white accents, reflecting a professional and secure aesthetic. The lighting is soft and natural, emphasizing the texture of the durable material and the clarity of the design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeFFpTjRRE-vV4yo1j67nrNmiJanhIX0eq2TRWMgH92s6Y4SrEk1HZyME1S8j7-jm1jq3JJgbXOb3TUgdMOVz2kcalvWLyMu5GAR7rskp6fFz07hYbCQsTzNhSHJh0W02GI7elmpVqoO9FnuP-PLQxAXTaj09xlMOC2JueCK6CuKAKcsLUTWEmQGu5cwZ7vEbfk8v961YDnyAp2JCt4vwNfImaOwO--1QlfR1TuBBnqOwoU1Ng38RXldUHqymtxesQqdIg31GcCM4"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-title-lg text-primary">NoNumQR Car Sticker</h3>
+<span class="font-title-lg text-primary">$12.99</span>
+</div>
+<p class="font-body-md text-on-surface-variant">Quantity: 1</p>
+</div>
+</div>
+</section>
+<!-- Section 2: Delivery Information -->
+<section class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant/20 shadow-[0px_4px_12px_rgba(0,0,0,0.03)]">
+<h2 class="font-label-lg text-label-lg text-outline mb-md">Delivery Information</h2>
+<form class="space-y-md">
+<div class="space-y-xs">
+<label class="font-label-md text-on-surface-variant px-xs">Receiver Name</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-lg px-md py-sm focus:ring-2 focus:ring-surface-tint/20 focus:border-surface-tint outline-none transition-all placeholder:text-outline/50" placeholder="John Doe" type="text"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-on-surface-variant px-xs">Phone Number</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-lg px-md py-sm focus:ring-2 focus:ring-surface-tint/20 focus:border-surface-tint outline-none transition-all placeholder:text-outline/50" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-on-surface-variant px-xs">Street Address</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-lg px-md py-sm focus:ring-2 focus:ring-surface-tint/20 focus:border-surface-tint outline-none transition-all placeholder:text-outline/50" placeholder="123 Security Lane" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="space-y-xs">
+<label class="font-label-md text-on-surface-variant px-xs">City</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-lg px-md py-sm focus:ring-2 focus:ring-surface-tint/20 focus:border-surface-tint outline-none transition-all placeholder:text-outline/50" placeholder="New York" type="text"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-on-surface-variant px-xs">District</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-lg px-md py-sm focus:ring-2 focus:ring-surface-tint/20 focus:border-surface-tint outline-none transition-all placeholder:text-outline/50" placeholder="Manhattan" type="text"/>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-on-surface-variant px-xs">Delivery notes (Optional)</label>
+<textarea class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-lg px-md py-sm focus:ring-2 focus:ring-surface-tint/20 focus:border-surface-tint outline-none transition-all placeholder:text-outline/50 resize-none" placeholder="Gate code, floor, or specific drop-off instructions" rows="2"></textarea>
+</div>
+</form>
+</section>
+<!-- Section 3: Payment Method -->
+<section class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant/20 shadow-[0px_4px_12px_rgba(0,0,0,0.03)]">
+<h2 class="font-label-lg text-label-lg text-outline mb-md">Payment Method</h2>
+<div class="flex items-center justify-between p-md bg-secondary-container/30 border border-secondary/20 rounded-xl">
+<div class="flex items-center gap-md">
+<div class="p-sm bg-secondary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary text-[20px]">payments</span>
+</div>
+<div>
+<p class="font-title-lg text-on-secondary-container">Cash on Delivery</p>
+<div class="inline-flex items-center gap-xs px-sm py-xs bg-secondary/10 rounded-full mt-xs">
+<span class="material-symbols-outlined text-[14px] text-secondary">check_circle</span>
+<span class="text-[10px] font-bold text-secondary uppercase tracking-wider">Available</span>
+</div>
+</div>
+</div>
+<div class="w-6 h-6 rounded-full border-2 border-secondary flex items-center justify-center p-1">
+<div class="w-full h-full bg-secondary rounded-full"></div>
+</div>
+</div>
+</section>
+<!-- Section 4: Privacy & Trust -->
+<section class="bg-primary/5 rounded-xl p-md border border-primary/10 flex gap-md">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">shield_with_heart</span>
+<div class="space-y-sm">
+<p class="font-label-lg text-primary">Privacy Guaranteed</p>
+<div class="space-y-xs">
+<p class="text-on-surface-variant text-label-md">Your QR tag will be assigned after order processing.</p>
+<p class="text-on-surface-variant text-label-md font-bold">We never print or encode your phone number inside the QR code.</p>
+</div>
+</div>
+</section>
+<!-- Total Section -->
+<section class="px-xs pt-md space-y-sm">
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-body-md">Subtotal</span>
+<span class="font-body-md">$12.99</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-body-md">Delivery Fee</span>
+<span class="font-body-md text-secondary">Free</span>
+</div>
+<div class="pt-sm border-t border-outline-variant/30 flex justify-between items-center">
+<span class="font-headline-md text-primary">Total Amount</span>
+<span class="font-headline-md text-primary">$12.99</span>
+</div>
+</section>
+</main>
+<!-- Fixed Bottom Action -->
+<div class="fixed bottom-0 w-full bg-surface/80 backdrop-blur-xl border-t border-outline-variant/20 px-margin-mobile py-lg pb-[calc(1.5rem+env(safe-area-inset-bottom))] z-50">
+<button class="w-full bg-primary text-on-primary py-md rounded-xl font-title-lg flex items-center justify-center gap-sm active:scale-[0.98] transition-all shadow-lg hover:bg-primary-container" id="placeOrderBtn">
+<span>Place Order</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<script>
+        // Micro-interaction for the place order button
+        const btn = document.getElementById('placeOrderBtn');
+        btn.addEventListener('click', () => {
+            btn.innerHTML = `
+                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Processing...</span>
+            `;
+            btn.disabled = true;
+            btn.classList.add('opacity-80');
+            
+            setTimeout(() => {
+                btn.innerHTML = `
+                    <span class="material-symbols-outlined">check_circle</span>
+                    <span>Order Placed!</span>
+                `;
+                btn.classList.replace('bg-primary', 'bg-secondary');
+            }, 2000);
+        });
+
+        // Soft shimmer/fade-in for images
+        document.querySelectorAll('img').forEach(img => {
+            img.style.opacity = '0';
+            img.onload = () => {
+                img.style.transition = 'opacity 0.6s ease-out';
+                img.style.opacity = '1';
+            };
+        });
+    </script>
+</body></html>

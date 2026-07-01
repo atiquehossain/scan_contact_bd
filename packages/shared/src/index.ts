@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const DEFAULT_APP_NAME = "ScanContact BD";
+export const DEFAULT_APP_NAME = "NoNumQR";
 
 export const supportedLanguages = ["en", "bn"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];

@@ -1,12 +1,12 @@
-# ScanContact BD
+# NoNumQR
 
-Bangladesh-first QR private contact platform MVP.
+Contact without revealing your number.
 
-ScanContact BD lets someone contact an owner by scanning a QR code without publicly exposing the owner's phone number by default. The web app is admin-only. QR owners use the Flutter owner app. Scanners use public browser pages only.
+NoNumQR is a private QR contact platform that lets people contact an owner through a QR sticker/tag without exposing the owner's phone number by default. The web app is admin-only. QR owners use the Flutter owner app. Scanners use public browser pages only.
 
 The core promise:
 
-> Let people contact you when needed, without publicly exposing your phone number.
+> Private QR contact for cars, bikes, homes, shops, and lost items.
 
 ## Current MVP Status
 
@@ -62,7 +62,7 @@ Owner can:
 - See assigned QR tags
 - See whether anyone scanned or messaged
 - Reply privately in the app
-- Scan another ScanContact QR and send a scanner message
+- Scan another NoNumQR QR and send a scanner message
 - View alerts
 - Place COD QR sticker orders when no QR is assigned
 
@@ -82,7 +82,7 @@ Scanner must not see owner phone number, owner address, owner ID, user ID, emerg
 
 ## Privacy Rules
 
-- QR codes contain only a public URL: `https://your-domain/t/{publicSlug}`.
+- QR codes contain only a public URL: `https://nonumqr.com/t/{publicSlug}`.
 - QR codes never contain phone numbers, names, user IDs, addresses, documents, or private owner data.
 - Owner phone numbers are hidden from scanners by default.
 - Public scanner pages expose only safe tag context.
@@ -94,7 +94,7 @@ Scanner must not see owner phone number, owner address, owner ID, user ID, emerg
 ## Repository Structure
 
 ```text
-scancontact-bd/
+nonumqr/
   apps/
     api/          Express TypeScript REST API, Prisma schema, seed, tests
     web/          Next.js admin panel plus public QR scan/chat pages
@@ -402,7 +402,7 @@ docker compose up -d postgres
 Then update `apps/api/.env`:
 
 ```text
-DATABASE_URL=postgresql://scancontact:scancontact_local_password@localhost:55432/scancontact?schema=public
+DATABASE_URL=postgresql://nonumqr:nonumqr_local_password@localhost:55432/nonumqr?schema=public
 ```
 
 ### 3. Prisma Generate, Migrate, Seed
@@ -493,8 +493,8 @@ If the phone cannot connect:
 3. If it fails, allow Windows Firewall ports:
 
 ```powershell
-New-NetFirewallRule -DisplayName "ScanContact API 4000" -Direction Inbound -Protocol TCP -LocalPort 4000 -Action Allow
-New-NetFirewallRule -DisplayName "ScanContact Web 3000" -Direction Inbound -Protocol TCP -LocalPort 3000 -Action Allow
+New-NetFirewallRule -DisplayName "NoNumQR API 4000" -Direction Inbound -Protocol TCP -LocalPort 4000 -Action Allow
+New-NetFirewallRule -DisplayName "NoNumQR Web 3000" -Direction Inbound -Protocol TCP -LocalPort 3000 -Action Allow
 ```
 
 ## Development OTP
@@ -531,13 +531,13 @@ Development OTP is returned by owner OTP request responses and logged in API log
 ```powershell
 # API
 npm run dev:api
-npm run build --workspace @scancontact/api
-npm run test --workspace @scancontact/api
+npm run build --workspace @nonumqr/api
+npm run test --workspace @nonumqr/api
 
 # Web
 npm run dev:web
-npm run build --workspace @scancontact/web
-npm run lint --workspace @scancontact/web
+npm run build --workspace @nonumqr/web
+npm run lint --workspace @nonumqr/web
 
 # Worker
 npm run dev:worker
@@ -595,7 +595,7 @@ npm run docker:extras
 Production command for one low-cost VPS:
 
 ```powershell
-$env:CADDY_SITE_ADDRESS="yourdomain.com"
+$env:CADDY_SITE_ADDRESS="nonumqr.com"
 $env:WEB_HTTP_PORT="80"
 $env:WEB_HTTPS_PORT="443"
 npm run docker:prod
@@ -615,18 +615,20 @@ Single low-cost VPS shape:
 Recommended one-domain production values:
 
 ```env
-CADDY_SITE_ADDRESS=yourdomain.com
+CADDY_SITE_ADDRESS=nonumqr.com
 WEB_HTTP_PORT=80
 WEB_HTTPS_PORT=443
-APP_URL=https://yourdomain.com
-API_URL=https://yourdomain.com/api
-NEXT_PUBLIC_APP_URL=https://yourdomain.com
+APP_URL=https://nonumqr.com
+API_URL=https://nonumqr.com/api
+NEXT_PUBLIC_APP_URL=https://nonumqr.com
 NEXT_PUBLIC_API_URL=/api
 STATIC_NEXT_PUBLIC_API_URL=/api
-CORS_ORIGINS=https://yourdomain.com
+CORS_ORIGINS=https://nonumqr.com
 ```
 
 Note: `NEXT_PUBLIC_*` values are compiled into the static web files inside the Caddy image. Rebuild `caddy` after changing production app/API URLs.
+
+If the API is deployed on a separate public host, use `API_URL=https://api.nonumqr.com` and configure DNS/CORS for that host.
 
 Full production env checklist: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 
@@ -663,7 +665,7 @@ Minimum recommended backup policy:
 - Store a copy outside the server
 - Test restore before production launch
 
-Restore is intentionally strict and requires `RESTORE_CONFIRM=scancontact-restore`. If file uploads are stored in a Docker named volume, back up the volume directly instead of assuming host `./uploads` contains the data.
+Restore is intentionally strict and requires `RESTORE_CONFIRM=nonumqr-restore`. If file uploads are stored in a Docker named volume, back up the volume directly instead of assuming host `./uploads` contains the data.
 
 Backup guide: [docs/BACKUP_RESTORE.md](docs/BACKUP_RESTORE.md)
 
@@ -781,7 +783,7 @@ Check:
 - API is running.
 - Owner app is using the right LAN API URL.
 - Requests tab is refreshed.
-- Flutter logs show `[ScanContact Owner] requests filter=all count=...`.
+- Flutter logs show `[NoNumQR Owner] requests filter=all count=...`.
 
 ## Documentation
 

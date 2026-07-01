@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#dee8ff",
+                    "on-tertiary-container": "#b5c6ff",
+                    "on-tertiary-fixed": "#00174b",
+                    "surface-variant": "#d8e3fb",
+                    "on-secondary-fixed-variant": "#005049",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed": "#00201d",
+                    "secondary": "#006a61",
+                    "primary": "#004532",
+                    "on-primary-container": "#8bd6b7",
+                    "tertiary-container": "#0049c3",
+                    "surface-tint": "#1b6b51",
+                    "primary-container": "#065f46",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "surface-dim": "#cfdaf2",
+                    "outline-variant": "#bec9c2",
+                    "on-surface": "#111c2d",
+                    "on-secondary-container": "#006f66",
+                    "secondary-fixed": "#89f5e7",
+                    "tertiary": "#003491",
+                    "primary-fixed-dim": "#8bd6b6",
+                    "background": "#f9f9ff",
+                    "primary-fixed": "#a6f2d1",
+                    "surface-container-highest": "#d8e3fb",
+                    "secondary-container": "#86f2e4",
+                    "on-surface-variant": "#3f4944",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#e7eeff",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f9f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#002116",
+                    "inverse-on-surface": "#ecf1ff",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#263143",
+                    "tertiary-fixed": "#dbe1ff",
+                    "on-primary": "#ffffff",
+                    "outline": "#6f7973",
+                    "surface-container-low": "#f0f3ff",
+                    "surface": "#f9f9ff",
+                    "on-tertiary-fixed-variant": "#003ea8",
+                    "inverse-primary": "#8bd6b6",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#00513b",
+                    "on-background": "#111c2d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "xs": "4px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "gutter-mobile": "12px",
+                    "xl": "32px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "display-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "title-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #f9f9ff; -webkit-tap-highlight-color: transparent; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .active-nav-interaction:active { transform: scale(0.90); transition: transform 0.2s; }
+        .tab-content { display: none; }
+        .tab-content.active { display: flex; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface antialiased overflow-x-hidden">
+<!-- Top App Bar -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl docked full-width top-0 sticky z-50 shadow-sm">
+<div class="flex justify-between items-center px-margin-mobile h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 duration-150 transition-transform p-2 rounded-full hover:bg-surface-variant/50">
+<span class="material-symbols-outlined text-primary" data-icon="security">security</span>
+</button>
+<h1 class="font-display-sm text-display-sm font-bold text-primary">NoNumQR Owner</h1>
+</div>
+<button class="active:scale-95 duration-150 transition-transform p-2 rounded-full hover:bg-surface-variant/50">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<main class="min-h-[calc(100vh-128px)] pb-24">
+<!-- Content Area 1: Empty State (Tags Screen) -->
+<section class="tab-content active flex-col items-center justify-center px-margin-mobile pt-12 animate-in fade-in duration-700" id="content-tags">
+<div class="w-full max-w-sm flex flex-col items-center text-center">
+<!-- Custom Illustration for Empty State -->
+<div class="relative w-64 h-64 mb-8">
+<div class="absolute inset-0 bg-secondary-container/20 rounded-full blur-3xl animate-pulse"></div>
+<img alt="Empty Tags Illustration" class="relative z-10 w-full h-full object-contain rounded-xl" data-alt="A clean, minimalist digital illustration of an empty physical shelf in a bright, modern studio. The lighting is soft and ethereal, using a light-mode color palette of pristine whites and soft teal accents. A single, glowing holographic outline of a QR tag floats above the shelf, symbolizing the missing item. The atmosphere is professional, secure, and ready for new inventory, maintaining a high-end SaaS aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPUhV3Sy8pV2-fGwAne-37Ko3lrX14xeIUOL69o4NCoqRtlzn7JC_8CiAncv6KL2llU3U0kn7nN5iLUtMwOOBjPYHYKsQxHc19HLoTtmupsbfCR8L8aqfr8tKoCUknNtKxnL8m24vu5IhaAHOLfCRPqW-u2hRdkqw-KaWfHzKFYQXyUMwQkPSmTmnIqVPAg66q_U5XC2tPHW_bjref5VgRDH0jnviXqFO08dnH2kmd5OEZygBaR6vBQXgpWfszrYdw6LP0OPMhYFM"/>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">No Tags Found</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 max-w-[280px]">
+                    You haven't added any secure QR tags yet. Start protecting your assets today.
+                </p>
+<button class="w-full py-4 px-8 bg-primary text-on-primary rounded-xl font-title-lg text-title-lg shadow-lg active:scale-95 transition-transform duration-150 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="add_shopping_cart">add_shopping_cart</span>
+                    Buy QR Tag
+                </button>
+</div>
+</section>
+<!-- Content Area 2: Error State (Alerts Screen) -->
+<section class="tab-content flex-col items-center justify-center px-margin-mobile pt-12 animate-in fade-in duration-700" id="content-alerts">
+<div class="w-full max-w-sm flex flex-col items-center text-center p-8 bg-surface-container-low rounded-2xl border border-outline-variant/30">
+<div class="w-20 h-20 bg-error-container rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-error text-4xl" data-icon="error" style="font-size: 48px;">error</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Something went wrong</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8">
+                    We couldn't load your alerts. This might be due to a connection issue.
+                </p>
+<button class="w-full py-3 px-6 border-2 border-secondary text-secondary rounded-xl font-title-lg text-title-lg hover:bg-secondary/5 active:scale-95 transition-all duration-150 flex items-center justify-center gap-2" onclick="location.reload()">
+<span class="material-symbols-outlined" data-icon="refresh">refresh</span>
+                    Retry
+                </button>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="bg-surface dark:bg-surface-container-lowest docked full-width bottom-0 fixed z-50 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] border-t border-outline-variant/30">
+<div class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pt-2 pb-safe">
+<!-- Home -->
+<button class="nav-item flex flex-col items-center justify-center text-on-surface-variant active-nav-interaction py-2 px-1" onclick="switchTab('home')">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</button>
+<!-- Tags (Active initially) -->
+<button class="nav-item flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active-nav-interaction" id="nav-tags" onclick="switchTab('tags')">
+<span class="material-symbols-outlined mb-1" data-icon="label" style="font-variation-settings: 'FILL' 1;">label</span>
+<span class="font-label-sm text-label-sm">Tags</span>
+</button>
+<!-- Requests -->
+<button class="nav-item flex flex-col items-center justify-center text-on-surface-variant active-nav-interaction py-2 px-1" onclick="switchTab('requests')">
+<span class="material-symbols-outlined mb-1" data-icon="solicit">call_to_action</span>
+<span class="font-label-sm text-label-sm">Requests</span>
+</button>
+<!-- Alerts -->
+<button class="nav-item flex flex-col items-center justify-center text-on-surface-variant active-nav-interaction py-2 px-1" id="nav-alerts" onclick="switchTab('alerts')">
+<span class="material-symbols-outlined mb-1" data-icon="notifications">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</button>
+<!-- Account -->
+<button class="nav-item flex flex-col items-center justify-center text-on-surface-variant active-nav-interaction py-2 px-1" onclick="switchTab('account')">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Account</span>
+</button>
+</div>
+</nav>
+<script>
+        function switchTab(tab) {
+            // Hide all content areas
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active styles from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.className = "nav-item flex flex-col items-center justify-center text-on-surface-variant active-nav-interaction py-2 px-1";
+                const icon = item.querySelector('.material-symbols-outlined');
+                if (icon) icon.style.fontVariationSettings = "'FILL' 0";
+            });
+
+            // Set specific active state for the clicked tab
+            if (tab === 'tags') {
+                document.getElementById('content-tags').classList.add('active');
+                const btn = document.getElementById('nav-tags');
+                btn.className = "nav-item flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active-nav-interaction";
+                btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+            } else if (tab === 'alerts') {
+                document.getElementById('content-alerts').classList.add('active');
+                const btn = document.getElementById('nav-alerts');
+                btn.className = "nav-item flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active-nav-interaction";
+                btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+            } else {
+                // For demo purposes, keep tags visible if other tabs clicked
+                document.getElementById('content-tags').classList.add('active');
+            }
+        }
+    </script>
+</body></html>

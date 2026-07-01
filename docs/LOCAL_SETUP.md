@@ -1,4 +1,4 @@
-# Local Setup Guide
+# NoNumQR Local Setup Guide
 
 ## Requirements
 
@@ -37,7 +37,7 @@ If the PostgreSQL port is already used:
 POSTGRES_PORT=55432 docker compose up -d postgres
 ```
 
-Then set `DATABASE_URL=postgresql://scancontact:scancontact_local_password@localhost:55432/scancontact?schema=public` for local API commands.
+Then set `DATABASE_URL=postgresql://nonumqr:nonumqr_local_password@localhost:55432/nonumqr?schema=public` for local API commands.
 
 ## API
 
@@ -64,7 +64,7 @@ Open `http://localhost:3000/admin`. The web app is admin-only except for public 
 ```bash
 cd apps/mobile
 flutter pub get
-flutter run --dart-define=APP_NAME="ScanContact Owner" --dart-define=API_BASE_URL=http://10.0.2.2:4000
+flutter run --dart-define=APP_NAME="NoNumQR Owner" --dart-define=API_BASE_URL=http://10.0.2.2:4000
 ```
 
 For a physical Android phone on the same Wi-Fi, use the PC LAN API URL, for example `--dart-define=API_BASE_URL=http://192.168.0.131:4000`.

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Private Conversation | NoNumQR</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "info-blue": "#2563EB",
+                    "surface-container": "#eaedff",
+                    "surface-bright": "#faf8ff",
+                    "tertiary-fixed-dim": "#ffb59a",
+                    "tertiary-fixed": "#ffdbce",
+                    "outline": "#6d7a77",
+                    "primary-fixed": "#89f5e7",
+                    "surface-off-white": "#F8FAFC",
+                    "outline-variant": "#bcc9c6",
+                    "tertiary": "#924628",
+                    "on-error": "#ffffff",
+                    "secondary-fixed-dim": "#8bd6b6",
+                    "on-surface-variant": "#3d4947",
+                    "on-tertiary-container": "#fffbff",
+                    "on-surface": "#131b2e",
+                    "surface-dim": "#d2d9f4",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#008378",
+                    "surface": "#faf8ff",
+                    "on-secondary-container": "#237157",
+                    "surface-container-high": "#e2e7ff",
+                    "error-container": "#ffdad6",
+                    "surface-tint": "#006a61",
+                    "background": "#faf8ff",
+                    "warning-amber": "#D97706",
+                    "on-primary-fixed-variant": "#005049",
+                    "on-primary-fixed": "#00201d",
+                    "on-primary-container": "#f4fffc",
+                    "tertiary-container": "#b05e3d",
+                    "secondary-container": "#a6f2d1",
+                    "on-primary": "#ffffff",
+                    "danger-red": "#DC2626",
+                    "inverse-surface": "#283044",
+                    "surface-container-low": "#f2f3ff",
+                    "on-tertiary-fixed-variant": "#773215",
+                    "primary": "#00685f",
+                    "surface-container-highest": "#dae2fd",
+                    "ink-slate": "#1E293B",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "inverse-primary": "#6bd8cb",
+                    "on-background": "#131b2e",
+                    "on-secondary-fixed": "#002116",
+                    "secondary": "#1b6b51",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#00513b",
+                    "surface-variant": "#dae2fd",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed": "#370e00",
+                    "secondary-fixed": "#a6f2d1",
+                    "inverse-on-surface": "#eef0ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "32px",
+                    "margin-mobile": "16px",
+                    "unit": "4px",
+                    "stack-sm": "8px",
+                    "stack-md": "16px",
+                    "gutter": "24px",
+                    "container-max": "1200px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            vertical-align: middle;
+        }
+        .chat-container-shadow {
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
+        .message-bubble {
+            max-width: 80%;
+            position: relative;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E2E8F0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface-container-low font-body-md text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface-off-white dark:bg-on-surface docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-gutter py-stack-md max-w-container-max mx-auto">
+<div class="text-headline-md font-headline-md font-bold text-ink-slate dark:text-surface-off-white">
+                NoNumQR
+            </div>
+<nav class="hidden md:flex items-center space-x-gutter">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors duration-200 font-label-lg text-label-lg" href="#">Dashboard</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-lg text-label-lg" href="#">Conversations</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors duration-200 font-label-lg text-label-lg" href="#">My Devices</a>
+</nav>
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-primary" data-icon="security">security</span>
+<span class="material-symbols-outlined text-primary" data-icon="verified_user">verified_user</span>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-xs">
+                    JD
+                </div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center py-stack-lg px-margin-mobile">
+<div class="w-full max-w-4xl h-[819px] bg-surface-container-lowest rounded-xl chat-container-shadow flex flex-col overflow-hidden border border-outline-variant/30">
+<!-- Chat Internal Header: Privacy Focus -->
+<div class="px-gutter py-stack-md bg-surface-off-white border-b border-outline-variant/20 flex flex-col md:flex-row md:items-center justify-between gap-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="shield" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<div>
+<h2 class="text-headline-md font-headline-md text-ink-slate">Private Chat</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Active Connection • ID: QR-882-0X</p>
+</div>
+</div>
+<div class="bg-secondary-container/30 px-3 py-2 rounded-lg border border-secondary-container/50">
+<p class="text-body-sm font-body-sm text-on-secondary-container flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="lock">lock</span>
+                        Privacy notice: This private conversation is protected by your link.
+                    </p>
+<p class="text-[10px] uppercase tracking-wider font-bold text-secondary mt-0.5 ml-6">
+                        The owner’s phone number stays hidden.
+                    </p>
+</div>
+</div>
+<!-- Chat Area -->
+<div class="flex-grow overflow-y-auto p-gutter space-y-stack-md custom-scrollbar bg-white/50" id="chat-messages">
+<!-- Empty State (Hidden via logic if needed, but here's the visual placeholder) -->
+<div class="hidden h-full flex flex-col items-center justify-center text-center opacity-40" id="empty-state">
+<span class="material-symbols-outlined text-6xl mb-4" data-icon="forum">forum</span>
+<p class="text-body-lg font-body-lg">Your private conversation will appear here.</p>
+</div>
+<!-- Message: Owner (Left) -->
+<div class="flex flex-col items-start">
+<div class="message-bubble bg-surface-variant/40 text-on-surface-variant p-4 rounded-xl rounded-bl-none border border-outline-variant/20">
+<p class="font-body-md">Hello, I found your bag at the coffee shop. I've left it with the manager behind the counter.</p>
+</div>
+<span class="text-label-sm font-label-sm text-outline mt-1 ml-1">09:42 AM</span>
+</div>
+<!-- Message: Scanner (Right) -->
+<div class="flex flex-col items-end">
+<div class="message-bubble bg-primary text-on-primary p-4 rounded-xl rounded-br-none shadow-sm">
+<p class="font-body-md">Thank you so much! I'm on my way there now. Is the manager's name Sarah?</p>
+</div>
+<span class="text-label-sm font-label-sm text-outline mt-1 mr-1">09:44 AM</span>
+</div>
+<!-- Message: Owner (Left) -->
+<div class="flex flex-col items-start">
+<div class="message-bubble bg-surface-variant/40 text-on-surface-variant p-4 rounded-xl rounded-bl-none border border-outline-variant/20">
+<p class="font-body-md">Yes, her name is Sarah. She has it in the secure locker behind the espresso machine. Safe travels!</p>
+</div>
+<span class="text-label-sm font-label-sm text-outline mt-1 ml-1">09:45 AM</span>
+</div>
+<!-- Message: Attachment (Right) -->
+<div class="flex flex-col items-end">
+<div class="message-bubble bg-primary text-on-primary p-2 rounded-xl rounded-br-none shadow-sm">
+<div class="rounded-lg overflow-hidden mb-2">
+<img alt="Confirmation photo" class="w-full max-w-[240px] aspect-square object-cover" data-alt="A clean, minimalist high-fidelity photograph of a designer leather bag sitting on a polished wooden counter in a brightly lit, modern cafe. The lighting is soft and airy, emphasizing the textures of the leather and wood. The overall aesthetic is calm and professional, following the 'Security through Serenity' brand guidelines with a focus on trust and ownership." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCErS-oBgnZdwEue7id2PNRKp7GAoYlNbu0nFO8aNdrvLLPtKm3282CzY8hXF1LwLcq8MWN8a0L3wBhVu2RBj5t80sAguYVub0cWDP_5Qz-AFIbJoBmbLe9-vxkr-d0TsPTFpr1Xx_rQWjP6KDEpnP6-d3XlUZSZT8lK6ZJ3LJxRCQ2RCpzbLSu5YQ1mbxCg-awLZhn4PTidt1uuyjTzmgZyU_Cqz-7sDILc1VY_YgPdks9JQ0B69ed5hy1FtbydiN6BbEZ977N0Rer"/>
+</div>
+<p class="font-body-md px-2 pb-2">Just reached! Found it. Thanks again for using NoNumQR to reach me safely.</p>
+</div>
+<span class="text-label-sm font-label-sm text-outline mt-1 mr-1">10:02 AM</span>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-gutter bg-surface-off-white border-t border-outline-variant/20">
+<form class="flex items-center gap-stack-md" onsubmit="event.preventDefault();">
+<button class="w-11 h-11 flex items-center justify-center rounded-lg hover:bg-outline-variant/20 text-on-surface-variant transition-colors" title="Attach file" type="button">
+<span class="material-symbols-outlined" data-icon="paperclip">attach_file</span>
+</button>
+<div class="flex-grow relative">
+<input class="w-full bg-white border border-outline-variant/40 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-body-md" placeholder="Type your message..." type="text"/>
+</div>
+<button class="bg-primary hover:bg-primary-container text-on-primary px-6 h-11 rounded-lg flex items-center gap-2 font-label-lg transition-all active:scale-95 shadow-sm" type="submit">
+<span>Send</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</form>
+<div class="mt-stack-sm flex items-center justify-center gap-1 opacity-40">
+<span class="material-symbols-outlined text-[12px]" data-icon="lock">lock</span>
+<span class="text-[10px] font-label-sm uppercase tracking-widest">End-to-End Encrypted via NoNumQR Relay</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-off-white dark:bg-on-surface full-width border-t border-outline-variant dark:border-outline">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-gutter py-stack-lg max-w-container-max mx-auto">
+<div class="mb-4 md:mb-0">
+<div class="text-label-lg font-label-lg font-bold text-ink-slate dark:text-surface-off-white">NoNumQR</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant/70 mt-1">© 2024 NoNumQR. All rights reserved.</p>
+</div>
+<div class="flex gap-gutter">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 text-label-sm font-label-sm" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 text-label-sm font-label-sm" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 text-label-sm font-label-sm" href="#">Security Whitepaper</a>
+</div>
+</div>
+</footer>
+<script>
+        // Auto-scroll to bottom of chat
+        const chatWindow = document.getElementById('chat-messages');
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+
+        // Simple send animation simulation
+        const input = document.querySelector('input');
+        const form = document.querySelector('form');
+        
+        form.addEventListener('submit', (e) => {
+            if (input.value.trim() === '') return;
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'flex flex-col items-end opacity-0 transform translate-y-4 transition-all duration-300';
+            messageDiv.innerHTML = `
+                <div class="message-bubble bg-primary text-on-primary p-4 rounded-xl rounded-br-none shadow-sm">
+                    <p class="font-body-md">${input.value}</p>
+                </div>
+                <span class="text-label-sm font-label-sm text-outline mt-1 mr-1">${timeStr}</span>
+            `;
+            
+            chatWindow.appendChild(messageDiv);
+            
+            // Trigger animation
+            setTimeout(() => {
+                messageDiv.classList.remove('opacity-0', 'translate-y-4');
+            }, 50);
+            
+            input.value = '';
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+        });
+    </script>
+</body></html>

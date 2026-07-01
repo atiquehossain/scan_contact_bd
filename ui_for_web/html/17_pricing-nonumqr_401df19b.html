@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NoNumQR - Pricing &amp; Products</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#924628",
+                      "secondary-container": "#a6f2d1",
+                      "surface-container-low": "#f2f3ff",
+                      "inverse-surface": "#283044",
+                      "background": "#faf8ff",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "surface-tint": "#006a61",
+                      "on-secondary": "#ffffff",
+                      "surface-bright": "#faf8ff",
+                      "on-tertiary": "#ffffff",
+                      "on-background": "#131b2e",
+                      "inverse-on-surface": "#eef0ff",
+                      "error": "#ba1a1a",
+                      "inverse-primary": "#6bd8cb",
+                      "on-tertiary-container": "#fffbff",
+                      "secondary": "#1b6b51",
+                      "on-tertiary-fixed": "#370e00",
+                      "on-secondary-container": "#237157",
+                      "on-error": "#ffffff",
+                      "info-blue": "#2563EB",
+                      "surface-container": "#eaedff",
+                      "tertiary-container": "#b05e3d",
+                      "tertiary-fixed": "#ffdbce",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed-dim": "#ffb59a",
+                      "on-primary": "#ffffff",
+                      "on-secondary-fixed": "#002116",
+                      "warning-amber": "#D97706",
+                      "secondary-fixed-dim": "#8bd6b6",
+                      "on-error-container": "#93000a",
+                      "surface": "#faf8ff",
+                      "outline-variant": "#bcc9c6",
+                      "surface-variant": "#dae2fd",
+                      "on-primary-container": "#f4fffc",
+                      "surface-off-white": "#F8FAFC",
+                      "on-secondary-fixed-variant": "#00513b",
+                      "surface-dim": "#d2d9f4",
+                      "primary": "#00685f",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#a6f2d1",
+                      "primary-fixed": "#89f5e7",
+                      "on-surface": "#131b2e",
+                      "danger-red": "#DC2626",
+                      "surface-container-highest": "#dae2fd",
+                      "primary-container": "#008378",
+                      "on-surface-variant": "#3d4947",
+                      "surface-container-high": "#e2e7ff",
+                      "on-primary-fixed-variant": "#005049",
+                      "on-primary-fixed": "#00201d",
+                      "outline": "#6d7a77",
+                      "on-tertiary-fixed-variant": "#773215",
+                      "ink-slate": "#1E293B"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1200px",
+                      "stack-lg": "32px",
+                      "unit": "4px",
+                      "stack-md": "16px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "stack-sm": "8px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "label-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        .soft-shadow {
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col pt-16 md:pl-64">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-inverse-surface shadow-sm fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-gutter h-16">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">NoNumQR</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant/30 flex items-center justify-center">
+<img alt="Admin Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZgiouZoeCLRAUpJlLagi5XmeYZdtEp9rp1SwlgLkMf8VVb17qlx6P7ugsBcQ62HNYoiSiFUAfo87zAqcfyiwbAFkbJIZKkZ684ADW0kHzPu2TThGW5CX5cS8dPtCX2P8cyZU70ZPHndWX5-H_GJCikRwTZnf5rkabVE6d7r5sGNhiXOf7OelgaGFHDDwdOcSiFI1TR5OUVHBfNztT7PMcBIXIml2zFjKiFU_GygHpefVDgYeog1bGETzFDToc3Gg4DViscYU3aDGr"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex flex-col fixed left-0 top-16 bottom-0 w-64 p-4 z-40 bg-surface-off-white dark:bg-on-background border-r border-outline-variant/20">
+<div class="mb-stack-lg px-4">
+<h2 class="font-label-lg text-label-lg text-primary mb-1 mt-4">Admin Console</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Privacy &amp; Security Hub</p>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-lg text-label-lg py-3 rounded-lg mb-stack-md hover:bg-primary-container transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span> Generate New QR
+        </button>
+<div class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 text-on-surface-variant dark:text-outline-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-lg text-label-lg">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant dark:text-outline-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">qr_code_2</span>
+<span class="font-label-lg text-label-lg">QR Codes</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant dark:text-outline-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">shield</span>
+<span class="font-label-lg text-label-lg">Privacy Vault</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant dark:text-outline-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-label-lg text-label-lg">Communications</span>
+</a>
+<a class="flex items-center gap-3 bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-lg px-4 py-3 active:scale-[0.99] transition-transform" href="#">
+<span class="material-symbols-outlined icon-fill">local_shipping</span>
+<span class="font-label-lg text-label-lg">Orders</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant dark:text-outline-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-lg text-label-lg">System Settings</span>
+</a>
+</div>
+<div class="mt-auto border-t border-outline-variant/20 pt-4 flex flex-col gap-1">
+<a class="flex items-center gap-3 text-on-surface-variant dark:text-outline-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-label-lg text-label-lg">Help Center</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant dark:text-outline-variant px-4 py-3 hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-lg text-label-lg">Sign Out</span>
+</a>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter py-stack-lg">
+<!-- Header Section -->
+<div class="text-center mb-stack-lg max-w-2xl mx-auto">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-stack-sm">Secure Your Belongings</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-6">Choose the perfect NoNumQR product to protect your privacy and stay connected when it matters most.</p>
+<div class="inline-flex items-center gap-2 bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full font-label-lg text-label-lg">
+<span class="material-symbols-outlined text-[20px]">local_shipping</span>
+                Cash on Delivery Available
+            </div>
+</div>
+<!-- Privacy Features -->
+<div class="bg-surface-container-lowest rounded-xl soft-shadow p-6 mb-stack-lg border border-outline-variant/20 flex flex-col md:flex-row justify-around items-center gap-6">
+<div class="flex items-center gap-3 text-primary">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined">lock</span>
+</div>
+<div>
+<h3 class="font-label-lg text-label-lg text-on-surface">No Number Encoded</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Your phone number stays hidden.</p>
+</div>
+</div>
+<div class="flex items-center gap-3 text-primary">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined">forum</span>
+</div>
+<div>
+<h3 class="font-label-lg text-label-lg text-on-surface">Private Chat</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Secure, anonymous communication.</p>
+</div>
+</div>
+<div class="flex items-center gap-3 text-primary">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined">timer_off</span>
+</div>
+<div>
+<h3 class="font-label-lg text-label-lg text-on-surface">Expiring Conversations</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Chats auto-delete for peace of mind.</p>
+</div>
+</div>
+</div>
+<!-- Hero Image Context -->
+<div class="w-full h-64 md:h-80 rounded-xl overflow-hidden mb-stack-lg relative bg-surface-variant flex items-center justify-center">
+<img alt="A set of premium QR products for NoNumQR: a matte black car sticker, a durable metal bike tag, and a minimalist business QR card. High-quality product photography on a clean, off-white surface with soft shadows. The deep emerald #0D9488 accent color is used for branding elements on the tags. Trustworthy and professional feel." class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ugtXlgts4NAy0xH7Dz9bEpdruVc6uZjiR3qleMyqrRWslfWPz3PgxH07eZAt710HPXzAeJXwPfZL5a8eAScFD6cxcNU5LI7Qf6pfO0hFGEnidMF4nS1pFY_ypHlgeHwfi-qR_BVfUqdIdJL_2tREhMlIejKeRYoq7OJDgfxzKliMJJMc8XowdboBqv8yLVkZ5C5756TkAlASmrtraRDmhaJHR09ZKTjopfV4-Y_QpayJGfQqpE2SmZi8Ziz"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-6">
+<h2 class="font-headline-md text-headline-md text-white">Premium Materials. Minimalist Design.</h2>
+</div>
+</div>
+<!-- Pricing Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Car Sticker -->
+<div class="bg-surface-container-lowest rounded-xl p-6 flex flex-col h-full border border-outline-variant/30 soft-shadow hover:border-primary/50 transition-colors">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-[24px]">directions_car</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Car Sticker</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-grow">Matte black, weather-resistant sticker for your windshield. Perfect for parking situations.</p>
+<div class="mt-6 mb-6 border-t border-outline-variant/20 pt-4">
+<div class="flex items-baseline gap-1">
+<span class="font-headline-lg text-headline-lg text-on-surface">$14</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ea</span>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-lg text-label-lg py-3 rounded-lg hover:bg-primary-container transition-colors mt-auto">Buy Now</button>
+</div>
+<!-- Bike Tag -->
+<div class="bg-surface-container-lowest rounded-xl p-6 flex flex-col h-full border-2 border-primary soft-shadow relative">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-on-primary px-3 py-1 rounded-full font-label-sm text-label-sm">Most Popular</div>
+<div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-[24px]">pedal_bike</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Bike Tag</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-grow">Durable metal tag with secure strap. Ideal for bikes, scooters, and gear.</p>
+<div class="mt-6 mb-6 border-t border-outline-variant/20 pt-4">
+<div class="flex items-baseline gap-1">
+<span class="font-headline-lg text-headline-lg text-on-surface">$19</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ea</span>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-lg text-label-lg py-3 rounded-lg hover:bg-primary-container transition-colors mt-auto">Buy Now</button>
+</div>
+<!-- Lost Item Tag -->
+<div class="bg-surface-container-lowest rounded-xl p-6 flex flex-col h-full border border-outline-variant/30 soft-shadow hover:border-primary/50 transition-colors">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-[24px]">luggage</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Lost Item Tag</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-grow">Compact, tough polymer tag for keys, bags, and luggage.</p>
+<div class="mt-6 mb-6 border-t border-outline-variant/20 pt-4">
+<div class="flex items-baseline gap-1">
+<span class="font-headline-lg text-headline-lg text-on-surface">$12</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ea</span>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-lg text-label-lg py-3 rounded-lg hover:bg-primary-container transition-colors mt-auto">Buy Now</button>
+</div>
+<!-- Business Card -->
+<div class="bg-surface-container-lowest rounded-xl p-6 flex flex-col h-full border border-outline-variant/30 soft-shadow hover:border-primary/50 transition-colors">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-[24px]">contact_mail</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Business Card</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-grow">Minimalist premium PVC card. Network securely without giving out personal details.</p>
+<div class="mt-6 mb-6 border-t border-outline-variant/20 pt-4">
+<div class="flex items-baseline gap-1">
+<span class="font-headline-lg text-headline-lg text-on-surface">$25</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ea</span>
+</div>
+</div>
+<button class="w-full border border-ink-slate text-ink-slate font-label-lg text-label-lg py-3 rounded-lg hover:bg-surface-variant transition-colors mt-auto">Buy Now</button>
+</div>
+</div>
+</main>
+</body></html>

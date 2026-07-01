@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/models/owner_models.dart';
 import '../../core/network/api_client.dart';
 import '../../core/services/owner_services.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/widgets/app_widgets.dart';
 
 class TagsScreen extends ConsumerWidget {
@@ -34,19 +35,28 @@ class TagsScreen extends ConsumerWidget {
         child: ListView(
           padding: appPadding,
           children: [
-            Text(
-              'My QR Tags',
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
+            AppScreenHeader(
+              title: 'My QR Tags',
+              subtitle:
+                  'Preview your public QR links and keep scanner contact private.',
+              icon: Icons.qr_code_2_outlined,
+              trailing: IconButton.filledTonal(
+                tooltip: 'Buy QR Tag',
+                onPressed: onOpenShop,
+                icon: const Icon(Icons.shopping_bag_outlined),
+              ),
             ),
-            const SizedBox(height: 4),
-            const Text('Your QR tags are public. Your phone number is not.'),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
+            const PrivacyNoticeCard(
+              title: 'QR privacy',
+              message:
+                  'This QR contains only a public URL. It does not contain your phone number.',
+            ),
+            const SizedBox(height: AppSpacing.lg),
             if (items.isEmpty)
               AppEmptyState(
                 icon: Icons.qr_code_2_outlined,
-                title: 'No QR tag yet',
+                title: 'No QR tags yet',
                 body: dashboard?.latestOrder == null
                     ? 'Order a QR tag first. After admin prints and assigns it to your phone number, it will appear here.'
                     : 'Order created. Admin will process and assign your QR tag.',
@@ -58,12 +68,19 @@ class TagsScreen extends ConsumerWidget {
                       )
                     : OrderStatusCard(order: dashboard!.latestOrder!),
               )
-            else
+            else ...[
+              AppSectionHeader(
+                title: '${items.length} active records',
+                actionLabel: 'Buy QR Tag',
+                onAction: onOpenShop,
+              ),
+              const SizedBox(height: AppSpacing.sm),
               for (final tag in items)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
                   child: QRTagCard(tag: tag),
                 ),
+            ],
           ],
         ),
       ),
@@ -78,89 +95,287 @@ class QRTagCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Semantics(
-                  label: 'QR code for ${tag.label}',
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.outlineVariant,
+    return AppSurface(
+      onTap: () => _showQrPreviewSheet(context, tag),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _QrPreviewBox(tag: tag, size: 112),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tag.label,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
-                    child: QrImageView(
-                      data: tag.publicUrl,
-                      size: 112,
-                      backgroundColor: Colors.white,
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      humanizeCode(tag.type),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.slate,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        tag.label,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w900,
+                    const SizedBox(height: AppSpacing.sm),
+                    Wrap(
+                      spacing: AppSpacing.sm,
+                      runSpacing: AppSpacing.xs,
+                      children: [
+                        StatusChip(label: tag.status),
+                        StatusChip(
+                          label: '${tag.scanCount} scans',
+                          icon: Icons.document_scanner_outlined,
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 4,
-                        children: [
-                          StatusChip(label: tag.status),
-                          StatusChip(label: tag.type),
-                          StatusChip(label: '${tag.scanCount} scans'),
-                        ],
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            CopyableUrlRow(url: tag.publicUrl),
-            const SizedBox(height: 12),
-            const PrivacyNoticeCard(
-              message:
-                  'This QR tag contains only your public ScanContact BD link. It does not contain your phone number.',
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: () async {
-                    final uri = Uri.tryParse(tag.publicUrl);
-                    if (uri != null) {
-                      await launchUrl(
-                        uri,
-                        mode: LaunchMode.externalApplication,
-                      );
-                    }
-                  },
-                  icon: const Icon(Icons.open_in_new),
-                  label: const Text('Open public page'),
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _TagActivityLine(tag: tag),
+          const SizedBox(height: AppSpacing.md),
+          CopyableUrlRow(url: tag.publicUrl),
+          const SizedBox(height: AppSpacing.md),
+          const _QrPrivacyLine(),
+          const SizedBox(height: AppSpacing.md),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: [
+              FilledButton.icon(
+                onPressed: () => _showQrPreviewSheet(context, tag),
+                icon: const Icon(Icons.qr_code_2),
+                label: const Text('Preview QR'),
+              ),
+              OutlinedButton.icon(
+                onPressed: () => _openPublicPage(context, tag.publicUrl),
+                icon: const Icon(Icons.open_in_new),
+                label: const Text('Open public page'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QrPreviewBox extends StatelessWidget {
+  const _QrPreviewBox({required this.tag, required this.size});
+
+  final QrTag tag;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: 'QR code preview for ${tag.label}',
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(AppRadii.lg),
+          border: Border.all(color: AppColors.border),
+          boxShadow: AppShadows.card,
+        ),
+        child: QrImageView(
+          data: tag.publicUrl,
+          size: size,
+          backgroundColor: Colors.white,
         ),
       ),
+    );
+  }
+}
+
+class _TagActivityLine extends StatelessWidget {
+  const _TagActivityLine({required this.tag});
+
+  final QrTag tag;
+
+  @override
+  Widget build(BuildContext context) {
+    final lastScannedAt = tag.lastScannedAt;
+    final createdAt = tag.createdAt;
+    final label = lastScannedAt != null
+        ? 'Last scanned ${formatActivity(lastScannedAt)}'
+        : createdAt != null
+        ? 'Created ${formatActivity(createdAt)}'
+        : 'No scan activity yet';
+
+    return Row(
+      children: [
+        const Icon(Icons.history_outlined, size: 18, color: AppColors.emerald),
+        const SizedBox(width: AppSpacing.xs),
+        Expanded(
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.slate,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _QrPrivacyLine extends StatelessWidget {
+  const _QrPrivacyLine();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.emeraldSoft,
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        border: Border.all(color: AppColors.tealSoft),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.visibility_off_outlined,
+            color: AppColors.emeraldDark,
+            size: 20,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              'This QR contains only a public URL. It does not contain your phone number.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.charcoal,
+                height: 1.35,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QrPreviewSheet extends StatelessWidget {
+  const _QrPreviewSheet({required this.tag});
+
+  final QrTag tag;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(AppSpacing.sm),
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(AppRadii.xl),
+            border: Border.all(color: AppColors.border),
+            boxShadow: AppShadows.nav,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'QR Preview',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Close QR preview',
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Center(child: _QrPreviewBox(tag: tag, size: 228)),
+              const SizedBox(height: AppSpacing.lg),
+              Text(
+                tag.label,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.xs,
+                children: [
+                  StatusChip(label: tag.status),
+                  StatusChip(label: humanizeCode(tag.type)),
+                  StatusChip(label: '${tag.scanCount} scans'),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              CopyableUrlRow(url: tag.publicUrl),
+              const SizedBox(height: AppSpacing.md),
+              const _QrPrivacyLine(),
+              const SizedBox(height: AppSpacing.md),
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: [
+                  FilledButton.icon(
+                    onPressed: () => _openPublicPage(context, tag.publicUrl),
+                    icon: const Icon(Icons.open_in_new),
+                    label: const Text('Open public page'),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.check),
+                    label: const Text('Done'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+void _showQrPreviewSheet(BuildContext context, QrTag tag) {
+  showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => _QrPreviewSheet(tag: tag),
+  );
+}
+
+Future<void> _openPublicPage(BuildContext context, String publicUrl) async {
+  final uri = Uri.tryParse(publicUrl.trim());
+  if (publicUrl.trim().isEmpty || uri == null || !uri.hasScheme) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Public link is not available.')),
+    );
+    return;
+  }
+  final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!launched && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Could not open public page.')),
     );
   }
 }

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Call Status | NoNumQR</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(0.98); }
+        }
+        .animate-shimmer {
+            animation: subtle-pulse 4s ease-in-out infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-container": "#a6f2d1",
+                      "tertiary": "#924628",
+                      "on-secondary": "#ffffff",
+                      "surface-bright": "#faf8ff",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "surface-tint": "#006a61",
+                      "surface-container-low": "#f2f3ff",
+                      "inverse-surface": "#283044",
+                      "background": "#faf8ff",
+                      "inverse-on-surface": "#eef0ff",
+                      "error": "#ba1a1a",
+                      "on-tertiary": "#ffffff",
+                      "on-background": "#131b2e",
+                      "on-tertiary-container": "#fffbff",
+                      "inverse-primary": "#6bd8cb",
+                      "secondary": "#1b6b51",
+                      "on-tertiary-fixed": "#370e00",
+                      "on-secondary-container": "#237157",
+                      "surface-container": "#eaedff",
+                      "on-error": "#ffffff",
+                      "info-blue": "#2563EB",
+                      "tertiary-fixed": "#ffdbce",
+                      "tertiary-container": "#b05e3d",
+                      "tertiary-fixed-dim": "#ffb59a",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed": "#002116",
+                      "on-primary": "#ffffff",
+                      "surface-variant": "#dae2fd",
+                      "outline-variant": "#bcc9c6",
+                      "warning-amber": "#D97706",
+                      "secondary-fixed-dim": "#8bd6b6",
+                      "on-error-container": "#93000a",
+                      "surface": "#faf8ff",
+                      "surface-dim": "#d2d9f4",
+                      "primary": "#00685f",
+                      "on-secondary-fixed-variant": "#00513b",
+                      "on-primary-container": "#f4fffc",
+                      "surface-off-white": "#F8FAFC",
+                      "danger-red": "#DC2626",
+                      "surface-container-highest": "#dae2fd",
+                      "primary-fixed": "#89f5e7",
+                      "on-surface": "#131b2e",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#a6f2d1",
+                      "primary-container": "#008378",
+                      "on-primary-fixed-variant": "#005049",
+                      "on-primary-fixed": "#00201d",
+                      "surface-container-high": "#e2e7ff",
+                      "on-surface-variant": "#3d4947",
+                      "outline": "#6d7a77",
+                      "ink-slate": "#1E293B",
+                      "on-tertiary-fixed-variant": "#773215"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1200px",
+                      "stack-lg": "32px",
+                      "stack-sm": "8px",
+                      "unit": "4px",
+                      "stack-md": "16px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface z-50">
+<div class="flex items-center justify-between px-margin-mobile h-16 w-full max-w-container-max mx-auto">
+<div class="flex items-center gap-stack-sm cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary text-headline-md" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="font-headline-md text-headline-md-mobile font-bold text-primary">NoNumQR</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity cursor-pointer">help_outline</span>
+</div>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center px-margin-mobile py-stack-lg">
+<div class="w-full max-w-md space-y-stack-lg">
+<!-- State Toggle for Demo Purposes (Optional Micro-interaction) -->
+<div class="space-y-stack-lg" id="state-container">
+<!-- STATE 1: Call Ended (Visible by default) -->
+<div class="block space-y-stack-md text-center" id="call-ended">
+<div class="relative inline-block">
+<div class="w-24 h-24 rounded-full bg-secondary-container flex items-center justify-center mx-auto mb-stack-md shadow-[0_4px_20px_rgba(15,23,42,0.05)]">
+<span class="material-symbols-outlined text-on-secondary-container text-[40px]">call_end</span>
+</div>
+<div class="absolute -top-1 -right-1 bg-surface rounded-full p-1">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+</div>
+</div>
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-ink-slate mb-2">Call ended</h1>
+<p class="font-body-md text-on-surface-variant">The private connection has been closed.</p>
+</div>
+<div class="glass-card rounded-xl p-stack-md flex flex-col items-center justify-center gap-1 border-outline-variant">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-widest">Duration</span>
+<span class="font-headline-md text-headline-md text-ink-slate">04:12</span>
+</div>
+<div class="pt-stack-md space-y-4">
+<button class="w-full h-12 bg-primary text-on-primary font-label-lg text-label-lg rounded-lg flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all shadow-sm" onclick="toggleState()">
+                            Back to QR Profile
+                        </button>
+<button class="w-full h-12 border border-outline-variant text-ink-slate font-label-lg text-label-lg rounded-lg flex items-center justify-center hover:bg-surface-container transition-colors">
+                            Return Home
+                        </button>
+</div>
+</div>
+<!-- STATE 2: Unavailable (Hidden by default) -->
+<div class="hidden space-y-stack-md text-center" id="call-unavailable">
+<div class="w-24 h-24 rounded-full bg-surface-container flex items-center justify-center mx-auto mb-stack-md shadow-[0_4px_20px_rgba(15,23,42,0.05)]">
+<span class="material-symbols-outlined text-outline text-[40px]">person_off</span>
+</div>
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-ink-slate mb-2">Owner Unavailable</h1>
+<p class="font-body-md text-on-surface-variant max-w-[280px] mx-auto">The owner is unable to take calls at the moment. Please try again later.</p>
+</div>
+<div class="bg-surface-container-low rounded-xl p-stack-md border border-dashed border-outline-variant">
+<p class="font-body-sm text-body-sm text-on-surface-variant">Your request was noted. No personal information was disclosed during this attempt.</p>
+</div>
+<div class="pt-stack-md space-y-4">
+<button class="w-full h-12 bg-primary text-on-primary font-label-lg text-label-lg rounded-lg flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all shadow-sm" onclick="toggleState()">
+                            Back to QR Profile
+                        </button>
+<button class="w-full h-12 border border-outline-variant text-ink-slate font-label-lg text-label-lg rounded-lg flex items-center justify-center hover:bg-surface-container transition-colors">
+                            Return Home
+                        </button>
+</div>
+</div>
+</div>
+<!-- Privacy Assurance Footer -->
+<div class="flex items-center justify-center gap-2 text-on-surface-variant opacity-70 mt-stack-lg">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<p class="font-label-sm text-label-sm">No personal data was shared.</p>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center py-2 px-margin-mobile pb-safe bg-surface-container-lowest shadow-[0_-4px_20px_rgba(15,23,42,0.05)] z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-colors rounded-xl active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">call</span>
+<span class="font-label-sm text-label-sm">Call</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-label-sm text-label-sm">Privacy</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-colors rounded-xl active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">help_outline</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+</nav>
+<script>
+        // Simple state toggle for demonstration
+        function toggleState() {
+            const ended = document.getElementById('call-ended');
+            const unavailable = document.getElementById('call-unavailable');
+            
+            if (ended.classList.contains('block')) {
+                ended.classList.replace('block', 'hidden');
+                unavailable.classList.replace('hidden', 'block');
+            } else {
+                unavailable.classList.replace('block', 'hidden');
+                ended.classList.replace('hidden', 'block');
+            }
+        }
+    </script>
+</body></html>

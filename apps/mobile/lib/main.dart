@@ -22,11 +22,11 @@ import 'core/push/push_notification_service.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await PushNotificationService.initializeCore();
-  runApp(const ProviderScope(child: ScanContactApp()));
+  runApp(const ProviderScope(child: NoNumQRApp()));
 }
 
-class ScanContactApp extends StatelessWidget {
-  const ScanContactApp({super.key});
+class NoNumQRApp extends StatelessWidget {
+  const NoNumQRApp({super.key});
 
   @override
   Widget build(BuildContext context) {

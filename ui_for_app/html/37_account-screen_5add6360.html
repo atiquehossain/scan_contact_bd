@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Account - NoNumQR</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#cfdaf2",
+                        "inverse-primary": "#8bd6b6",
+                        "surface-variant": "#d8e3fb",
+                        "secondary-fixed": "#89f5e7",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "surface-container-high": "#dee8ff",
+                        "inverse-surface": "#263143",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#dbe1ff",
+                        "secondary-container": "#86f2e4",
+                        "secondary": "#006a61",
+                        "on-primary-container": "#8bd6b7",
+                        "primary-fixed": "#a6f2d1",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#00174b",
+                        "on-surface": "#111c2d",
+                        "on-secondary-fixed-variant": "#005049",
+                        "on-primary-fixed-variant": "#00513b",
+                        "background": "#f9f9ff",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "error": "#ba1a1a",
+                        "primary": "#004532",
+                        "primary-container": "#065f46",
+                        "tertiary": "#003491",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "on-secondary-container": "#006f66",
+                        "surface-tint": "#1b6b51",
+                        "surface": "#f9f9ff",
+                        "surface-container": "#e7eeff",
+                        "on-background": "#111c2d",
+                        "tertiary-container": "#0049c3",
+                        "outline": "#6f7973",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#3f4944",
+                        "outline-variant": "#bec9c2",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-fixed": "#002116",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "on-tertiary-container": "#b5c6ff",
+                        "on-secondary-fixed": "#00201d",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter-mobile": "12px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "display-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f9f9ff;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            user-select: none;
+        }
+        .nav-active {
+            font-variation-settings: 'FILL' 1;
+        }
+        .custom-shadow-soft {
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.03);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl shadow-sm h-16">
+<div class="flex justify-between items-center px-md h-full w-full max-w-lg mx-auto">
+<button class="active:scale-95 transition-transform duration-200 hover:bg-surface-variant/50 p-2 rounded-full">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-primary">Account</h1>
+<button class="active:scale-95 transition-transform duration-200 hover:bg-surface-variant/50 p-2 rounded-full">
+<span class="material-symbols-outlined text-primary" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="pt-20 pb-28 px-md max-w-lg mx-auto space-y-md">
+<!-- Profile Card -->
+<section class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg custom-shadow-soft flex items-center space-x-md">
+<div class="relative">
+<img alt="Owner Portrait" class="w-20 h-20 rounded-full object-cover border-2 border-primary-fixed" data-alt="A professional studio portrait of a confident male business owner with a friendly expression. The lighting is soft and high-key, creating a clean light-mode aesthetic against a neutral minimalist background. The color palette is dominated by professional whites and soft teals, reflecting a modern, high-end utility brand identity. The overall mood is one of quiet security and effortless control." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbnHgpXj-sRRh7q9IlsfKfsgL5FEAnqTsYp7jeqJOzrjJi_p_VA6riAxfnGt9xVDPlZzxS5NK5gDO6wlUw8a3a5qrHkV6JKvXDs1eG0xzp3LL7_X64EsmFUzgAR4pJoHzyymweRYilgIJlC-XfZrpCe3pUQdpj3BhYybyNUQtlUhPiNM-fcdbTevUUg-Py9DUQc5sZaaTYjBrHcCuLWj5Z_9yAlZ8RvSOdX7QNHCEEEeWAgEauEg-Y5kkPTB_g8oQoOJ9ah2EOvWM"/>
+<div class="absolute bottom-0 right-0 bg-primary w-6 h-6 rounded-full border-2 border-white flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">John Doe</h2>
+<p class="font-body-md text-on-surface-variant">+1 (555) 000-0000</p>
+<span class="inline-block mt-xs px-sm py-xs bg-secondary-container text-on-secondary-container font-label-sm text-label-sm rounded-full">Owner Account</span>
+</div>
+</section>
+<!-- Privacy Notice Card -->
+<section class="bg-surface-container-low border border-outline-variant/20 rounded-xl p-md flex items-start space-x-sm">
+<div class="bg-tertiary-container/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-on-surface-variant leading-tight">
+                    Your phone number is hidden from scanners by default.
+                </p>
+<button class="mt-xs text-secondary font-label-md text-label-md active:opacity-70 transition-opacity">Learn more about privacy</button>
+</div>
+</section>
+<!-- Menu Links List -->
+<section class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden custom-shadow-soft">
+<div class="divide-y divide-outline-variant/20">
+<!-- My QR Tags -->
+<button class="w-full flex items-center justify-between p-md hover:bg-surface-variant/30 transition-colors active:scale-[0.98] transition-transform">
+<div class="flex items-center space-x-md">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="qr_code_2">qr_code_2</span>
+<span class="font-label-lg text-label-lg text-on-surface">My QR Tags</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+<!-- Orders -->
+<button class="w-full flex items-center justify-between p-md hover:bg-surface-variant/30 transition-colors active:scale-[0.98] transition-transform">
+<div class="flex items-center space-x-md">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-lg text-label-lg text-on-surface">Orders</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+<!-- Shop -->
+<button class="w-full flex items-center justify-between p-md hover:bg-surface-variant/30 transition-colors active:scale-[0.98] transition-transform">
+<div class="flex items-center space-x-md">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="shopping_bag">shopping_bag</span>
+<span class="font-label-lg text-label-lg text-on-surface">Shop</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+<!-- Privacy -->
+<button class="w-full flex items-center justify-between p-md hover:bg-surface-variant/30 transition-colors active:scale-[0.98] transition-transform">
+<div class="flex items-center space-x-md">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="security">security</span>
+<span class="font-label-lg text-label-lg text-on-surface">Privacy</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+<!-- Notification Settings -->
+<button class="w-full flex items-center justify-between p-md hover:bg-surface-variant/30 transition-colors active:scale-[0.98] transition-transform">
+<div class="flex items-center space-x-md">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<span class="font-label-lg text-label-lg text-on-surface">Notification Settings</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+<!-- Help/Support -->
+<button class="w-full flex items-center justify-between p-md hover:bg-surface-variant/30 transition-colors active:scale-[0.98] transition-transform">
+<div class="flex items-center space-x-md">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="help_outline">help_outline</span>
+<span class="font-label-lg text-label-lg text-on-surface">Help/Support</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+<!-- Logout -->
+<button class="w-full flex items-center justify-between p-md hover:bg-error-container/20 transition-colors active:scale-[0.98] transition-transform group">
+<div class="flex items-center space-x-md">
+<span class="material-symbols-outlined text-error" data-icon="logout">logout</span>
+<span class="font-label-lg text-label-lg text-error">Logout</span>
+</div>
+<span class="material-symbols-outlined text-error/50">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- Aesthetic Footer Text -->
+<p class="text-center font-label-sm text-label-sm text-outline-variant/60 py-md">
+            NoNumQR v2.4.0 • Encrypted Connection
+        </p>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface/80 backdrop-blur-md border-t border-outline-variant/30 flex justify-around items-center px-4 pb-4 pt-2 shadow-lg">
+<!-- Tags -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_2">qr_code_2</span>
+<span class="font-label-sm text-label-sm">Tags</span>
+</a>
+<!-- Shop -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+<span class="font-label-sm text-label-sm">Shop</span>
+</a>
+<!-- Privacy -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="font-label-sm text-label-sm">Privacy</span>
+</a>
+<!-- Account (Active) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined nav-active" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Account</span>
+</a>
+</nav>
+<script>
+        // Simple ripple-like effect for interaction feedback
+        document.querySelectorAll('button, a').forEach(elem => {
+            elem.addEventListener('click', function(e) {
+                const target = e.currentTarget;
+                target.classList.add('opacity-80');
+                setTimeout(() => target.classList.remove('opacity-80'), 150);
+            });
+        });
+    </script>
+</body></html>

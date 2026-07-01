@@ -5,7 +5,7 @@ umask 077
 usage() {
   cat >&2 <<'USAGE'
 Usage:
-  RESTORE_CONFIRM=scancontact-restore DATABASE_URL=... ./infra/scripts/restore-postgres.sh <backup.sql.gz|backup.sql.gz.enc>
+  RESTORE_CONFIRM=nonumqr-restore DATABASE_URL=... ./infra/scripts/restore-postgres.sh <backup.sql.gz|backup.sql.gz.enc>
 USAGE
 }
 
@@ -30,8 +30,8 @@ fi
 
 PG_DATABASE_URL="$(printf '%s' "$DATABASE_URL" | sed -E 's/([?&])schema=[^&]*&?/\1/; s/\?&/?/; s/[?&]$//')"
 
-if [ "${RESTORE_CONFIRM:-}" != "scancontact-restore" ]; then
-  die "refusing restore without RESTORE_CONFIRM=scancontact-restore"
+if [ "${RESTORE_CONFIRM:-}" != "nonumqr-restore" ]; then
+  die "refusing restore without RESTORE_CONFIRM=nonumqr-restore"
 fi
 
 if [ ! -f "$BACKUP_FILE" ]; then
@@ -69,7 +69,7 @@ if [[ "$BACKUP_FILE" == *.enc ]]; then
     die "TMPDIR does not exist: $TMP_DIR"
   fi
 
-  TMP_GZ_BASE="$(mktemp "$TMP_DIR/scancontact-restore.XXXXXX")"
+  TMP_GZ_BASE="$(mktemp "$TMP_DIR/nonumqr-restore.XXXXXX")"
   TMP_GZ="$TMP_GZ_BASE.sql.gz"
   mv "$TMP_GZ_BASE" "$TMP_GZ"
   openssl enc -d -aes-256-cbc -pbkdf2 \

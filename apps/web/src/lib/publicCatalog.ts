@@ -15,7 +15,7 @@ export type PublicProduct = {
 export const publicProducts: PublicProduct[] = [
   {
     slug: "car-qr-sticker",
-    name: "Car QR Sticker",
+    name: "NoNumQR Car Sticker",
     shortName: "Car",
     description: "Private QR contact sticker for cars and parking issues.",
     priceBdt: 199,
@@ -26,18 +26,18 @@ export const publicProducts: PublicProduct[] = [
     seoDescription:
       "Buy a private QR contact sticker for your car in Bangladesh. Let people message you when your car is blocking without seeing your phone number.",
     faq: [
-      { question: "Does the car QR show my phone number?", answer: "No. It contains only a public ScanContact BD URL." },
+      { question: "Does the car QR show my phone number?", answer: "No. It contains only a public NoNumQR URL." },
       { question: "Can someone message me without installing an app?", answer: "Yes. Scanners use their mobile browser." }
     ]
   },
   {
     slug: "bike-qr-sticker",
-    name: "Bike QR Sticker",
+    name: "NoNumQR Bike Sticker",
     shortName: "Bike",
     description: "Private QR contact sticker for motorcycles and delivery bikes.",
     priceBdt: 199,
     bestUseCase: "Motorbikes, scooters, and delivery riders who need private contact.",
-    features: ["Phone hidden", "Camera scan friendly", "Owner app chat", "COD available"],
+    features: ["Phone hidden by default", "Camera scan friendly", "Owner app chat", "COD available"],
     included: ["1 bike QR sticker", "Private scan page", "Owner app access"],
     seoTitle: "Bike QR Sticker BD - Private Contact QR for Motorbikes",
     seoDescription:
@@ -46,7 +46,7 @@ export const publicProducts: PublicProduct[] = [
   },
   {
     slug: "lost-item-qr-tag",
-    name: "Lost Item QR Tag",
+    name: "NoNumQR Lost Item Tag",
     shortName: "Lost Item",
     description: "Private lost-and-found QR tag for bags, keys, wallets, documents, and equipment.",
     priceBdt: 149,
@@ -60,7 +60,7 @@ export const publicProducts: PublicProduct[] = [
   },
   {
     slug: "business-qr-card",
-    name: "Business QR Contact Card",
+    name: "NoNumQR Business QR Card",
     shortName: "Business",
     description: "Private QR contact card for professionals, freelancers, and small businesses.",
     priceBdt: 249,
@@ -74,12 +74,12 @@ export const publicProducts: PublicProduct[] = [
   },
   {
     slug: "apartment-parking-qr",
-    name: "Apartment Parking QR Sticker",
+    name: "NoNumQR Apartment Parking QR",
     shortName: "Parking",
     description: "Private QR sticker for apartment, office, and society parking contact.",
     priceBdt: 249,
     bestUseCase: "Apartment parking, building guards, visitor parking, and office parking.",
-    features: ["Private parking contact", "Phone hidden", "Owner app chat", "Bulk-friendly"],
+    features: ["Private parking contact", "Phone hidden by default", "Owner app chat", "Bulk-friendly"],
     included: ["1 parking QR sticker", "Private scan page", "Owner app access"],
     seoTitle: "Apartment Parking QR Sticker Bangladesh - Private Parking Contact",
     seoDescription:
@@ -88,12 +88,12 @@ export const publicProducts: PublicProduct[] = [
   },
   {
     slug: "shop-qr-contact-sticker",
-    name: "Shop QR Contact Sticker",
+    name: "NoNumQR Shop QR Sticker",
     shortName: "Shop",
     description: "Private QR contact sticker for shops, counters, and service desks.",
     priceBdt: 249,
     bestUseCase: "Shops, counters, repair points, and small service businesses.",
-    features: ["Customer browser messages", "Phone hidden", "Owner app chat", "COD available"],
+    features: ["Customer browser messages", "Phone hidden by default", "Owner app chat", "COD available"],
     included: ["1 shop QR sticker", "Private contact page", "Owner app access"],
     seoTitle: "Shop QR Contact Sticker Bangladesh - Private Customer Contact",
     seoDescription:
@@ -103,15 +103,15 @@ export const publicProducts: PublicProduct[] = [
 ];
 
 export const faqItems = [
-  { question: "Does the QR code show my phone number?", answer: "No. The QR code contains only a public ScanContact BD URL." },
-  { question: "Can a scanner call me directly?", answer: "Not by default. Private in-product messages come first." },
+  { question: "Will people see my phone number?", answer: "No. Your phone number stays hidden by default on public QR pages." },
+  { question: "What is inside the QR code?", answer: "Only a public NoNumQR URL is inside the QR code. It does not encode your phone number, owner ID, address, or private profile data." },
+  { question: "Can a scanner continue the chat?", answer: "Yes, after sending a message the scanner can use a private continuation link for that conversation." },
+  { question: "Does the conversation expire?", answer: "Yes. After inactivity the conversation becomes read-only or unavailable, and the scanner must scan again to start a new request." },
+  { question: "Can I report abuse?", answer: "Yes. Public scan flows include abuse reporting so misuse can be reviewed." },
+  { question: "Does NoNumQR support calls?", answer: "NoNumQR can support browser-based private call sessions where available, but it does not claim carrier-phone number hiding." },
+  { question: "Is Cash on Delivery available?", answer: "Yes. Cash on Delivery is the working payment method for public orders." },
+  { question: "Are online payments available?", answer: "Online payments should not be treated as production-ready until NoNumQR explicitly launches and verifies them." },
   { question: "Do scanners need an account?", answer: "No. They scan the QR and message from a mobile browser." },
-  { question: "How does private chat work?", answer: "The scanner gets a private continuation link. The owner replies from the owner app." },
-  { question: "What happens after the conversation expires?", answer: "After 30 minutes of no activity the chat becomes read-only. The scanner must scan again to start a new chat." },
-  { question: "Can I use it for my car?", answer: "Yes. Car parking contact is one of the main use cases." },
-  { question: "Can I use it for a lost item?", answer: "Yes. Bags, keys, wallets, laptops, and documents are good fits." },
-  { question: "Can I buy multiple QR tags?", answer: "Yes. Choose quantity at checkout or buy a multi-tag package." },
-  { question: "Is Cash on Delivery available?", answer: "Yes. COD is the first supported payment method." },
   { question: "How do I activate my QR tag?", answer: "Order with your phone number, download the owner app, and sign in with the same phone number." }
 ];
 

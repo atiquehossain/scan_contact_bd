@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#dbe1ff",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#00513b",
+                        "primary-fixed": "#a6f2d1",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "surface-container-high": "#dee8ff",
+                        "on-surface-variant": "#3f4944",
+                        "background": "#f9f9ff",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-secondary-fixed-variant": "#005049",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#065f46",
+                        "on-secondary-fixed": "#00201d",
+                        "inverse-primary": "#8bd6b6",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#1b6b51",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#bec9c2",
+                        "secondary": "#006a61",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f0f3ff",
+                        "secondary-fixed": "#89f5e7",
+                        "on-tertiary-container": "#b5c6ff",
+                        "on-primary-container": "#8bd6b7",
+                        "inverse-surface": "#263143",
+                        "surface-dim": "#cfdaf2",
+                        "surface-container": "#e7eeff",
+                        "surface": "#f9f9ff",
+                        "on-tertiary-fixed": "#00174b",
+                        "secondary-container": "#86f2e4",
+                        "primary": "#004532",
+                        "outline": "#6f7973",
+                        "tertiary": "#003491",
+                        "surface-bright": "#f9f9ff",
+                        "tertiary-container": "#0049c3",
+                        "on-secondary-container": "#006f66",
+                        "surface-variant": "#d8e3fb",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#111c2d",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "on-primary-fixed": "#002116",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "inverse-on-surface": "#ecf1ff",
+                        "error": "#ba1a1a",
+                        "on-background": "#111c2d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "md": "16px",
+                        "gutter-mobile": "12px",
+                        "margin-mobile": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "title-lg": ["Inter"],
+                        "display-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .otp-input:focus {
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md">
+<!-- TopAppBar - Suppressed per rules for transactional screen (OTP) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 h-16 flex items-center px-md justify-between">
+<button aria-label="Back" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/50 transition-colors active:scale-95">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-primary">Verification</h1>
+<div class="w-10"></div>
+</header>
+<main class="flex-grow flex flex-col items-center justify-center px-margin-mobile pt-24 pb-12 max-w-md mx-auto w-full">
+<!-- Illustration/Branding Anchor -->
+<div class="mb-lg text-center">
+<div class="w-20 h-20 bg-primary-fixed rounded-full flex items-center justify-center mx-auto mb-md shadow-sm">
+<span class="material-symbols-outlined text-primary text-[40px]" style="font-variation-settings: 'FILL' 1;">shield_person</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Enter OTP Code</h2>
+<p class="font-body-md text-on-surface-variant max-w-[280px] mx-auto">
+                We've sent a 6-digit verification code to <span class="font-semibold text-on-surface">+1 ••• ••• 4290</span>
+</p>
+</div>
+<!-- OTP Input Group -->
+<div class="w-full mb-lg">
+<div class="flex gap-sm justify-between mb-sm" id="otp-container">
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-headline-md font-bold bg-surface border-outline-variant rounded-lg focus:border-secondary focus:ring-0 transition-all outline-none border" maxlength="1" pattern="\d*" type="text"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-headline-md font-bold bg-surface border-outline-variant rounded-lg focus:border-secondary focus:ring-0 transition-all outline-none border" maxlength="1" pattern="\d*" type="text"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-headline-md font-bold bg-surface border-outline-variant rounded-lg focus:border-secondary focus:ring-0 transition-all outline-none border" maxlength="1" pattern="\d*" type="text"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-headline-md font-bold bg-surface border-outline-variant rounded-lg focus:border-secondary focus:ring-0 transition-all outline-none border" maxlength="1" pattern="\d*" type="text"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-headline-md font-bold bg-surface border-outline-variant rounded-lg focus:border-secondary focus:ring-0 transition-all outline-none border" maxlength="1" pattern="\d*" type="text"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-headline-md font-bold bg-surface border-outline-variant rounded-lg focus:border-secondary focus:ring-0 transition-all outline-none border" maxlength="1" pattern="\d*" type="text"/>
+</div>
+<!-- Error State (Hidden by default, shown for demonstration) -->
+<div class="flex items-center gap-xs text-error font-label-md mt-sm transition-opacity opacity-0" id="error-message">
+<span class="material-symbols-outlined text-[16px]">error</span>
+<span>Invalid or expired OTP.</span>
+</div>
+</div>
+<!-- Timer & Resend Action -->
+<div class="text-center w-full mb-xl">
+<p class="font-body-md text-on-surface-variant mb-sm" id="timer-text">
+                Resend code in <span class="font-semibold text-secondary" id="countdown">0:59</span>
+</p>
+<button class="hidden text-secondary font-label-lg hover:underline transition-all" id="resend-btn">
+                Resend code
+            </button>
+<div class="mt-md">
+<button class="text-on-surface-variant font-label-md hover:text-primary transition-colors flex items-center justify-center mx-auto gap-xs">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                    Change phone number
+                </button>
+</div>
+</div>
+<!-- Primary Action -->
+<button class="w-full bg-primary-container text-on-primary-container h-14 rounded-xl font-label-lg text-lg shadow-sm hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-sm" id="verify-btn">
+<span>Verify</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</main>
+<!-- Visual Polish: Background Gradients -->
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/5 blur-[120px] rounded-full"></div>
+</div>
+<script>
+        // OTP Focus Logic
+        const inputs = document.querySelectorAll('.otp-input');
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        // Timer Logic
+        let timeLeft = 59;
+        const countdownEl = document.getElementById('countdown');
+        const timerText = document.getElementById('timer-text');
+        const resendBtn = document.getElementById('resend-btn');
+
+        const timer = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                timerText.classList.add('hidden');
+                resendBtn.classList.remove('hidden');
+            } else {
+                timeLeft--;
+                countdownEl.textContent = `0:${timeLeft < 10 ? '0' : ''}${timeLeft}`;
+            }
+        }, 1000);
+
+        // Error Simulation for Demo
+        const verifyBtn = document.getElementById('verify-btn');
+        const errorMsg = document.getElementById('error-message');
+        
+        verifyBtn.addEventListener('click', () => {
+            // Check if any fields are empty to trigger error state UI
+            const isComplete = Array.from(inputs).every(i => i.value.length > 0);
+            if (!isComplete) {
+                errorMsg.classList.remove('opacity-0');
+                inputs.forEach(input => {
+                    input.classList.remove('border-outline-variant');
+                    input.classList.add('border-error');
+                });
+                
+                // Shake animation
+                const container = document.getElementById('otp-container');
+                container.classList.add('animate-shake');
+                setTimeout(() => container.classList.remove('animate-shake'), 500);
+            }
+        });
+
+        // Injecting shake keyframes
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+            .animate-shake {
+                animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+                animation-iteration-count: 2;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body></html>

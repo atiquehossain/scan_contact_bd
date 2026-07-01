@@ -1,0 +1,8 @@
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Wordmark "NoNumQR" -->
+  <text x="10" y="42" font-family="Inter, sans-serif" font-weight="700" font-size="32" fill="#0F172A">
+    NoNum<tspan fill="#0D9488">QR</tspan>
+  </text>
+  <!-- Subtle Dot Indicator for Privacy/Connection -->
+  <circle cx="185" cy="32" r="4" fill="#0D9488" />
+</svg>

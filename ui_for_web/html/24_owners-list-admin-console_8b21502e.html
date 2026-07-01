@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Owners List | AdminConsole</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#00201d",
+                        "on-primary-fixed-variant": "#005049",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#002116",
+                        "primary": "#00685f",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#006a61",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#131b2e",
+                        "surface-container": "#eaedff",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "surface-variant": "#dae2fd",
+                        "danger-red": "#DC2626",
+                        "surface-dim": "#d2d9f4",
+                        "on-primary-container": "#f4fffc",
+                        "on-tertiary-fixed-variant": "#773215",
+                        "secondary-container": "#a6f2d1",
+                        "warning-amber": "#D97706",
+                        "secondary-fixed-dim": "#8bd6b6",
+                        "primary-container": "#008378",
+                        "on-secondary-fixed-variant": "#00513b",
+                        "tertiary": "#924628",
+                        "on-tertiary-fixed": "#370e00",
+                        "on-surface-variant": "#3d4947",
+                        "ink-slate": "#1E293B",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "inverse-on-surface": "#eef0ff",
+                        "on-secondary-container": "#237157",
+                        "inverse-primary": "#6bd8cb",
+                        "surface-container-highest": "#dae2fd",
+                        "on-error": "#ffffff",
+                        "info-blue": "#2563EB",
+                        "on-background": "#131b2e",
+                        "surface": "#faf8ff",
+                        "inverse-surface": "#283044",
+                        "on-error-container": "#93000a",
+                        "secondary": "#1b6b51",
+                        "surface-container-high": "#e2e7ff",
+                        "surface-container-low": "#f2f3ff",
+                        "outline-variant": "#bcc9c6",
+                        "secondary-fixed": "#a6f2d1",
+                        "surface-off-white": "#F8FAFC",
+                        "primary-fixed": "#89f5e7",
+                        "tertiary-container": "#b05e3d",
+                        "on-tertiary-container": "#fffbff",
+                        "outline": "#6d7a77",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "background": "#faf8ff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffdbce"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "container-max": "1200px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                        "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-off-white text-on-surface font-body-md overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- SideNavBar (JSON Derived) -->
+<aside class="fixed left-0 h-full w-64 bg-surface-off-white border-r border-outline-variant flex flex-col py-6 px-4 z-20">
+<div class="mb-10 px-2">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">AdminConsole</h1>
+<p class="text-label-sm text-on-surface-variant">Internal Ops</p>
+</div>
+<nav class="flex-1 space-y-1 overflow-y-auto no-scrollbar">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                    Overview
+                </a>
+<!-- Active State Mapping: Owners -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary font-bold bg-secondary-container/30 transition-colors font-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+                    Owners
+                </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="label">label</span>
+                    Tags
+                </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+                    Orders
+                </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+                    Users
+                </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                    Reports
+                </a>
+<div class="pt-4 mt-4 border-t border-outline-variant/30 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                        Settings
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="dns">dns</span>
+                        Health &amp; Backups
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+                        Audit Logs
+                    </a>
+</div>
+</nav>
+<div class="mt-auto px-2 pt-4">
+<div class="flex items-center gap-3 p-2 rounded-xl bg-surface-container-low border border-outline-variant/20">
+<img alt="Administrator Avatar" class="w-10 h-10 rounded-full object-cover" data-alt="A professional close-up headshot of a senior system administrator in a modern office. The lighting is soft and natural, with a clean and bright corporate background. The person has a calm, confident expression, reflecting a professional and secure atmosphere consistent with a high-end tech environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtrvCQnUjHdQUzVxpj1Gy-V758-DSko6gcnygOmofxD2u-jijIn8_6GvvpUOkntZKaufzqnnXBKZ5Vzd21IBUE_PzLapC-v_UQG34VaQ-jtC0zXU0EQpjOp2oMqWy-e0w9bua4fTcJr7ryAkotkIZKUp7GLu7Q9ZAMEZS6JLjvEbvMsyKxshzsnmkt8bchUBIEDsaPDYaqGMTre5-KBRFl91sHiKMsbJfuOke3CQdCNijQkio0XxCR37-Ev7vaAfpPYvZcweMBtz6o"/>
+<div class="flex-1 min-w-0">
+<p class="text-label-lg font-bold truncate">Admin Profile</p>
+<p class="text-xs text-on-surface-variant">System Master</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-64 flex flex-col overflow-hidden">
+<!-- TopNavBar (JSON Derived) -->
+<header class="flex justify-between items-center h-16 px-8 bg-surface border-b border-outline-variant shadow-sm z-10">
+<div class="flex items-center gap-6 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant/40 rounded-full py-2 pl-10 pr-4 text-body-sm focus:outline-none focus:border-primary transition-all" placeholder="Search owners..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-8 w-px bg-outline-variant/50"></div>
+<span class="font-label-lg text-on-surface-variant">AdminConsole</span>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<section class="flex-1 overflow-y-auto p-8 space-y-stack-lg bg-surface-off-white no-scrollbar">
+<!-- Breadcrumbs & Actions -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-ink-slate">Owners</h2>
+<p class="text-on-surface-variant font-body-sm mt-1">Manage all NoNumQR account holders and their assets.</p>
+</div>
+<div class="flex gap-stack-sm">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-outline text-label-lg hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                            Filter
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-outline text-label-lg hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="ios_share">ios_share</span>
+                            Export
+                        </button>
+<button class="bg-primary text-on-primary flex items-center gap-2 px-6 py-2 rounded-lg font-bold text-label-lg hover:bg-primary-container transition-all shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="person_add">person_add</span>
+                            Add Owner
+                        </button>
+</div>
+</div>
+<!-- Metrics Overview (Subtle Cards) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="bg-surface rounded-xl p-6 border border-outline-variant/40 shadow-sm">
+<p class="text-label-sm text-on-surface-variant mb-2">Total Owners</p>
+<div class="flex items-baseline gap-2">
+<span class="text-[28px] font-bold text-ink-slate">1,284</span>
+<span class="text-xs font-bold text-primary flex items-center">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span> 12%
+                            </span>
+</div>
+</div>
+<div class="bg-surface rounded-xl p-6 border border-outline-variant/40 shadow-sm">
+<p class="text-label-sm text-on-surface-variant mb-2">Active Accounts</p>
+<div class="flex items-baseline gap-2">
+<span class="text-[28px] font-bold text-ink-slate">1,102</span>
+<span class="text-xs font-bold text-primary flex items-center">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span> 86%
+                            </span>
+</div>
+</div>
+<div class="bg-surface rounded-xl p-6 border border-outline-variant/40 shadow-sm">
+<p class="text-label-sm text-on-surface-variant mb-2">Pending Tags</p>
+<div class="flex items-baseline gap-2">
+<span class="text-[28px] font-bold text-ink-slate">42</span>
+<span class="text-xs font-bold text-warning-amber flex items-center">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> Active
+                            </span>
+</div>
+</div>
+<div class="bg-surface rounded-xl p-6 border border-outline-variant/40 shadow-sm">
+<p class="text-label-sm text-on-surface-variant mb-2">Revenue Growth</p>
+<div class="flex items-baseline gap-2">
+<span class="text-[28px] font-bold text-ink-slate">$14.2k</span>
+<span class="text-xs font-bold text-primary flex items-center">
+<span class="material-symbols-outlined text-[14px]" data-icon="north_east">north_east</span> +5.4%
+                            </span>
+</div>
+</div>
+</div>
+<!-- Data Table Section -->
+<div class="bg-surface rounded-2xl border border-outline-variant/40 shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-6 py-4 font-label-lg text-on-surface-variant border-b border-outline-variant/30">Name</th>
+<th class="px-6 py-4 font-label-lg text-on-surface-variant border-b border-outline-variant/30">Phone</th>
+<th class="px-6 py-4 font-label-lg text-on-surface-variant border-b border-outline-variant/30">Status</th>
+<th class="px-6 py-4 font-label-lg text-on-surface-variant border-b border-outline-variant/30 text-center">Tags</th>
+<th class="px-6 py-4 font-label-lg text-on-surface-variant border-b border-outline-variant/30 text-center">Orders</th>
+<th class="px-6 py-4 font-label-lg text-on-surface-variant border-b border-outline-variant/30">Last Activity</th>
+<th class="px-6 py-4 font-label-lg text-on-surface-variant border-b border-outline-variant/30"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+<img alt="Owner Avatar" class="w-full h-full object-cover" data-alt="A portrait of a cheerful, diverse man in his 30s with a clean, friendly appearance. He is outdoors in a bright, modern park setting with soft, warm sunlight illuminating his face. The photo has a high-end, lifestyle aesthetic with a shallow depth of field, emphasizing a personal and trustworthy connection in a secure environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6W5zEWRrFEgvxTsVRHH6bZpyoFFmN9v6sPsskp854v7u6Js-elRruFHEY5okzc30DumQ4eDVB4W9EOwxBgsaimHTZ5a3MHDxOl9zJHD3bTxySlI8CICEpkmiuBeBgVCvTsn-zHqMZE0mywdlgjmcyh1ArhWPuOfsw9IX2Gox9zU3lv7PRqMmrx-ToaugNxeWP4TW0dgm6E1WDojLpjOu4_busGNXD3MzXWvw48V0LkimS5Wul36k04ilqbadKyU_YDPl3EQG9C_jE"/>
+</div>
+<div>
+<p class="font-label-lg text-ink-slate group-hover:text-primary transition-colors">Marcus Chen</p>
+<p class="text-xs text-on-surface-variant">marcus.c@example.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant font-mono">+1 (555) 012-3456</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                            Active
+                                        </span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="text-body-sm font-bold text-ink-slate">4</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="text-body-sm font-bold text-ink-slate">12</span>
+</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant">2 hours ago</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-all">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+<img alt="Owner Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a smiling woman in a bright, minimalist studio. She wears a neutral-toned blouse that complements a clean and professional corporate aesthetic. The lighting is diffused and high-key, creating an atmosphere of transparency, modern utility, and reliability, aligned with a premium service brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3MjxQGg_AD7FUgtRYp_SbGqVOCbjGRlbeCzFg6EXTpe02YIIt0VvAz9361tOTsQj5tPj5S49uaerp8KneAbD_zy9BsqYJy4HRCz_OUmDLoQtdziS0nEPTl5uXMvCqGI-F3KFOP5hITlweoFE9vENYyucWpbsw2b2Z0Ow9m8Ms9OiSeHLFQij0730YjgiB5nWq3iCgDOdBdAjxRGLID56sevrA1s-4VmIMY9gFlAM9YEWgQPgdOIAkcz68ji95VnBDEPEscFXLNDgN"/>
+</div>
+<div>
+<p class="font-label-lg text-ink-slate group-hover:text-primary transition-colors">Elena Rodriguez</p>
+<p class="text-xs text-on-surface-variant">e.rodriguez@domain.io</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant font-mono">+1 (555) 098-7654</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                            Active
+                                        </span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="text-body-sm font-bold text-ink-slate">2</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="text-body-sm font-bold text-ink-slate">3</span>
+</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant">Yesterday, 4:12 PM</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-all">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+<img alt="Owner Avatar" class="w-full h-full object-cover" data-alt="A portrait of a sophisticated man with glasses in a modern architect's office environment. The background is slightly blurred, showing clean lines and neutral colors. The lighting is soft and even, highlighting a professional and discreet tone suitable for a high-end service that values ownership and privacy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCF7oBgWVQg8-5lMlmFUgXMJYWe1Nsem8oT8srYuzjzgQwomEhMqMcriZfKdD8WhDJeXXsCfw7rCrrl6HZ4QCBIP72S-Es6H348m0aKdsUqBStLKfVfyOLVB_sG9XkHc2pLO0-alHgkMczzfXlBzKoi2meS-6p8UlPgiZso11AZzHRRoxaYXsWkMT0H31XPw5zUISwOCwqciOhKAYTdIdfyUxxp0DyWkrMRq9PDNP1sSrTqj_avIoG5e_dX4KRZ_uK2GuYtKRYAGkAI"/>
+</div>
+<div>
+<p class="font-label-lg text-ink-slate group-hover:text-primary transition-colors">Jordan Smith</p>
+<p class="text-xs text-on-surface-variant">j.smith.dev@web.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant font-mono">+1 (555) 443-2211</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-variant text-on-surface-variant text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                                            Inactive
+                                        </span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="text-body-sm font-bold text-ink-slate">1</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="text-body-sm font-bold text-ink-slate">1</span>
+</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant">Mar 12, 2024</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-all">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+<img alt="Owner Avatar" class="w-full h-full object-cover" data-alt="A bright, clear headshot of a confident woman in a contemporary creative workspace. Her expression is focused yet approachable. The surroundings are filled with high-quality materials and soft, natural light, reflecting a modern corporate minimalism and a high-end, professional atmosphere for discrete asset management." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCostX3rLLzlXAUE2bMeFXzZqd-oRu6PzxXdoA03Wqo42xnUy9Hg6lJB2cbeLRV33dYVyJbXBPyNXDWaZEaYxj3heJDKD21lKrXldbJjt_7w2cDj6clzINFZvL9TceZkCS59e4tZAZMtW5bnFCsI5-JfQ1VTPKlxIqtPajhDSmFgM7jc2k3rjk7YhDx1DENbF85NhmSMJLLs-lnJ7IF7Pf9tWZ3cATZRPIxGQM0z80kcoiVut1z33BWqsQV0o2kdTlrhd5AiD1m7bF0"/>
+</div>
+<div>
+<p class="font-label-lg text-ink-slate group-hover:text-primary transition-colors">Sarah Williams</p>
+<p class="text-xs text-on-surface-variant">sarah.w@creative.net</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant font-mono">+1 (555) 777-8899</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                            Active
+                                        </span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="text-body-sm font-bold text-ink-slate">7</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="text-body-sm font-bold text-ink-slate">24</span>
+</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant">5 mins ago</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-all">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="px-6 py-4 bg-surface flex items-center justify-between border-t border-outline-variant/30">
+<p class="text-label-sm text-on-surface-variant">Showing 1 to 4 of 1,284 owners</p>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant/40 hover:bg-surface-container transition-all disabled:opacity-40 disabled:hover:bg-transparent" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-on-primary font-bold text-label-sm transition-all">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant/40 hover:bg-surface-container transition-all text-label-sm">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant/40 hover:bg-surface-container transition-all text-label-sm">3</button>
+<span class="text-on-surface-variant px-1">...</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant/40 hover:bg-surface-container transition-all text-label-sm">129</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant/40 hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<script>
+        // Micro-interactions and hover effects
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'translateY(-1px)';
+                row.style.boxShadow = '0 4px 12px rgba(15, 23, 42, 0.05)';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'translateY(0)';
+                row.style.boxShadow = 'none';
+            });
+        });
+
+        // Search bar focus effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-primary/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20');
+        });
+    </script>
+</body></html>

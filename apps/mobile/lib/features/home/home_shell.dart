@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/push/push_notification_service.dart';
 import '../../core/services/owner_services.dart';
+import '../../core/theme/app_theme.dart';
 import '../account/account_screen.dart';
 import '../alerts/alerts_screen.dart';
 import '../requests/requests_screen.dart';
@@ -177,55 +178,69 @@ class _HomeShellState extends ConsumerState<HomeShell>
     ];
 
     return Scaffold(
+      backgroundColor: AppColors.page,
       body: SafeArea(
-        child: IndexedStack(index: index, children: pages),
+        child: ColoredBox(
+          color: AppColors.page,
+          child: IndexedStack(index: index, children: pages),
+        ),
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: index,
-        onDestinationSelected: openTab,
-        destinations: [
-          const NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
+      bottomNavigationBar: DecoratedBox(
+        decoration: const BoxDecoration(
+          color: AppColors.surface,
+          border: Border(top: BorderSide(color: AppColors.border)),
+          boxShadow: AppShadows.nav,
+        ),
+        child: SafeArea(
+          top: false,
+          child: NavigationBar(
+            selectedIndex: index,
+            onDestinationSelected: openTab,
+            destinations: [
+              const NavigationDestination(
+                icon: Icon(Icons.home_outlined),
+                selectedIcon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              const NavigationDestination(
+                icon: Icon(Icons.qr_code_2_outlined),
+                selectedIcon: Icon(Icons.qr_code_2),
+                label: 'Tags',
+              ),
+              NavigationDestination(
+                icon: Badge(
+                  isLabelVisible: (dashboard?.unreadRequestCount ?? 0) > 0,
+                  label: Text('${dashboard?.unreadRequestCount ?? 0}'),
+                  child: const Icon(Icons.forum_outlined),
+                ),
+                selectedIcon: Badge(
+                  isLabelVisible: (dashboard?.unreadRequestCount ?? 0) > 0,
+                  label: Text('${dashboard?.unreadRequestCount ?? 0}'),
+                  child: const Icon(Icons.forum),
+                ),
+                label: 'Requests',
+              ),
+              NavigationDestination(
+                icon: Badge(
+                  isLabelVisible: (dashboard?.unreadNotificationCount ?? 0) > 0,
+                  label: Text('${dashboard?.unreadNotificationCount ?? 0}'),
+                  child: const Icon(Icons.notifications_outlined),
+                ),
+                selectedIcon: Badge(
+                  isLabelVisible: (dashboard?.unreadNotificationCount ?? 0) > 0,
+                  label: Text('${dashboard?.unreadNotificationCount ?? 0}'),
+                  child: const Icon(Icons.notifications),
+                ),
+                label: 'Alerts',
+              ),
+              const NavigationDestination(
+                icon: Icon(Icons.person_outline),
+                selectedIcon: Icon(Icons.person),
+                label: 'Account',
+              ),
+            ],
           ),
-          const NavigationDestination(
-            icon: Icon(Icons.qr_code_2_outlined),
-            selectedIcon: Icon(Icons.qr_code_2),
-            label: 'Tags',
-          ),
-          NavigationDestination(
-            icon: Badge(
-              isLabelVisible: (dashboard?.unreadRequestCount ?? 0) > 0,
-              label: Text('${dashboard?.unreadRequestCount ?? 0}'),
-              child: const Icon(Icons.forum_outlined),
-            ),
-            selectedIcon: Badge(
-              isLabelVisible: (dashboard?.unreadRequestCount ?? 0) > 0,
-              label: Text('${dashboard?.unreadRequestCount ?? 0}'),
-              child: const Icon(Icons.forum),
-            ),
-            label: 'Requests',
-          ),
-          NavigationDestination(
-            icon: Badge(
-              isLabelVisible: (dashboard?.unreadNotificationCount ?? 0) > 0,
-              label: Text('${dashboard?.unreadNotificationCount ?? 0}'),
-              child: const Icon(Icons.notifications_outlined),
-            ),
-            selectedIcon: Badge(
-              isLabelVisible: (dashboard?.unreadNotificationCount ?? 0) > 0,
-              label: Text('${dashboard?.unreadNotificationCount ?? 0}'),
-              child: const Icon(Icons.notifications),
-            ),
-            label: 'Alerts',
-          ),
-          const NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: 'Account',
-          ),
-        ],
+        ),
       ),
     );
   }

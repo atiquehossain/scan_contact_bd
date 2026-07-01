@@ -1,4 +1,4 @@
-# Society Guide
+# NoNumQR Society Guide
 
 Society admins can create buildings, units, residents, vehicles, parking slots, and visitor logs. Guards can use the mobile app or web guard panel to log visitor entry and exit.
 

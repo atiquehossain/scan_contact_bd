@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Alerts - NoNumQR Owner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #006a61;
+            border-radius: 50%;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed-dim": "#6bd8cb",
+                      "surface": "#f9f9ff",
+                      "surface-dim": "#cfdaf2",
+                      "surface-container": "#e7eeff",
+                      "on-tertiary-fixed": "#00174b",
+                      "secondary-container": "#86f2e4",
+                      "on-surface": "#111c2d",
+                      "tertiary-fixed": "#dbe1ff",
+                      "on-error": "#ffffff",
+                      "on-surface-variant": "#3f4944",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed-dim": "#8bd6b6",
+                      "on-secondary-fixed-variant": "#005049",
+                      "background": "#f9f9ff",
+                      "on-secondary-container": "#006f66",
+                      "tertiary-fixed-dim": "#b4c5ff",
+                      "on-primary-container": "#8bd6b7",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed-variant": "#00513b",
+                      "on-primary": "#ffffff",
+                      "on-background": "#111c2d",
+                      "primary": "#004532",
+                      "inverse-on-surface": "#ecf1ff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary-fixed-variant": "#003ea8",
+                      "inverse-primary": "#8bd6b6",
+                      "primary-container": "#065f46",
+                      "outline-variant": "#bec9c2",
+                      "surface-bright": "#f9f9ff",
+                      "surface-container-low": "#f0f3ff",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed": "#002116",
+                      "tertiary-container": "#0049c3",
+                      "surface-container-high": "#dee8ff",
+                      "inverse-surface": "#263143",
+                      "on-tertiary-container": "#b5c6ff",
+                      "on-tertiary": "#ffffff",
+                      "surface-tint": "#1b6b51",
+                      "secondary-fixed": "#89f5e7",
+                      "tertiary": "#003491",
+                      "surface-variant": "#d8e3fb",
+                      "error-container": "#ffdad6",
+                      "surface-container-highest": "#d8e3fb",
+                      "primary-fixed": "#a6f2d1",
+                      "outline": "#6f7973",
+                      "on-secondary-fixed": "#00201d",
+                      "secondary": "#006a61"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "lg": "24px",
+                      "margin-mobile": "16px",
+                      "gutter-mobile": "12px",
+                      "xl": "32px",
+                      "sm": "8px",
+                      "md": "16px"
+              },
+              "fontFamily": {
+                      "label-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-sm": ["Inter"],
+                      "title-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-sm flex justify-between items-center px-md py-sm">
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high p-xs rounded-full transition-colors active:scale-95 duration-200">arrow_back</button>
+<h1 class="font-title-lg text-title-lg text-on-surface font-bold">Alerts</h1>
+</div>
+<button class="font-label-lg text-label-lg text-secondary hover:text-secondary-container transition-all active:scale-95" id="mark-read-btn">Mark all as read</button>
+</header>
+<!-- Content Canvas -->
+<main class="pt-20 px-margin-mobile">
+<!-- Today Group -->
+<section class="mb-lg">
+<h2 class="font-label-sm text-label-sm text-outline mb-md uppercase tracking-wider">Today</h2>
+<div class="space-y-sm">
+<!-- Alert Item: New Request -->
+<div class="bg-surface-container-low rounded-xl p-md flex gap-md items-start shadow-sm border border-outline-variant/30 hover:bg-surface-container-high transition-colors active:scale-[0.99] duration-150">
+<div class="bg-primary/10 p-sm rounded-lg">
+<span class="material-symbols-outlined text-primary">chat_bubble</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-xs">
+<h3 class="font-title-lg text-label-lg text-on-surface font-bold">New Request: Toyota Corolla</h3>
+<div class="unread-dot" id="dot-1"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Visitor at Front Gate needs you to move your car.</p>
+<span class="font-label-sm text-label-sm text-outline mt-xs block">2m ago</span>
+</div>
+</div>
+<!-- Alert Item: Incoming Call -->
+<div class="bg-surface-container-low rounded-xl p-md flex gap-md items-start shadow-sm border border-outline-variant/30 hover:bg-surface-container-high transition-colors active:scale-[0.99] duration-150">
+<div class="bg-secondary/10 p-sm rounded-lg">
+<span class="material-symbols-outlined text-secondary">call</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-xs">
+<h3 class="font-title-lg text-label-lg text-on-surface font-bold">Incoming Call</h3>
+<div class="unread-dot" id="dot-2"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Scanner calling via Apartment Parking QR.</p>
+<span class="font-label-sm text-label-sm text-outline mt-xs block">15m ago</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Yesterday Group -->
+<section class="mb-lg">
+<h2 class="font-label-sm text-label-sm text-outline mb-md uppercase tracking-wider">Yesterday</h2>
+<div class="space-y-sm">
+<!-- Alert Item: Order Update -->
+<div class="bg-surface-container-low rounded-xl p-md flex gap-md items-start shadow-sm border border-outline-variant/30 hover:bg-surface-container-high transition-colors">
+<div class="bg-tertiary-container/10 p-sm rounded-lg">
+<span class="material-symbols-outlined text-tertiary">local_shipping</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-xs">
+<h3 class="font-title-lg text-label-lg text-on-surface font-bold">Order Shipped</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Your QR Sticker Pack #8821 is on its way.</p>
+<span class="font-label-sm text-label-sm text-outline mt-xs block">Yesterday, 2:30 PM</span>
+</div>
+</div>
+<!-- Alert Item: Missed Call -->
+<div class="bg-error/10 p-sm rounded-lg flex gap-md items-start border border-error/20 bg-surface-container-low rounded-xl p-md shadow-sm">
+<div class="bg-error/10 p-sm rounded-lg">
+<span class="material-symbols-outlined text-error">phone_missed</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-xs">
+<h3 class="font-title-lg text-label-lg text-on-surface font-bold">Missed Call</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">From Bike Sticker QR tag.</p>
+<span class="font-label-sm text-label-sm text-outline mt-xs block">Yesterday, 11:15 AM</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Earlier Group -->
+<section class="mb-lg">
+<h2 class="font-label-sm text-label-sm text-outline mb-md uppercase tracking-wider">Earlier</h2>
+<div class="space-y-sm">
+<!-- Alert Item: System Update -->
+<div class="bg-surface-container-low rounded-xl p-md flex gap-md items-start shadow-sm border border-outline-variant/30 hover:bg-surface-container-high transition-colors">
+<div class="bg-primary/10 p-sm rounded-lg">
+<span class="material-symbols-outlined text-primary">security</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-xs">
+<h3 class="font-title-lg text-label-lg text-on-surface font-bold">Privacy Active</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">All your QR tags are currently protected.</p>
+<span class="font-label-sm text-label-sm text-outline mt-xs block">Oct 24, 2023</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Atmosphere Element: Status Summary -->
+<div class="mt-xl p-lg bg-surface-container-highest rounded-2xl flex items-center justify-between overflow-hidden relative">
+<div class="relative z-10">
+<p class="font-label-lg text-label-lg text-primary font-bold">Privacy Health</p>
+<p class="font-headline-lg text-headline-lg text-on-surface mt-xs">100% Secure</p>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm">No security threats detected in last 30 days.</p>
+</div>
+<div class="opacity-20 absolute -right-4 -bottom-4">
+<span class="material-symbols-outlined text-[120px] text-primary">verified_user</span>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface/80 dark:bg-surface-dark/80 backdrop-blur-xl flex justify-around items-center px-margin-mobile pb-safe pt-sm shadow-lg rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-label-md text-label-md hover:text-primary-container transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">home</span>
+<span>Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-label-md text-label-md hover:text-primary-container transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">rebase_edit</span>
+<span>Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-label-md text-label-md hover:text-primary-container transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span>Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-label-md text-label-md hover:text-primary-container transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<script>
+        document.getElementById('mark-read-btn').addEventListener('click', function() {
+            const dots = document.querySelectorAll('.unread-dot');
+            dots.forEach(dot => {
+                dot.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                dot.style.opacity = '0';
+                dot.style.transform = 'scale(0.5)';
+                setTimeout(() => dot.remove(), 400);
+            });
+            this.textContent = 'All Caught Up';
+            this.classList.remove('text-secondary');
+            this.classList.add('text-outline');
+            this.style.pointerEvents = 'none';
+        });
+
+        // Simple scale interaction for cards
+        const cards = document.querySelectorAll('.bg-surface-container-low');
+        cards.forEach(card => {
+            card.addEventListener('mousedown', () => {
+                card.style.transform = 'scale(0.98)';
+            });
+            card.addEventListener('mouseup', () => {
+                card.style.transform = 'scale(1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

@@ -347,7 +347,7 @@ class OwnerService {
 
 void _debugOwnerData(String message) {
   if (!kDebugMode) return;
-  debugPrint('[ScanContact Owner] $message');
+  debugPrint('[NoNumQR Owner] $message');
 }
 
 String _maskPhone(String phone) {

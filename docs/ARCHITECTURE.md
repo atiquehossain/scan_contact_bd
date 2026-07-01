@@ -1,6 +1,6 @@
-# ScanContact BD Architecture
+# NoNumQR Architecture
 
-ScanContact BD is a privacy-first QR private contact platform for Bangladesh. The MVP is built as a self-hostable monorepo with a static web frontend exported from Next.js, Caddy, an Express/TypeScript REST API, PostgreSQL via Prisma, optional Redis/worker services, and a Flutter Android/iOS-ready app.
+NoNumQR is a private QR contact platform that lets people contact an owner through a QR sticker/tag without exposing the owner's phone number by default. The MVP is built as a self-hostable monorepo with a static web frontend exported from Next.js, Caddy, an Express/TypeScript REST API, PostgreSQL via Prisma, optional Redis/worker services, and a Flutter Android/iOS-ready app.
 
 ## Product Architecture
 
@@ -19,7 +19,7 @@ flowchart LR
 
 ## Core Security Decisions
 
-- QR codes contain only `https://yourdomain.com/t/{publicSlug}`.
+- QR codes contain only `https://nonumqr.com/t/{publicSlug}`.
 - Phone numbers, addresses, emergency contacts, and documents are private by default.
 - OTPs are hashed with a server secret and expire quickly.
 - Access tokens are short lived. Refresh tokens are rotated and stored hashed.

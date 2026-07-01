@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>SecureTag - Call Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#0049c3",
+                        "secondary-fixed": "#89f5e7",
+                        "inverse-on-surface": "#ecf1ff",
+                        "surface-container-high": "#dee8ff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#1b6b51",
+                        "on-tertiary-fixed": "#00174b",
+                        "background": "#f9f9ff",
+                        "on-primary-fixed-variant": "#00513b",
+                        "on-primary-fixed": "#002116",
+                        "on-primary-container": "#8bd6b7",
+                        "surface-variant": "#d8e3fb",
+                        "on-secondary-container": "#006f66",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#005049",
+                        "primary-container": "#065f46",
+                        "surface": "#f9f9ff",
+                        "on-tertiary-container": "#b5c6ff",
+                        "on-background": "#111c2d",
+                        "on-surface": "#111c2d",
+                        "on-secondary-fixed": "#00201d",
+                        "surface-dim": "#cfdaf2",
+                        "secondary": "#006a61",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "outline": "#6f7973",
+                        "primary-fixed": "#a6f2d1",
+                        "surface-container-highest": "#d8e3fb",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "outline-variant": "#bec9c2",
+                        "tertiary": "#003491",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "on-surface-variant": "#3f4944",
+                        "inverse-primary": "#8bd6b6",
+                        "inverse-surface": "#263143",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "surface-bright": "#f9f9ff",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "tertiary-fixed": "#dbe1ff",
+                        "primary": "#004532",
+                        "surface-container": "#e7eeff",
+                        "secondary-container": "#86f2e4",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "gutter-mobile": "12px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"], "headline-lg": ["Inter"], "label-sm": ["Inter"], "title-lg": ["Inter"], "display-sm": ["Inter"], "body-lg": ["Inter"], "label-md": ["Inter"], "headline-md": ["Inter"], "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .push-notification-animation {
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24">
+<!-- Push Notification Overlay -->
+<div class="fixed top-4 left-0 right-0 z-[100] px-4 pointer-events-none">
+<div class="push-notification-animation max-w-md mx-auto bg-surface/95 backdrop-blur-xl border border-outline-variant/30 shadow-xl rounded-2xl p-4 flex items-center gap-4 pointer-events-auto cursor-pointer active:scale-95 transition-transform" onclick="this.parentElement.style.display='none'">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shield_lock</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-0.5">
+<span class="font-label-md text-label-md text-primary font-bold">SECURETAG</span>
+<span class="font-label-sm text-label-sm text-outline">Just now</span>
+</div>
+<h4 class="font-title-lg text-body-md font-bold text-on-surface">Missed Private Call from Tag #A982</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Tap to view caller details and security logs.</p>
+</div>
+</div>
+</div>
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
+<div class="flex items-center justify-between px-md h-16 w-full max-w-7xl mx-auto">
+<button class="p-2 rounded-full hover:bg-surface-container-low transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">SecureTag</h1>
+<button class="p-2 rounded-full hover:bg-surface-container-low transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+</div>
+</header>
+<main class="pt-24 px-4 max-w-lg mx-auto space-y-8">
+<!-- Active State: Call Details -->
+<section class="space-y-6" id="call-details-active">
+<!-- Header Status Card -->
+<div class="bg-surface border border-outline-variant/30 rounded-3xl p-6 shadow-[0_4px_12px_rgba(0,0,0,0.03)] flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full bg-error-container flex items-center justify-center text-error mb-4">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">phone_missed</span>
+</div>
+<div class="bg-error/10 text-error px-3 py-1 rounded-full font-label-sm text-label-sm mb-2">
+                    MISSED CALL
+                </div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-1">Tag #A982</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Scanner tried to reach you at 2:45 PM</p>
+</div>
+<!-- Security Details -->
+<div class="bg-surface border border-outline-variant/30 rounded-2xl overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant/20 bg-surface-container-low">
+<h3 class="font-title-lg text-title-lg text-on-surface">Security Profile</h3>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-primary-container/20 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined">verified_user</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-outline">Privacy Level</p>
+<p class="font-body-lg text-body-lg text-on-surface font-medium">Fully Anonymous Bridge</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-primary-container/20 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-outline">Detected Region</p>
+<p class="font-body-lg text-body-lg text-on-surface font-medium">Downtown Metro Area</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-1 gap-3">
+<button class="bg-primary text-on-primary py-4 px-6 rounded-2xl font-title-lg text-title-lg flex items-center justify-center gap-2 shadow-lg active:scale-[0.98] transition-all hover:bg-primary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
+                    Message Scanner
+                </button>
+<button class="bg-surface border border-secondary text-secondary py-4 px-6 rounded-2xl font-title-lg text-title-lg flex items-center justify-center gap-2 active:scale-[0.98] transition-all hover:bg-secondary/5">
+<span class="material-symbols-outlined">call</span>
+                    Return Call
+                </button>
+</div>
+</section>
+<!-- Divider with subtle line -->
+<div class="py-4 flex items-center gap-4 opacity-30">
+<div class="h-px bg-outline-variant flex-1"></div>
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-widest">Archive State</span>
+<div class="h-px bg-outline-variant flex-1"></div>
+</div>
+<!-- Unavailable State -->
+<section class="bg-surface border border-outline-variant/20 rounded-3xl p-12 shadow-[0_4px_12px_rgba(0,0,0,0.03)] flex flex-col items-center text-center" id="item-unavailable">
+<div class="w-20 h-20 rounded-full bg-surface-container-highest flex items-center justify-center text-outline-variant mb-6">
+<span class="material-symbols-outlined text-5xl" style="font-variation-settings: 'FILL' 0;">link_off</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">This item is no longer available.</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[280px]">This conversation has expired for your privacy. All temporary data has been purged from the relay.</p>
+<button class="mt-8 text-secondary font-label-lg text-label-lg hover:underline flex items-center gap-1">
+                Contact Support <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</button>
+</section>
+<!-- Privacy Illustration (Mock) -->
+<div class="rounded-3xl overflow-hidden aspect-video relative group">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist high-tech server room with soft teal and white lighting, emphasizing modern digital security and data privacy. The atmosphere is serene and professional, with gentle depth of field and soft ambient glow emanating from sleek hardware racks. High-end utility aesthetic with plenty of negative space and a calm, trustworthy color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgzMfG0WZcqVYSWT3QGc08lYAJz_reh4go1rInpeKYP0wbHUM2NBekE12GmizCnzR0_Mm2wlknMOg0RRo1j6_bybPzp2EK27oH1M7iKKP4KVRIE3FbwjltNkHPb3wPydq5bW-cGGViwhqLvs3FInT42rA0w2nTol8jBprJ0W6CAXs5yyT7mSusppJJGXL8CppWS97rfawV6QEHRPGdWyvDmpF60Di71MAe94wvvC8E4NC33dUhyKvpmMZQSuh-o8W18hIRKyRQufA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent flex items-end p-6">
+<p class="text-on-primary font-body-md text-body-md">Your data is secured with AES-256 military-grade encryption during every relay.</p>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pt-2 pb-safe bg-surface/90 backdrop-blur-md shadow-[0_-4px_12px_rgba(0,0,0,0.03)] rounded-t-xl z-50">
+<a class="flex flex-col items-center justify-center text-primary font-semibold py-2" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+<span class="font-label-sm text-label-sm mt-1">Tags</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary-container transition-colors py-2" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="font-label-sm text-label-sm mt-1">Shop</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary-container transition-colors py-2" href="#">
+<span class="material-symbols-outlined">enhanced_encryption</span>
+<span class="font-label-sm text-label-sm mt-1">Privacy</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary-container transition-colors py-2" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm mt-1">Account</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for the notification
+        setTimeout(() => {
+            const notification = document.querySelector('.push-notification-animation');
+            if (notification) {
+                // Add a gentle pulse or float effect if needed
+            }
+        }, 1000);
+
+        // Interaction for the primary button
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.add('scale-95');
+                setTimeout(() => this.classList.remove('scale-95'), 150);
+            });
+        });
+    </script>
+</body></html>

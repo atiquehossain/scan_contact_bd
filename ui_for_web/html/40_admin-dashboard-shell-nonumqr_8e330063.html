@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NoNumQR Admin Console - Dashboard Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-container": "#a6f2d1",
+                      "on-tertiary-container": "#fffbff",
+                      "on-secondary-container": "#237157",
+                      "primary-fixed": "#89f5e7",
+                      "on-primary-container": "#f4fffc",
+                      "inverse-on-surface": "#eef0ff",
+                      "secondary-fixed": "#a6f2d1",
+                      "on-primary": "#ffffff",
+                      "surface-container-highest": "#dae2fd",
+                      "on-error-container": "#93000a",
+                      "on-surface-variant": "#3d4947",
+                      "on-surface": "#131b2e",
+                      "outline": "#6d7a77",
+                      "secondary": "#1b6b51",
+                      "surface-dim": "#d2d9f4",
+                      "tertiary-container": "#b05e3d",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-fixed": "#370e00",
+                      "warning-amber": "#D97706",
+                      "error-container": "#ffdad6",
+                      "primary-container": "#008378",
+                      "on-tertiary-fixed-variant": "#773215",
+                      "surface-tint": "#006a61",
+                      "surface-variant": "#dae2fd",
+                      "surface-container-lowest": "#ffffff",
+                      "surface": "#faf8ff",
+                      "surface-container-high": "#e2e7ff",
+                      "inverse-primary": "#6bd8cb",
+                      "tertiary-fixed-dim": "#ffb59a",
+                      "on-primary-fixed": "#00201d",
+                      "on-tertiary": "#ffffff",
+                      "surface-bright": "#faf8ff",
+                      "primary": "#00685f",
+                      "tertiary-fixed": "#ffdbce",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "on-primary-fixed-variant": "#005049",
+                      "on-secondary-fixed-variant": "#00513b",
+                      "info-blue": "#2563EB",
+                      "error": "#ba1a1a",
+                      "secondary-fixed-dim": "#8bd6b6",
+                      "on-secondary-fixed": "#002116",
+                      "background": "#faf8ff",
+                      "ink-slate": "#1E293B",
+                      "outline-variant": "#bcc9c6",
+                      "inverse-surface": "#283044",
+                      "on-background": "#131b2e",
+                      "surface-container": "#eaedff",
+                      "surface-off-white": "#F8FAFC",
+                      "surface-container-low": "#f2f3ff",
+                      "danger-red": "#DC2626",
+                      "on-error": "#ffffff",
+                      "tertiary": "#924628"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "stack-md": "16px",
+                      "stack-lg": "32px",
+                      "stack-sm": "8px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "container-max": "1200px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"]
+              },
+              "fontSize": {
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex overflow-hidden">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-full w-64 bg-surface-container-low dark:bg-inverse-surface border-r border-outline-variant dark:border-outline shrink-0">
+<div class="px-6 py-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">NoNumQR</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70">Admin Console</p>
+</div>
+<nav class="flex-1 flex flex-col px-2 gap-1 overflow-y-auto">
+<!-- Active Tab: Overview -->
+<a class="flex items-center gap-3 px-4 py-3 text-primary dark:text-primary-fixed font-bold border-r-4 border-primary hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+<span class="font-body-md text-body-md">Owners</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_2">qr_code_2</span>
+<span class="font-body-md text-body-md">Tags</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-body-md text-body-md">Orders</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md text-body-md">Users</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="font-body-md text-body-md">Reports</span>
+</a>
+<div class="mt-auto pt-8 pb-4">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-body-md text-body-md">Health &amp; Backups</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="font-body-md text-body-md">Audit Logs</span>
+</a>
+</div>
+</nav>
+</aside>
+<!-- Main Wrapper -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-8 py-4 w-full bg-surface dark:bg-on-background border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none z-10">
+<div class="flex items-center gap-4">
+<nav class="flex items-center gap-2 text-label-lg font-label-lg text-on-surface-variant">
+<span class="hover:text-primary transition-colors cursor-pointer">Admin</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-primary font-semibold">Overview</span>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<!-- Search Bar -->
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg w-80 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-body-sm font-body-sm" placeholder="Search orders, tags, owners..." type="text"/>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors active:opacity-80">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-danger-red rounded-full border-2 border-surface"></span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant">
+<div class="text-right">
+<p class="font-label-lg text-label-lg">Sarah Jenkins</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Super Admin</p>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="Admin Profile Avatar" data-alt="A professional headshot of a female administrator with a confident and serene expression. She has short brown hair and is wearing a modern teal blazer, set against a soft, out-of-focus high-end office background. The lighting is bright and even, creating a clean corporate minimalist aesthetic consistent with the teal and white brand palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_Oiv8GNC-FEZLw-4pFDgfWy8FhLQYtSPb1i5kX5Cn-epPRH-JCnGl_f4qgnLoGq8K-yVfD2weoaP4XcoE6XnKjGu5kjod8Ybc8ydPaWkaBY29B7iP_NCjUGspfJ0LpI_yJ3VhxkkRdu8hLTiQCzpQB6wgmuABYzhTV8Fxk4lZ9yMv5VBGcuSGPBUF_ITeMdk4yOzlYDPUi-ahau4MqoXSj9IOhSnAqf9UDXKK1fZrYlDnQw2Vem_KI_dTaRCsLMBJRE9GApOt0kya"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 overflow-y-auto bg-surface-off-white p-8">
+<div class="max-w-[1400px] mx-auto">
+<!-- Dashboard Header -->
+<div class="mb-stack-lg flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Dashboard Overview</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Real-time operational status and key performance metrics.</p>
+</div>
+<div class="flex gap-stack-sm">
+<button class="px-4 py-2 flex items-center gap-2 bg-surface-container-highest text-on-surface font-label-lg text-label-lg rounded-lg hover:bg-surface-variant transition-colors border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                            Last 30 Days
+                        </button>
+<button class="px-4 py-2 flex items-center gap-2 bg-primary text-on-primary font-label-lg text-label-lg rounded-lg hover:brightness-110 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                            Export Report
+                        </button>
+</div>
+</div>
+<!-- Bento Metrics Grid -->
+<div class="bento-grid">
+<!-- KPI Card 1: Total Tags -->
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:border-primary-container transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-primary-container text-on-primary-container rounded-lg">
+<span class="material-symbols-outlined" data-icon="qr_code_2">qr_code_2</span>
+</div>
+<span class="flex items-center text-primary font-bold text-label-sm">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+                                +12%
+                            </span>
+</div>
+<h3 class="font-label-lg text-label-lg text-on-surface-variant">Total Tags Issued</h3>
+<p class="text-[32px] font-bold text-ink-slate mt-1">42,891</p>
+<div class="mt-4 w-full bg-surface-container h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[75%]"></div>
+</div>
+</div>
+<!-- KPI Card 2: Active Owners -->
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:border-primary-container transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-secondary-container text-on-secondary-container rounded-lg">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</div>
+<span class="flex items-center text-primary font-bold text-label-sm">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+                                +4.2%
+                            </span>
+</div>
+<h3 class="font-label-lg text-label-lg text-on-surface-variant">Active Owners</h3>
+<p class="text-[32px] font-bold text-ink-slate mt-1">12,402</p>
+<div class="mt-4 flex -space-x-2">
+<img alt="User 1" class="w-8 h-8 rounded-full border-2 border-white" data-alt="A focused portrait of a young professional woman in a bright office environment, styled with a modern minimalist aesthetic and soft lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-v6SaQmtmbKeYQ6OaewkYgQcX9i-C-rTwDdRevoosVl_czWeJxQG1628YOhjNx2Ai8fcOZhCaVasStSflV-zhC9479jjVRpEVeCtLZ_qchK2lqxduAYQE2FX2uPTdv9WMcMDM_UTXVLLlIqbxxCX2EgjP12D_NrgtgaukerHGKEs06qaQBQMi5m9vHbs8YS9l-MgWonM9T5_wti24Csrg5vSNcA-o_2bvAKDffexfanHVLFhj7kq6P5DqvHFVTkTUDbMwUInGF4ak"/>
+<img alt="User 2" class="w-8 h-8 rounded-full border-2 border-white" data-alt="A portrait of a male professional smiling warmly, wearing a clean grey sweater in a brightly lit architectural space with high-key lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj1CL2NsTdsMBbCHLLVUna3R3RM2Kl6Y3DGc09jiUeTGo-z6csjiM4aE8zb3VqqM7VNSlVzmmXXKSYkA5cX90095-wZ4Jfqr_jYEjmHkKYvQaLOs2Jbg-iGsrxznpCCrYcelN2AN29sz4rQekJlx-2jkJHxpt98L_JG-aDWHyy4Cmz22KsY8RaWIKi1TqsADDJD3nuArlBCCEBlYvNZfgAUo_erlKx1J3Tnpzg_Nr-w1zwfC_b3MBrCG1BWcg8eWVjYkLt7eUKo5Sh"/>
+<img alt="User 3" class="w-8 h-8 rounded-full border-2 border-white" data-alt="A diverse professional man looking into the camera with a calm expression, set against a soft bokeh background of a modern glass office building." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBH2dUQtOtgzS-9e4sHhiT8sW1y4UyIrydqaEUHmpkjiS3yxD_hA8Z7hNhm6GdQrOml_DX7hAdYX8qbKniOj9U-YGhgtDVt5ybzulR3K-dUTS4VSu01nfT_DlfG9bAfTxg8gRmSR5JL476Q9zrPBTrqj661xgJSdKb6AXGbjzRb7K5NumXygUTR_ap8TVRM-6OJSYlj8Hd9Ovzgx95fp3UJzP98zTRQcoHUKWUo54OSS6TVbUPa6cpkTYC_-IhvZa7DeKug4b-3c4xZ"/>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container-highest flex items-center justify-center text-[10px] font-bold">+82</div>
+</div>
+</div>
+<!-- KPI Card 3: System Health -->
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:border-primary-container transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-on-tertiary-fixed-variant/10 text-tertiary rounded-lg">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+</div>
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Operational</span>
+</div>
+<h3 class="font-label-lg text-label-lg text-on-surface-variant">System Health</h3>
+<p class="text-[32px] font-bold text-ink-slate mt-1">99.98%</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-2">All services are running smoothly.</p>
+</div>
+<!-- KPI Card 4: Orders -->
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:border-primary-container transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-surface-container-high text-on-surface rounded-lg">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</div>
+<span class="flex items-center text-danger-red font-bold text-label-sm">
+<span class="material-symbols-outlined text-[16px]">trending_down</span>
+                                -2%
+                            </span>
+</div>
+<h3 class="font-label-lg text-label-lg text-on-surface-variant">Pending Orders</h3>
+<p class="text-[32px] font-bold text-ink-slate mt-1">142</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-2">24 requiring immediate action.</p>
+</div>
+<!-- Main Data Table: Recent Activity -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_20px_rgba(15,23,42,0.05)] overflow-hidden">
+<div class="px-6 py-5 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-on-surface">Recent Tag Scans</h3>
+<button class="text-primary font-label-lg text-label-lg hover:underline transition-all">View All Activity</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<tr>
+<th class="px-6 py-4">Tag ID</th>
+<th class="px-6 py-4">Owner</th>
+<th class="px-6 py-4">Location</th>
+<th class="px-6 py-4">Action Taken</th>
+<th class="px-6 py-4 text-right">Time</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<tr class="hover:bg-surface-off-white transition-colors group">
+<td class="px-6 py-4 font-mono text-primary font-bold">#NQ-281-Z</td>
+<td class="px-6 py-4 text-on-surface">Marcus Thorne</td>
+<td class="px-6 py-4 text-on-surface-variant">London, UK</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-primary-container/20 text-primary rounded-full text-xs font-semibold">Message Sent</span>
+</td>
+<td class="px-6 py-4 text-right text-on-surface-variant text-sm">2m ago</td>
+</tr>
+<tr class="hover:bg-surface-off-white transition-colors">
+<td class="px-6 py-4 font-mono text-primary font-bold">#NQ-992-X</td>
+<td class="px-6 py-4 text-on-surface">Elena Rodriguez</td>
+<td class="px-6 py-4 text-on-surface-variant">Madrid, ES</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold">Call Initiated</span>
+</td>
+<td class="px-6 py-4 text-right text-on-surface-variant text-sm">15m ago</td>
+</tr>
+<tr class="hover:bg-surface-off-white transition-colors">
+<td class="px-6 py-4 font-mono text-primary font-bold">#NQ-104-B</td>
+<td class="px-6 py-4 text-on-surface">James Wilson</td>
+<td class="px-6 py-4 text-on-surface-variant">New York, US</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant rounded-full text-xs font-semibold">Tag Scanned</span>
+</td>
+<td class="px-6 py-4 text-right text-on-surface-variant text-sm">34m ago</td>
+</tr>
+<tr class="hover:bg-surface-off-white transition-colors">
+<td class="px-6 py-4 font-mono text-primary font-bold">#NQ-552-Y</td>
+<td class="px-6 py-4 text-on-surface">Akiko Sato</td>
+<td class="px-6 py-4 text-on-surface-variant">Tokyo, JP</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-primary-container/20 text-primary rounded-full text-xs font-semibold">Message Sent</span>
+</td>
+<td class="px-6 py-4 text-right text-on-surface-variant text-sm">1h ago</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Secondary Insights: Platform Distribution -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_20px_rgba(15,23,42,0.05)] p-6">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-md">System Alerts</h3>
+<div class="space-y-4">
+<!-- Alert 1 -->
+<div class="flex gap-4 p-4 rounded-lg bg-error-container/10 border border-error/20">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-error-container">Low Inventory: Tag Batch #40</h4>
+<p class="text-sm text-on-surface-variant">Current stock level is below 5%. Re-order required.</p>
+</div>
+</div>
+<!-- Alert 2 -->
+<div class="flex gap-4 p-4 rounded-lg bg-info-blue/5 border border-info-blue/20">
+<span class="material-symbols-outlined text-info-blue" data-icon="info">info</span>
+<div>
+<h4 class="font-label-lg text-label-lg text-info-blue">Database Optimization</h4>
+<p class="text-sm text-on-surface-variant">Weekly maintenance scheduled for Sunday, 02:00 UTC.</p>
+</div>
+</div>
+<!-- Alert 3 -->
+<div class="flex gap-4 p-4 rounded-lg bg-secondary-container/10 border border-secondary/20">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+<div>
+<h4 class="font-label-lg text-label-lg text-secondary">Backups Successful</h4>
+<p class="text-sm text-on-surface-variant">Cloud redundancy backup completed 10 minutes ago.</p>
+</div>
+</div>
+</div>
+<div class="mt-8">
+<h4 class="font-label-lg text-label-lg text-on-surface-variant mb-4">Tag Usage by Category</h4>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-sm font-medium">Pet Identification</span>
+<span class="text-xs font-bold text-primary">55%</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[55%]"></div>
+</div>
+<div class="flex justify-between items-center mt-4">
+<span class="text-sm font-medium">Vehicle Contact</span>
+<span class="text-xs font-bold text-secondary">30%</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[30%]"></div>
+</div>
+<div class="flex justify-between items-center mt-4">
+<span class="text-sm font-medium">Luggage &amp; Items</span>
+<span class="text-xs font-bold text-tertiary">15%</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full w-[15%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button - Only for Home/Overview -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-all group">
+<span class="material-symbols-outlined text-[28px]" data-icon="add">add</span>
+<span class="absolute right-full mr-4 px-3 py-1 bg-ink-slate text-white text-xs rounded opacity-0 group-hover:opacity-100 whitespace-nowrap pointer-events-none transition-opacity">Quick Launch Tag</span>
+</button>
+</div>
+<script>
+        // Simple Interaction logic for hover effects and active states
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // If we had multiple pages, we'd navigate, but here we just toggle visual active state
+                document.querySelectorAll('nav a').forEach(l => {
+                    l.classList.remove('text-primary', 'font-bold', 'border-r-4', 'border-primary');
+                    l.classList.add('text-on-surface-variant');
+                });
+                this.classList.add('text-primary', 'font-bold', 'border-r-4', 'border-primary');
+                this.classList.remove('text-on-surface-variant');
+            });
+        });
+    </script>
+</body></html>

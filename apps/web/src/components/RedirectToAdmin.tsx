@@ -1,14 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 export function RedirectToAdmin() {
-  const router = useRouter();
-
   useEffect(() => {
-    router.replace("/admin");
-  }, [router]);
+    window.location.replace("/admin");
+  }, []);
 
   return (
     <main className="grid min-h-screen place-items-center bg-[var(--color-page-bg)] p-6">

@@ -1,6 +1,6 @@
-# API Documentation
+# NoNumQR API Documentation
 
-Base URL for local development: `http://localhost:4000`.
+Base URL for local development: `http://localhost:4000`. Production public API examples use `https://api.nonumqr.com`.
 
 Authentication uses `Authorization: Bearer <accessToken>`. OTP endpoints are public. Refresh token rotation is handled by `/auth/refresh`.
 

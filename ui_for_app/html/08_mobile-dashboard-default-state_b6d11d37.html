@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>NoNumQR Owner Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#1b6b51",
+                    "on-primary-fixed-variant": "#00513b",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed": "#00201d",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "secondary": "#006a61",
+                    "background": "#f9f9ff",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "on-error": "#ffffff",
+                    "inverse-primary": "#8bd6b6",
+                    "on-primary-fixed": "#002116",
+                    "surface-container": "#e7eeff",
+                    "surface-container-high": "#dee8ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed": "#a6f2d1",
+                    "on-surface-variant": "#3f4944",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#8bd6b6",
+                    "outline-variant": "#bec9c2",
+                    "error": "#ba1a1a",
+                    "tertiary": "#003491",
+                    "surface-variant": "#d8e3fb",
+                    "outline": "#6f7973",
+                    "tertiary-fixed": "#dbe1ff",
+                    "on-secondary-fixed-variant": "#005049",
+                    "inverse-surface": "#263143",
+                    "surface-container-low": "#f0f3ff",
+                    "on-primary-container": "#8bd6b7",
+                    "primary": "#004532",
+                    "tertiary-container": "#0049c3",
+                    "surface-dim": "#cfdaf2",
+                    "error-container": "#ffdad6",
+                    "on-secondary": "#ffffff",
+                    "surface": "#f9f9ff",
+                    "surface-bright": "#f9f9ff",
+                    "on-secondary-container": "#006f66",
+                    "secondary-container": "#86f2e4",
+                    "primary-container": "#065f46",
+                    "secondary-fixed": "#89f5e7",
+                    "on-tertiary-fixed-variant": "#003ea8",
+                    "on-tertiary-container": "#b5c6ff",
+                    "inverse-on-surface": "#ecf1ff",
+                    "surface-container-highest": "#d8e3fb",
+                    "on-background": "#111c2d",
+                    "on-surface": "#111c2d",
+                    "on-tertiary-fixed": "#00174b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "xs": "4px",
+                    "sm": "8px",
+                    "lg": "24px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "gutter-mobile": "12px"
+            },
+            "fontFamily": {
+                    "title-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "display-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-header {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .safe-pb {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-container/80 glass-header border-b border-outline-variant/30">
+<div class="flex items-center justify-between px-md h-16 w-full max-w-screen-xl mx-auto">
+<div class="flex items-center gap-2">
+<div class="material-symbols-outlined text-primary font-headline-md text-headline-md" data-icon="qr_code_2">qr_code_2</div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">NoNumQR Owner</h1>
+</div>
+<div class="relative active:scale-95 transition-transform p-2 rounded-full hover:bg-surface-variant/50 cursor-pointer">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full ring-2 ring-surface"></span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-20 pb-28 px-md space-y-lg max-w-md mx-auto">
+<!-- Greeting Section -->
+<section class="animate-in fade-in slide-in-from-bottom-4 duration-700">
+<h2 class="font-headline-lg text-headline-lg text-on-background">Good morning, Sarah</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your privacy and incoming requests.</p>
+</section>
+<!-- Privacy Status Card -->
+<div class="bg-primary text-on-primary p-lg rounded-xl shadow-lg flex items-center justify-between gap-md group overflow-hidden relative">
+<div class="relative z-10 flex gap-md items-center">
+<div class="bg-on-primary/10 p-sm rounded-lg">
+<span class="material-symbols-outlined text-[32px]" data-icon="shield_person" style="font-variation-settings: 'FILL' 1;">shield_person</span>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg leading-tight">Privacy Protected</h3>
+<p class="font-label-md text-label-md opacity-80">Your phone number is hidden by default</p>
+</div>
+</div>
+<!-- Decorative circle -->
+<div class="absolute -right-8 -bottom-8 w-24 h-24 bg-on-primary/5 rounded-full blur-2xl"></div>
+</div>
+<!-- Stats Grid (2x2) -->
+<section class="grid grid-cols-2 gap-md">
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant/30 shadow-sm">
+<div class="flex justify-between items-start mb-sm">
+<span class="material-symbols-outlined text-primary-container" data-icon="tag">tag</span>
+</div>
+<p class="font-display-sm text-display-sm text-on-surface leading-none">12</p>
+<p class="font-label-md text-label-md text-on-surface-variant mt-xs">Active QR Tags</p>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant/30 shadow-sm">
+<div class="flex justify-between items-start mb-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="analytics">analytics</span>
+</div>
+<p class="font-display-sm text-display-sm text-on-surface leading-none">458</p>
+<p class="font-label-md text-label-md text-on-surface-variant mt-xs">Total Scans</p>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant/30 shadow-sm relative overflow-hidden">
+<div class="flex justify-between items-start mb-sm">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="chat_bubble">chat_bubble</span>
+<span class="bg-error text-on-error font-label-sm text-label-sm px-1.5 py-0.5 rounded-full">3</span>
+</div>
+<p class="font-display-sm text-display-sm text-on-surface leading-none">3</p>
+<p class="font-label-md text-label-md text-on-surface-variant mt-xs">Unread Requests</p>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant/30 shadow-sm">
+<div class="flex justify-between items-start mb-sm">
+<span class="material-symbols-outlined text-error" data-icon="notification_important">notification_important</span>
+</div>
+<p class="font-display-sm text-display-sm text-on-surface leading-none">1</p>
+<p class="font-label-md text-label-md text-on-surface-variant mt-xs">Unread Alerts</p>
+</div>
+</section>
+<!-- Quick Actions -->
+<section>
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-title-lg text-title-lg">Quick Actions</h3>
+</div>
+<div class="flex overflow-x-auto gap-md pb-xs no-scrollbar">
+<button class="flex-none flex flex-col items-center gap-sm group">
+<div class="w-16 h-16 bg-surface-container rounded-2xl flex items-center justify-center transition-all group-active:scale-90 group-hover:bg-primary-container/20">
+<span class="material-symbols-outlined text-primary" data-icon="grid_view">grid_view</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">My QR Tags</span>
+</button>
+<button class="flex-none flex flex-col items-center gap-sm group">
+<div class="w-16 h-16 bg-surface-container rounded-2xl flex items-center justify-center transition-all group-active:scale-90 group-hover:bg-primary-container/20">
+<span class="material-symbols-outlined text-primary" data-icon="mail">mail</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Requests</span>
+</button>
+<button class="flex-none flex flex-col items-center gap-sm group">
+<div class="w-16 h-16 bg-surface-container rounded-2xl flex items-center justify-center transition-all group-active:scale-90 group-hover:bg-primary-container/20">
+<span class="material-symbols-outlined text-primary" data-icon="shopping_basket">shopping_basket</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Buy QR</span>
+</button>
+<button class="flex-none flex flex-col items-center gap-sm group">
+<div class="w-16 h-16 bg-surface-container rounded-2xl flex items-center justify-center transition-all group-active:scale-90 group-hover:bg-primary-container/20">
+<span class="material-symbols-outlined text-primary" data-icon="qr_code_scanner">qr_code_scanner</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Scan Tag</span>
+</button>
+</div>
+</section>
+<!-- Recent Private Requests -->
+<section class="space-y-md">
+<div class="flex items-center justify-between">
+<h3 class="font-title-lg text-title-lg">Recent Requests</h3>
+<a class="font-label-lg text-label-lg text-secondary" href="#">See all</a>
+</div>
+<div class="space-y-sm">
+<!-- Request Item 1 -->
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant/30 flex items-start gap-md active:bg-surface-variant/20 transition-colors">
+<div class="w-10 h-10 rounded-full bg-secondary-container/30 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary" data-icon="person">person</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h4 class="font-label-lg text-label-lg text-on-surface truncate">Visitor at Front Gate</h4>
+<span class="font-label-sm text-label-sm text-on-surface-variant">10m ago</span>
+</div>
+<p class="font-label-sm text-label-sm text-secondary mb-xs">Tag: Main Entrance QR</p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Hello, I'm at the gate with your delivery...</p>
+</div>
+<div class="w-2.5 h-2.5 bg-secondary rounded-full flex-shrink-0 mt-2"></div>
+</div>
+<!-- Request Item 2 -->
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant/30 flex items-start gap-md active:bg-surface-variant/20 transition-colors opacity-80">
+<div class="w-10 h-10 rounded-full bg-secondary-container/30 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary" data-icon="car_repair">car_repair</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h4 class="font-label-lg text-label-lg text-on-surface truncate">Car Parking Alert</h4>
+<span class="font-label-sm text-label-sm text-on-surface-variant">1h ago</span>
+</div>
+<p class="font-label-sm text-label-sm text-secondary mb-xs">Tag: Vehicle Tag-D82</p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Please move your car slightly to the left.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Latest Order Tracking -->
+<section class="space-y-md">
+<h3 class="font-title-lg text-title-lg">Active Order</h3>
+<div class="bg-surface-container-low p-md rounded-xl border border-outline-variant/20 relative overflow-hidden">
+<div class="flex justify-between items-center mb-md">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="local_shipping">local_shipping</span>
+<span class="font-label-lg text-label-lg">QR Pack #8821</span>
+</div>
+<span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-0.5 rounded-full">Out for Delivery</span>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Payment Method</p>
+<p class="font-title-lg text-title-lg text-on-surface">COD: ৳500</p>
+</div>
+<button class="bg-primary text-on-primary font-label-lg text-label-lg px-md py-sm rounded-lg active:scale-95 transition-transform">Track Order</button>
+</div>
+<!-- Shimmer line decorative -->
+<div class="absolute bottom-0 left-0 h-1 bg-primary/20 w-full overflow-hidden">
+<div class="h-full bg-primary w-1/3 animate-[shimmer_2s_infinite_linear]" style="transform: translateX(-100%);"></div>
+</div>
+</div>
+</section>
+<!-- App Tip Footer -->
+<footer class="pt-md pb-lg text-center">
+<p class="font-label-sm text-label-sm text-outline flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="info">info</span>
+                Reply privately. Scanners do not see your phone number.
+            </p>
+</footer>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface/90 dark:bg-surface-container-highest/90 glass-header shadow-[0_-4px_12px_rgba(0,0,0,0.03)] dark:shadow-none safe-pb">
+<div class="flex justify-around items-center h-20 px-4 w-full">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed bg-secondary-container/30 dark:bg-secondary-container/10 rounded-full px-4 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<!-- Requests -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-secondary-container/20 px-4 py-1 rounded-full active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label-md text-label-md">Requests</span>
+</a>
+<!-- Orders -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-secondary-container/20 px-4 py-1 rounded-full active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Orders</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-secondary-container/20 px-4 py-1 rounded-full active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+</nav>
+<style>
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(300%); }
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .animate-in {
+            animation: animate-in 0.5s ease-out forwards;
+        }
+        @keyframes animate-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+<script>
+        // Simple micro-interactions
+        document.querySelectorAll('button, .active\\:scale-95').forEach(el => {
+            el.addEventListener('touchstart', () => el.classList.add('scale-95'));
+            el.addEventListener('touchend', () => el.classList.remove('scale-95'));
+        });
+    </script>
+</body></html>

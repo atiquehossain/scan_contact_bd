@@ -1,4 +1,4 @@
-# Cost Guide
+# NoNumQR Cost Guide
 
 Local development has zero paid service dependencies:
 

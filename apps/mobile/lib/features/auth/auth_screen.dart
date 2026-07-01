@@ -10,6 +10,7 @@ import '../../core/config/app_config.dart';
 import '../../core/network/api_client.dart';
 import '../../core/push/push_notification_service.dart';
 import '../../core/services/owner_services.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/utils/bd_phone.dart';
 import '../../core/widgets/app_widgets.dart';
 
@@ -106,6 +107,18 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     });
   }
 
+  void editPhoneNumber() {
+    timer?.cancel();
+    if (otpController.text.isNotEmpty) otpController.clear();
+    setState(() {
+      otpRequested = false;
+      requestedOtpPhone = null;
+      resendSeconds = 0;
+      devOtp = null;
+      error = null;
+    });
+  }
+
   Future<void> requestOtp() async {
     if (!canRequest) return;
     final phone = normalizeBangladeshPhone(phoneController.text);
@@ -199,150 +212,436 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final title = signup ? 'Create owner account' : 'Login with owner phone';
+    final title = signup ? 'Create owner account' : 'Continue with phone';
+    final stepTitle = otpRequested ? 'Enter OTP Code' : title;
+    final stepBody = otpRequested
+        ? 'Use the 6 digit code sent to your owner login number.'
+        : signup
+        ? 'Create owner access with your Bangladesh mobile number.'
+        : 'Secure access to your private QR contact dashboard.';
     return Scaffold(
       body: SafeArea(
-        child: ListView(
-          padding: appPadding,
-          children: [
-            const SizedBox(height: 20),
-            const Center(child: ScanContactBrandMark(size: 68)),
-            const SizedBox(height: 16),
-            Text(
-              AppConfig.appName,
-              textAlign: TextAlign.center,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
+        child: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFFF0FDFA), AppColors.page],
             ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              signup
-                  ? 'Your phone number is used for account verification and QR assignment only.'
-                  : 'Use the phone number linked to your QR tag or order. Your number is not shown to scanners.',
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            SegmentedButton<bool>(
-              segments: const [
-                ButtonSegment(value: false, label: Text('Login')),
-                ButtonSegment(value: true, label: Text('Signup')),
-              ],
-              selected: {signup},
-              onSelectionChanged: (value) {
-                timer?.cancel();
-                if (otpController.text.isNotEmpty) otpController.clear();
-                setState(() {
-                  signup = value.first;
-                  otpRequested = false;
-                  requestedOtpPhone = null;
-                  resendSeconds = 0;
-                  devOtp = null;
-                  error = null;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: phoneController,
-              keyboardType: TextInputType.phone,
-              textInputAction: TextInputAction.next,
-              autofillHints: const [AutofillHints.telephoneNumber],
-              decoration: InputDecoration(
-                labelText: 'Bangladesh mobile number',
-                helperText: '01XXXXXXXXX, 8801XXXXXXXXX, or +8801XXXXXXXXX',
-                errorText: phoneController.text.isEmpty || phoneValid
-                    ? null
-                    : 'Enter a valid Bangladesh mobile number.',
-              ),
-            ),
-            if (signup) ...[
-              const SizedBox(height: 12),
-              TextField(
-                controller: nameController,
-                textInputAction: TextInputAction.next,
-                autofillHints: const [AutofillHints.name],
-                decoration: InputDecoration(
-                  labelText: 'Owner name',
-                  helperText: 'Required for signup',
-                  errorText:
-                      nameController.text.isEmpty ||
-                          nameController.text.trim().length >= 2
-                      ? null
-                      : 'Owner name is required.',
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(
+                  AppSpacing.lg,
+                  AppSpacing.lg,
+                  AppSpacing.lg,
+                  AppSpacing.lg + MediaQuery.viewInsetsOf(context).bottom,
                 ),
-              ),
-            ],
-            const SizedBox(height: 16),
-            PrimaryButton(
-              label: resendSeconds > 0
-                  ? 'Resend in ${resendSeconds}s'
-                  : 'Request OTP',
-              icon: Icons.key_outlined,
-              loading: requesting,
-              onPressed: canRequest ? requestOtp : null,
-            ),
-            if (otpRequested) ...[
-              const SizedBox(height: 16),
-              TextField(
-                controller: otpController,
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(6),
-                ],
-                autofillHints: const [AutofillHints.oneTimeCode],
-                decoration: const InputDecoration(labelText: '6 digit OTP'),
-              ),
-              const SizedBox(height: 12),
-              PrimaryButton(
-                label: 'Verify and continue',
-                icon: Icons.login,
-                loading: verifying,
-                onPressed: canVerify ? verifyOtp : null,
-              ),
-            ],
-            if (devOtp != null) ...[
-              const SizedBox(height: 12),
-              Card(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    'Development OTP: $devOtp',
-                    style: const TextStyle(fontWeight: FontWeight.w800),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 430),
+                      child: AutofillGroup(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const SizedBox(height: AppSpacing.lg),
+                            const Center(child: NoNumQRBrandMark(size: 78)),
+                            const SizedBox(height: AppSpacing.xl),
+                            Text(
+                              AppConfig.appName,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(
+                                    color: AppColors.charcoal,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              'Contact without revealing your number.',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.labelLarge
+                                  ?.copyWith(
+                                    color: AppColors.emeraldDark,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            Text(
+                              'Manage private QR contact from your phone.',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headlineMedium
+                                  ?.copyWith(
+                                    color: AppColors.charcoal,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                            ),
+                            const SizedBox(height: AppSpacing.sm),
+                            Text(
+                              'Receive scanner messages, reply privately, and keep your phone number hidden by default.',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: AppColors.slate,
+                                    height: 1.4,
+                                  ),
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            const _AuthFeatureGrid(),
+                            const SizedBox(height: AppSpacing.lg),
+                            AppSurface(
+                              padding: const EdgeInsets.all(AppSpacing.xl),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  _AuthStepHeader(
+                                    title: stepTitle,
+                                    body: stepBody,
+                                    icon: otpRequested
+                                        ? Icons.password_outlined
+                                        : signup
+                                        ? Icons.person_add_alt_1_outlined
+                                        : Icons.phone_android_outlined,
+                                  ),
+                                  const SizedBox(height: AppSpacing.lg),
+                                  SegmentedButton<bool>(
+                                    segments: const [
+                                      ButtonSegment(
+                                        value: false,
+                                        label: Text('Login'),
+                                        icon: Icon(Icons.login),
+                                      ),
+                                      ButtonSegment(
+                                        value: true,
+                                        label: Text('Signup'),
+                                        icon: Icon(
+                                          Icons.person_add_alt_1_outlined,
+                                        ),
+                                      ),
+                                    ],
+                                    selected: {signup},
+                                    onSelectionChanged: (value) {
+                                      timer?.cancel();
+                                      if (otpController.text.isNotEmpty) {
+                                        otpController.clear();
+                                      }
+                                      setState(() {
+                                        signup = value.first;
+                                        otpRequested = false;
+                                        requestedOtpPhone = null;
+                                        resendSeconds = 0;
+                                        devOtp = null;
+                                        error = null;
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(height: AppSpacing.lg),
+                                  TextField(
+                                    controller: phoneController,
+                                    keyboardType: TextInputType.phone,
+                                    textInputAction: signup
+                                        ? TextInputAction.next
+                                        : TextInputAction.done,
+                                    autofillHints: const [
+                                      AutofillHints.telephoneNumber,
+                                    ],
+                                    onSubmitted: (_) {
+                                      if (!signup && canRequest) requestOtp();
+                                    },
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        Icons.phone_android_outlined,
+                                      ),
+                                      suffixIcon: phoneValid
+                                          ? const Icon(
+                                              Icons.check_circle_outline,
+                                              color: AppColors.emerald,
+                                            )
+                                          : null,
+                                      labelText: 'Bangladesh mobile number',
+                                      helperText:
+                                          '01XXXXXXXXX, 8801XXXXXXXXX, or +8801XXXXXXXXX',
+                                      errorText:
+                                          phoneController.text.isEmpty ||
+                                              phoneValid
+                                          ? null
+                                          : 'Enter a valid Bangladesh mobile number.',
+                                    ),
+                                  ),
+                                  if (signup) ...[
+                                    const SizedBox(height: AppSpacing.md),
+                                    TextField(
+                                      controller: nameController,
+                                      textInputAction: TextInputAction.done,
+                                      autofillHints: const [AutofillHints.name],
+                                      onSubmitted: (_) {
+                                        if (canRequest) requestOtp();
+                                      },
+                                      decoration: InputDecoration(
+                                        prefixIcon: const Icon(
+                                          Icons.person_outline,
+                                        ),
+                                        labelText: 'Owner name',
+                                        helperText:
+                                            'Used only to personalize your owner account',
+                                        errorText:
+                                            nameController.text.isEmpty ||
+                                                nameController.text
+                                                        .trim()
+                                                        .length >=
+                                                    2
+                                            ? null
+                                            : 'Owner name is required.',
+                                      ),
+                                    ),
+                                  ],
+                                  if (!otpRequested) ...[
+                                    const SizedBox(height: AppSpacing.lg),
+                                    PrimaryButton(
+                                      label: 'Request OTP',
+                                      icon: Icons.arrow_forward,
+                                      loading: requesting,
+                                      onPressed: canRequest ? requestOtp : null,
+                                    ),
+                                  ],
+                                  if (otpRequested) ...[
+                                    const SizedBox(height: AppSpacing.lg),
+                                    AppInfoBanner(
+                                      title: 'OTP sent',
+                                      message:
+                                          'Public scanner pages will not show your phone number.',
+                                      icon: Icons.mark_email_read_outlined,
+                                      tone: AppBannerTone.success,
+                                    ),
+                                    const SizedBox(height: AppSpacing.lg),
+                                    TextField(
+                                      controller: otpController,
+                                      keyboardType: TextInputType.number,
+                                      textInputAction: TextInputAction.done,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                        LengthLimitingTextInputFormatter(6),
+                                      ],
+                                      autofillHints: const [
+                                        AutofillHints.oneTimeCode,
+                                      ],
+                                      onSubmitted: (_) {
+                                        if (canVerify) verifyOtp();
+                                      },
+                                      decoration: const InputDecoration(
+                                        prefixIcon: Icon(Icons.pin_outlined),
+                                        labelText: '6 digit OTP',
+                                        helperText:
+                                            'Enter the code before it expires.',
+                                      ),
+                                    ),
+                                    const SizedBox(height: AppSpacing.md),
+                                    PrimaryButton(
+                                      label: 'Verify and continue',
+                                      icon: Icons.verified_user_outlined,
+                                      loading: verifying,
+                                      onPressed: canVerify ? verifyOtp : null,
+                                    ),
+                                    const SizedBox(height: AppSpacing.sm),
+                                    Wrap(
+                                      alignment: WrapAlignment.center,
+                                      spacing: AppSpacing.sm,
+                                      runSpacing: AppSpacing.xs,
+                                      children: [
+                                        TextButton.icon(
+                                          onPressed: editPhoneNumber,
+                                          icon: const Icon(Icons.edit_outlined),
+                                          label: const Text('Change phone'),
+                                        ),
+                                        TextButton.icon(
+                                          onPressed: canRequest
+                                              ? requestOtp
+                                              : null,
+                                          icon: const Icon(
+                                            Icons.refresh_outlined,
+                                          ),
+                                          label: Text(
+                                            resendSeconds > 0
+                                                ? 'Resend in ${resendSeconds}s'
+                                                : 'Resend OTP',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            const PrivacyNoticeCard(
+                              message:
+                                  'Your number is used for owner login. It is not shown to scanners by default.',
+                            ),
+                            if (devOtp != null) ...[
+                              const SizedBox(height: AppSpacing.md),
+                              AppInfoBanner(
+                                title: 'Development OTP',
+                                message: devOtp!,
+                                icon: Icons.developer_mode,
+                              ),
+                            ],
+                            if (error != null) ...[
+                              const SizedBox(height: AppSpacing.md),
+                              AppInfoBanner(
+                                title: 'Could not continue',
+                                message: error!,
+                                icon: Icons.error_outline,
+                                tone: AppBannerTone.danger,
+                              ),
+                            ],
+                            const SizedBox(height: AppSpacing.xl),
+                            Text(
+                              'Built for cars, bikes, lost items, shops, and parking.',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: AppColors.slate,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                            ),
+                            if (kDebugMode) ...[
+                              const SizedBox(height: AppSpacing.md),
+                              Text(
+                                'API: ${AppConfig.apiBaseUrl}',
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
-            if (error != null) ...[
-              const SizedBox(height: 12),
-              Text(
-                error!,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.error,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-            if (kDebugMode) ...[
-              const SizedBox(height: 24),
-              Text(
-                'API: ${AppConfig.apiBaseUrl}',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-          ],
+              );
+            },
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _AuthStepHeader extends StatelessWidget {
+  const _AuthStepHeader({
+    required this.title,
+    required this.body,
+    required this.icon,
+  });
+
+  final String title;
+  final String body;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 56,
+          height: 56,
+          decoration: BoxDecoration(
+            color: AppColors.emeraldSoft,
+            borderRadius: BorderRadius.circular(AppRadii.lg),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Icon(icon, color: AppColors.emeraldDark),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: AppColors.charcoal,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          body,
+          textAlign: TextAlign.center,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: AppColors.slate),
+        ),
+      ],
+    );
+  }
+}
+
+class _AuthFeatureGrid extends StatelessWidget {
+  const _AuthFeatureGrid();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: const [
+        Expanded(
+          child: _AuthFeatureCard(
+            icon: Icons.visibility_off_outlined,
+            title: 'Anonymity',
+            body: 'Your ID stays hidden',
+          ),
+        ),
+        SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: _AuthFeatureCard(
+            icon: Icons.chat_bubble_outline,
+            title: 'Direct chat',
+            body: 'Instant private replies',
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AuthFeatureCard extends StatelessWidget {
+  const _AuthFeatureCard({
+    required this.icon,
+    required this.title,
+    required this.body,
+  });
+
+  final IconData icon;
+  final String title;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppSurface(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      boxShadow: const [],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: AppColors.emeraldDark, size: 20),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: AppColors.emeraldDark,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            body,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.slate),
+          ),
+        ],
       ),
     );
   }

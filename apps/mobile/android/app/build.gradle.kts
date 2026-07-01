@@ -8,9 +8,9 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-val scanContactApplicationId = providers.gradleProperty("SCANCONTACT_APPLICATION_ID")
-    .orElse(providers.environmentVariable("SCANCONTACT_APPLICATION_ID"))
-    .orElse("com.example.scancontact_bd")
+val noNumQrApplicationId = providers.gradleProperty("NONUMQR_APPLICATION_ID")
+    .orElse(providers.environmentVariable("NONUMQR_APPLICATION_ID"))
+    .orElse("com.nexgenscript.nonumqr")
     .get()
 
 fun flutterDartDefines(): Map<String, String> {
@@ -77,7 +77,7 @@ tasks.matching { it.name in releaseConfigTaskNames }.configureEach {
 }
 
 android {
-    namespace = "com.example.scancontact_bd"
+    namespace = "com.nexgenscript.nonumqr"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -93,7 +93,7 @@ android {
     defaultConfig {
         // Override before publishing; the Play Store application ID is permanent.
         // The local default matches the checked-in Firebase google-services.json.
-        applicationId = scanContactApplicationId
+        applicationId = noNumQrApplicationId
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

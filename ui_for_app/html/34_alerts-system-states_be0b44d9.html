@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NoNumQR Owner Alerts</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "surface": "#f9f9ff",
+                        "surface-dim": "#cfdaf2",
+                        "surface-container": "#e7eeff",
+                        "on-tertiary-fixed": "#00174b",
+                        "secondary-container": "#86f2e4",
+                        "on-surface": "#111c2d",
+                        "tertiary-fixed": "#dbe1ff",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#3f4944",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "on-secondary-fixed-variant": "#005049",
+                        "background": "#f9f9ff",
+                        "on-secondary-container": "#006f66",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "on-primary-container": "#8bd6b7",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#00513b",
+                        "on-primary": "#ffffff",
+                        "on-background": "#111c2d",
+                        "primary": "#004532",
+                        "inverse-on-surface": "#ecf1ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "inverse-primary": "#8bd6b6",
+                        "primary-container": "#065f46",
+                        "outline-variant": "#bec9c2",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container-low": "#f0f3ff",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#002116",
+                        "tertiary-container": "#0049c3",
+                        "surface-container-high": "#dee8ff",
+                        "inverse-surface": "#263143",
+                        "on-tertiary-container": "#b5c6ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#1b6b51",
+                        "secondary-fixed": "#89f5e7",
+                        "tertiary": "#003491",
+                        "surface-variant": "#d8e3fb",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#d8e3fb",
+                        "primary-fixed": "#a6f2d1",
+                        "outline": "#6f7973",
+                        "on-secondary-fixed": "#00201d",
+                        "secondary": "#006a61"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "24px",
+                        "margin-mobile": "16px",
+                        "gutter-mobile": "12px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-sm": ["Inter"],
+                        "title-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .shimmer {
+            background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen font-body-md selection:bg-secondary-container">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-sm flex justify-between items-center px-md py-sm">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary" data-icon="shield_lock">shield_lock</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">NoNumQR Owner</h1>
+</div>
+<div class="flex items-center gap-sm">
+<button class="material-symbols-outlined p-sm rounded-full hover:bg-surface-container-high transition-colors active:scale-95 duration-200 text-on-surface-variant" data-icon="notifications">notifications</button>
+</div>
+</header>
+<!-- State Switcher (Demo Only) -->
+<div class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[60] bg-surface-container-lowest border border-outline-variant rounded-full p-xs flex gap-xs shadow-lg">
+<button class="state-btn px-md py-xs rounded-full text-label-sm font-label-sm transition-all bg-primary text-on-primary" onclick="switchState('active')">Active</button>
+<button class="state-btn px-md py-xs rounded-full text-label-sm font-label-sm transition-all text-on-surface-variant hover:bg-surface-container-high" onclick="switchState('loading')">Loading</button>
+<button class="state-btn px-md py-xs rounded-full text-label-sm font-label-sm transition-all text-on-surface-variant hover:bg-surface-container-high" onclick="switchState('error')">Error</button>
+<button class="state-btn px-md py-xs rounded-full text-label-sm font-label-sm transition-all text-on-surface-variant hover:bg-surface-container-high" onclick="switchState('offline')">Offline</button>
+</div>
+<!-- Main Content -->
+<main class="pt-24 pb-32 px-margin-mobile max-w-2xl mx-auto min-h-screen">
+<!-- Page Title -->
+<div class="mb-lg">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Alerts</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your real-time security and request notifications.</p>
+</div>
+<!-- Offline Banner -->
+<div class="hidden mb-md animate-in fade-in slide-in-from-top-4 duration-300" id="offline-banner">
+<div class="bg-error-container text-on-error-container p-md rounded-xl flex items-center gap-md shadow-sm">
+<span class="material-symbols-outlined shrink-0" data-icon="cloud_off">cloud_off</span>
+<p class="font-label-lg text-label-lg">You are currently offline. Some alerts may not be up to date.</p>
+</div>
+</div>
+<!-- Content Area -->
+<div class="space-y-md" id="alerts-container">
+<!-- Active State (Default) -->
+<div class="state-view space-y-md" id="state-active">
+<div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl shadow-sm flex gap-md items-start group hover:shadow-md transition-all">
+<div class="bg-error-container/20 p-sm rounded-lg">
+<span class="material-symbols-outlined text-error" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-title-lg text-title-lg text-on-surface">Unauthorized Access Attempt</h3>
+<span class="font-label-sm text-label-sm bg-error-container text-on-error-container px-sm py-xs rounded-full">URGENT</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">A scan was detected on QR #0045 from an unrecognized location.</p>
+<div class="mt-md flex items-center gap-lg">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span>
+<span class="text-label-md">2m ago</span>
+</div>
+<button class="text-primary font-label-lg hover:underline decoration-2 underline-offset-4">View Location</button>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl shadow-sm flex gap-md items-start group hover:shadow-md transition-all">
+<div class="bg-secondary-container/20 p-sm rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="mail" style="font-variation-settings: 'FILL' 1;">mail</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-title-lg text-title-lg text-on-surface">New Request Received</h3>
+<span class="font-label-sm text-label-sm bg-secondary-container text-on-secondary-container px-sm py-xs rounded-full">NEW</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Customer "Alex J." is requesting access to the loading zone.</p>
+<div class="mt-md flex items-center gap-lg">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span>
+<span class="text-label-md">45m ago</span>
+</div>
+<button class="text-primary font-label-lg hover:underline decoration-2 underline-offset-4">Details</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Loading State -->
+<div class="state-view hidden space-y-md" id="state-loading">
+<div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl shadow-sm flex gap-md items-start">
+<div class="w-10 h-10 rounded-lg shimmer shrink-0"></div>
+<div class="flex-1 space-y-sm">
+<div class="flex justify-between items-center">
+<div class="h-5 w-1/2 rounded shimmer"></div>
+<div class="h-6 w-16 rounded-full shimmer"></div>
+</div>
+<div class="h-4 w-3/4 rounded shimmer"></div>
+<div class="pt-md flex gap-lg">
+<div class="h-4 w-20 rounded shimmer"></div>
+<div class="h-4 w-24 rounded shimmer"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl shadow-sm flex gap-md items-start opacity-70">
+<div class="w-10 h-10 rounded-lg shimmer shrink-0"></div>
+<div class="flex-1 space-y-sm">
+<div class="flex justify-between items-center">
+<div class="h-5 w-1/3 rounded shimmer"></div>
+<div class="h-6 w-16 rounded-full shimmer"></div>
+</div>
+<div class="h-4 w-full rounded shimmer"></div>
+<div class="pt-md flex gap-lg">
+<div class="h-4 w-20 rounded shimmer"></div>
+<div class="h-4 w-24 rounded shimmer"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl shadow-sm flex gap-md items-start opacity-40">
+<div class="w-10 h-10 rounded-lg shimmer shrink-0"></div>
+<div class="flex-1 space-y-sm">
+<div class="flex justify-between items-center">
+<div class="h-5 w-1/4 rounded shimmer"></div>
+<div class="h-6 w-16 rounded-full shimmer"></div>
+</div>
+<div class="h-4 w-1/2 rounded shimmer"></div>
+<div class="pt-md flex gap-lg">
+<div class="h-4 w-20 rounded shimmer"></div>
+<div class="h-4 w-24 rounded shimmer"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Error State -->
+<div class="state-view hidden py-xl flex flex-col items-center justify-center text-center animate-in fade-in zoom-in-95 duration-300" id="state-error">
+<div class="bg-error-container/10 p-lg rounded-full mb-md">
+<span class="material-symbols-outlined text-[64px] text-error" data-icon="error_outline">error_outline</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Something went wrong</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-xs">We couldn't load your alerts. Please check your connection and try again.</p>
+<button class="mt-lg bg-primary text-on-primary px-xl py-md rounded-full font-label-lg hover:shadow-lg active:scale-95 transition-all" onclick="switchState('loading')">Retry</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-lg flex justify-around items-center px-margin-mobile pb-safe pt-sm rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-container transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md mt-xs">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary font-bold hover:text-primary-container transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined" data-icon="rebase_edit" style="font-variation-settings: 'FILL' 1;">rebase_edit</span>
+<span class="font-label-md text-label-md mt-xs">Requests</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-container transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md mt-xs">Orders</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-container transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md mt-xs">Settings</span>
+</button>
+</nav>
+<script>
+        function switchState(state) {
+            // Hide all state views
+            document.querySelectorAll('.state-view').forEach(view => {
+                view.classList.add('hidden');
+            });
+            
+            // Toggle offline banner
+            const offlineBanner = document.getElementById('offline-banner');
+            if (state === 'offline') {
+                offlineBanner.classList.remove('hidden');
+                document.getElementById('state-active').classList.remove('hidden');
+            } else {
+                offlineBanner.classList.add('hidden');
+                document.getElementById(`state-${state}`).classList.remove('hidden');
+            }
+
+            // Update switcher buttons
+            document.querySelectorAll('.state-btn').forEach(btn => {
+                if (btn.textContent.toLowerCase() === state) {
+                    btn.classList.add('bg-primary', 'text-on-primary');
+                    btn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container-high');
+                } else {
+                    btn.classList.remove('bg-primary', 'text-on-primary');
+                    btn.classList.add('text-on-surface-variant', 'hover:bg-surface-container-high');
+                }
+            });
+        }
+    </script>
+</body></html>

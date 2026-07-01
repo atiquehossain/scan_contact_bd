@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { APP_NAME } from "@/lib/api";
+import { BRAND_NAME } from "@/lib/brand";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter"
+});
 
 export const metadata: Metadata = {
-  title: APP_NAME,
-  description: "Bangladesh-first QR private contact platform.",
+  title: BRAND_NAME,
+  description: "Contact without revealing your number.",
   icons: {
     icon: "/favicon.svg"
   }
@@ -12,7 +19,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body>{children}</body>
     </html>
   );

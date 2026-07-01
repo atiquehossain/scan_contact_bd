@@ -1,4 +1,4 @@
-# SMS Provider Integration Guide
+# NoNumQR SMS Provider Integration Guide
 
 OTP is provider-based:
 

@@ -350,7 +350,7 @@ class _OwnerCallScreenState extends ConsumerState<OwnerCallScreen>
                   const SizedBox(height: 12),
                   const PrivacyNoticeCard(
                     message:
-                        'Private QR call. Phone numbers stay hidden while you speak through ScanContact BD.',
+                        'Private QR call. Phone numbers stay hidden while you speak through NoNumQR.',
                   ),
                   if (error != null) ...[
                     const SizedBox(height: 12),

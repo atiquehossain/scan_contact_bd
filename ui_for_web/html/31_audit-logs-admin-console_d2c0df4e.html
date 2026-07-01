@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Audit Logs | AdminConsole</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed": "#00201d",
+                      "on-primary-fixed-variant": "#005049",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed": "#002116",
+                      "primary": "#00685f",
+                      "on-primary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-tint": "#006a61",
+                      "error-container": "#ffdad6",
+                      "on-surface": "#131b2e",
+                      "surface-container": "#eaedff",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "surface-variant": "#dae2fd",
+                      "danger-red": "#DC2626",
+                      "surface-dim": "#d2d9f4",
+                      "on-primary-container": "#f4fffc",
+                      "on-tertiary-fixed-variant": "#773215",
+                      "secondary-container": "#a6f2d1",
+                      "warning-amber": "#D97706",
+                      "secondary-fixed-dim": "#8bd6b6",
+                      "primary-container": "#008378",
+                      "on-secondary-fixed-variant": "#00513b",
+                      "tertiary": "#924628",
+                      "on-tertiary-fixed": "#370e00",
+                      "on-surface-variant": "#3d4947",
+                      "ink-slate": "#1E293B",
+                      "on-secondary": "#ffffff",
+                      "surface-bright": "#faf8ff",
+                      "inverse-on-surface": "#eef0ff",
+                      "on-secondary-container": "#237157",
+                      "inverse-primary": "#6bd8cb",
+                      "surface-container-highest": "#dae2fd",
+                      "on-error": "#ffffff",
+                      "info-blue": "#2563EB",
+                      "on-background": "#131b2e",
+                      "surface": "#faf8ff",
+                      "inverse-surface": "#283044",
+                      "on-error-container": "#93000a",
+                      "secondary": "#1b6b51",
+                      "surface-container-high": "#e2e7ff",
+                      "surface-container-low": "#f2f3ff",
+                      "outline-variant": "#bcc9c6",
+                      "secondary-fixed": "#a6f2d1",
+                      "surface-off-white": "#F8FAFC",
+                      "primary-fixed": "#89f5e7",
+                      "tertiary-container": "#b05e3d",
+                      "on-tertiary-container": "#fffbff",
+                      "outline": "#6d7a77",
+                      "tertiary-fixed-dim": "#ffb59a",
+                      "background": "#faf8ff",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-fixed": "#ffdbce"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-md": "16px",
+                      "container-max": "1200px",
+                      "unit": "4px",
+                      "margin-mobile": "16px",
+                      "stack-sm": "8px",
+                      "stack-lg": "32px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "body-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "label-lg": ["Inter"]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .drawer-open { transform: translateX(0); }
+        .drawer-closed { transform: translateX(100%); }
+    </style>
+</head>
+<body class="bg-surface-off-white text-on-surface font-body-md overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface-off-white border-r border-outline-variant flex flex-col py-6 px-4 z-40">
+<div class="mb-10 px-2">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">AdminConsole</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Internal Ops</p>
+</div>
+<nav class="flex-1 space-y-1 overflow-y-auto scrollbar-hide">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">dashboard</span> Overview
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span> Owners
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">label</span> Tags
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">shopping_cart</span> Orders
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">group</span> Users
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">analytics</span> Reports
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">dns</span> Health &amp; Backups
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary font-bold bg-secondary-container/30 transition-colors font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history</span> Audit Logs
+            </a>
+</nav>
+<div class="mt-auto pt-6 border-t border-outline-variant px-2">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs">AD</div>
+<div>
+<p class="font-label-lg text-label-lg">Admin Profile</p>
+<p class="text-[10px] text-on-surface-variant">System Administrator</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex flex-col h-screen">
+<!-- Top Bar -->
+<header class="h-16 border-b border-outline-variant bg-surface flex items-center justify-between px-8 sticky top-0 z-30">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:border-primary transition-all font-body-sm text-body-sm" placeholder="Search logs by action or target..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-danger-red rounded-full"></span>
+</button>
+<div class="h-8 w-px bg-outline-variant"></div>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-primary text-primary font-label-lg text-label-lg hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined">download</span> Export CSV
+                </button>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 overflow-y-auto p-8">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-ink-slate">Audit Logs</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">A forensic record of all administrative activities within the system.</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-surface border border-outline-variant rounded-xl p-1 flex gap-1">
+<button class="px-4 py-2 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg transition-all">All Events</button>
+<button class="px-4 py-2 rounded-lg hover:bg-surface-container text-on-surface-variant font-label-lg text-label-lg transition-all">Security</button>
+<button class="px-4 py-2 rounded-lg hover:bg-surface-container text-on-surface-variant font-label-lg text-label-lg transition-all">Data</button>
+</div>
+</div>
+</div>
+<!-- Stats/Metrics Bento -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<div class="bg-surface rounded-2xl p-6 border border-outline-variant shadow-sm">
+<p class="text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-2">Total actions (24h)</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold text-ink-slate">1,284</span>
+<span class="text-secondary font-bold text-sm">↑ 12%</span>
+</div>
+</div>
+<div class="bg-surface rounded-2xl p-6 border border-outline-variant shadow-sm">
+<p class="text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-2">Unique Admins</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold text-ink-slate">14</span>
+<span class="text-on-surface-variant font-bold text-sm">active</span>
+</div>
+</div>
+<div class="bg-surface rounded-2xl p-6 border border-outline-variant shadow-sm">
+<p class="text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-2">Security Alerts</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold text-danger-red">3</span>
+<span class="text-on-surface-variant font-bold text-sm">unresolved</span>
+</div>
+</div>
+<div class="bg-surface rounded-2xl p-6 border border-outline-variant shadow-sm">
+<p class="text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-2">System Health</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold text-primary">99.9%</span>
+<span class="text-secondary font-bold text-sm">optimal</span>
+</div>
+</div>
+</div>
+<!-- Advanced Filters -->
+<div class="bg-surface border border-outline-variant rounded-2xl p-4 mb-6 flex flex-wrap items-center gap-4 shadow-sm">
+<div class="flex items-center gap-2 px-3 py-2 bg-surface-container-low rounded-lg border border-outline-variant min-w-[180px]">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">calendar_today</span>
+<select class="bg-transparent border-none focus:ring-0 text-body-sm font-body-sm text-on-surface-variant w-full">
+<option>Last 24 Hours</option>
+<option>Last 7 Days</option>
+<option>Last 30 Days</option>
+<option>Custom Range</option>
+</select>
+</div>
+<div class="flex items-center gap-2 px-3 py-2 bg-surface-container-low rounded-lg border border-outline-variant min-w-[180px]">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">person</span>
+<select class="bg-transparent border-none focus:ring-0 text-body-sm font-body-sm text-on-surface-variant w-full">
+<option>All Users</option>
+<option>alex_smith</option>
+<option>jane_doe</option>
+<option>system_root</option>
+</select>
+</div>
+<div class="flex items-center gap-2 px-3 py-2 bg-surface-container-low rounded-lg border border-outline-variant min-w-[180px]">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">category</span>
+<select class="bg-transparent border-none focus:ring-0 text-body-sm font-body-sm text-on-surface-variant w-full">
+<option>All Event Types</option>
+<option>CREATE</option>
+<option>UPDATE</option>
+<option>DELETE</option>
+<option>LOGIN</option>
+</select>
+</div>
+<button class="ml-auto flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-label-lg text-label-lg">
+<span class="material-symbols-outlined">filter_list_off</span>
+                    Reset Filters
+                </button>
+</div>
+<!-- Ledger Table -->
+<div class="bg-surface border border-outline-variant rounded-2xl shadow-sm overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-6 py-4 font-label-lg text-label-lg text-on-surface-variant">Timestamp</th>
+<th class="px-6 py-4 font-label-lg text-label-lg text-on-surface-variant">User</th>
+<th class="px-6 py-4 font-label-lg text-label-lg text-on-surface-variant">Action</th>
+<th class="px-6 py-4 font-label-lg text-label-lg text-on-surface-variant">Target ID</th>
+<th class="px-6 py-4 font-label-lg text-label-lg text-on-surface-variant">IP Address</th>
+<th class="px-6 py-4 font-label-lg text-label-lg text-on-surface-variant text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<!-- Row 1 -->
+<tr class="hover:bg-primary/5 transition-colors cursor-pointer group" onclick="toggleDrawer('row-1')">
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface whitespace-nowrap">2023-10-24 14:22:05</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center text-[10px] font-bold">AS</div>
+<span class="font-body-sm text-body-sm">alex_smith</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-secondary-container/50 text-on-secondary-container text-[10px] font-bold uppercase">UPDATE_USER_ROLE</span>
+</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">USR-88219</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">192.168.1.42</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chevron_right</span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-primary/5 transition-colors cursor-pointer group" onclick="toggleDrawer('row-2')">
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface whitespace-nowrap">2023-10-24 13:45:12</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center text-[10px] font-bold">JD</div>
+<span class="font-body-sm text-body-sm">jane_doe</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-bold uppercase">DELETE_TAG_CONTEXT</span>
+</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">TAG-901</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">172.16.254.1</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chevron_right</span>
+</td>
+</tr>
+<!-- Row 3 (Error case) -->
+<tr class="hover:bg-primary/5 transition-colors cursor-pointer group border-l-4 border-l-danger-red bg-error-container/10" onclick="toggleDrawer('row-3')">
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface whitespace-nowrap">2023-10-24 12:10:01</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center text-[10px] font-bold">SR</div>
+<span class="font-body-sm text-body-sm">system_root</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-error-container text-on-error-container text-[10px] font-bold uppercase">AUTH_FAILURE_RETRY</span>
+</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">N/A</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">45.22.112.8</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">priority_high</span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-primary/5 transition-colors cursor-pointer group" onclick="toggleDrawer('row-4')">
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface whitespace-nowrap">2023-10-24 11:55:30</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center text-[10px] font-bold">JD</div>
+<span class="font-body-sm text-body-sm">jane_doe</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-secondary-container/50 text-on-secondary-container text-[10px] font-bold uppercase">CREATE_REPORT</span>
+</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">REP-002-LX</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">172.16.254.1</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chevron_right</span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-primary/5 transition-colors cursor-pointer group" onclick="toggleDrawer('row-5')">
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface whitespace-nowrap">2023-10-24 10:30:15</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center text-[10px] font-bold">AS</div>
+<span class="font-body-sm text-body-sm">alex_smith</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-secondary-container/50 text-on-secondary-container text-[10px] font-bold uppercase">PURGE_TEMP_STORAGE</span>
+</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">SYS-VOL-4</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">192.168.1.42</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chevron_right</span>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="px-6 py-4 bg-surface-container-low border-t border-outline-variant flex items-center justify-between">
+<p class="font-body-sm text-body-sm text-on-surface-variant">Showing 1-5 of 1,284 events</p>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded hover:bg-surface-container transition-colors disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-primary text-on-primary text-xs font-bold">1</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container text-xs font-bold">2</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container text-xs font-bold">3</button>
+<span class="px-1">...</span>
+<button class="w-8 h-8 rounded hover:bg-surface-container text-xs font-bold">257</button>
+<button class="p-2 rounded hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Overlay / Backdrop -->
+<div class="fixed inset-0 bg-ink-slate/40 opacity-0 pointer-events-none transition-opacity z-40" id="drawerBackdrop" onclick="toggleDrawer()"></div>
+<!-- Metadata Drawer -->
+<aside class="fixed right-0 top-0 h-full w-full max-w-xl bg-surface shadow-2xl z-50 drawer-closed transition-transform duration-300 ease-out flex flex-col" id="metadataDrawer">
+<div class="p-6 border-b border-outline-variant flex items-center justify-between">
+<div>
+<h3 class="font-headline-md text-headline-md text-ink-slate">Event Metadata</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant" id="drawerSubtitle">Details for transaction ID: TX-99201-B</p>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-6">
+<!-- Metadata Summary -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Execution Time</p>
+<p class="font-body-sm text-body-sm">42ms</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase mb-1">Status</p>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<p class="font-body-sm text-body-sm">Success</p>
+</div>
+</div>
+</div>
+<!-- Raw JSON Payload -->
+<div class="mb-6">
+<div class="flex items-center justify-between mb-3">
+<h4 class="font-label-lg text-label-lg text-ink-slate uppercase tracking-wider">Raw Payload</h4>
+<button class="text-primary font-label-sm text-label-sm hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">content_copy</span> Copy JSON
+                    </button>
+</div>
+<div class="bg-inverse-surface text-surface rounded-xl p-6 font-mono text-xs leading-relaxed overflow-x-auto shadow-inner border border-outline">
+<pre id="jsonContent">{
+  "action": "UPDATE_USER_ROLE",
+  "actor": {
+    "id": "AD-0112",
+    "username": "alex_smith",
+    "privileges": ["superadmin", "audit_view"]
+  },
+  "target": {
+    "type": "USER_ENTITY",
+    "id": "USR-88219",
+    "previous_state": {
+        "role": "moderator",
+        "access_level": 3
+    },
+    "new_state": {
+        "role": "admin",
+        "access_level": 4
+    }
+  },
+  "context": {
+    "ip": "192.168.1.42",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+    "request_id": "REQ-7721-002",
+    "timestamp": "2023-10-24T14:22:05.442Z"
+  }
+}</pre>
+</div>
+</div>
+<!-- Contextual Actions -->
+<div class="space-y-3">
+<button class="w-full py-3 bg-surface-container-high hover:bg-surface-container-highest transition-colors rounded-xl font-label-lg text-label-lg text-on-surface flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">security</span> View Security Profile of alex_smith
+                </button>
+<button class="w-full py-3 bg-surface-container-high hover:bg-surface-container-highest transition-colors rounded-xl font-label-lg text-label-lg text-on-surface flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">history</span> All actions for USR-88219
+                </button>
+</div>
+</div>
+<div class="p-6 border-t border-outline-variant bg-surface-container-low">
+<button class="w-full py-4 bg-primary text-on-primary font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-[0.99] transition-all">
+                Download Audit Certificate
+            </button>
+</div>
+</aside>
+<script>
+        function toggleDrawer(rowId) {
+            const drawer = document.getElementById('metadataDrawer');
+            const backdrop = document.getElementById('drawerBackdrop');
+            const isOpen = !drawer.classList.contains('drawer-closed');
+
+            if (isOpen) {
+                drawer.classList.add('drawer-closed');
+                drawer.classList.remove('drawer-open');
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+                backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+            } else {
+                drawer.classList.remove('drawer-closed');
+                drawer.classList.add('drawer-open');
+                backdrop.classList.remove('opacity-0', 'pointer-events-none');
+                backdrop.classList.add('opacity-100', 'pointer-events-auto');
+                
+                // Demo logic to change ID in drawer
+                if(rowId) {
+                   document.getElementById('drawerSubtitle').textContent = `Details for record: ${rowId.toUpperCase()}-${Math.floor(Math.random()*10000)}`;
+                }
+            }
+        }
+
+        // Add subtle hover sparkle to cards on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.bg-surface');
+            cards.forEach((card, i) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.4s ease-out';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, i * 50);
+            });
+        });
+    </script>
+</body></html>

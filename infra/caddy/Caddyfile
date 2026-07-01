@@ -1,6 +1,6 @@
 {$CADDY_SITE_ADDRESS::80} {
   encode zstd gzip
-  root * /srv/scancontact
+  root * /srv/nonumqr
   log {
     output stdout
     format console

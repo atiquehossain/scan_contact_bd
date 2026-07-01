@@ -1,4 +1,4 @@
-# API Examples
+# NoNumQR API Examples
 
 Request OTP:
 

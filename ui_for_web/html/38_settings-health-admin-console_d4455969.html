@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#00201d",
+                        "on-primary-fixed-variant": "#005049",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#002116",
+                        "primary": "#00685f",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#006a61",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#131b2e",
+                        "surface-container": "#eaedff",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "surface-variant": "#dae2fd",
+                        "danger-red": "#DC2626",
+                        "surface-dim": "#d2d9f4",
+                        "on-primary-container": "#f4fffc",
+                        "on-tertiary-fixed-variant": "#773215",
+                        "secondary-container": "#a6f2d1",
+                        "warning-amber": "#D97706",
+                        "secondary-fixed-dim": "#8bd6b6",
+                        "primary-container": "#008378",
+                        "on-secondary-fixed-variant": "#00513b",
+                        "tertiary": "#924628",
+                        "on-tertiary-fixed": "#370e00",
+                        "on-surface-variant": "#3d4947",
+                        "ink-slate": "#1E293B",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "inverse-on-surface": "#eef0ff",
+                        "on-secondary-container": "#237157",
+                        "inverse-primary": "#6bd8cb",
+                        "surface-container-highest": "#dae2fd",
+                        "on-error": "#ffffff",
+                        "info-blue": "#2563EB",
+                        "on-background": "#131b2e",
+                        "surface": "#faf8ff",
+                        "inverse-surface": "#283044",
+                        "on-error-container": "#93000a",
+                        "secondary": "#1b6b51",
+                        "surface-container-high": "#e2e7ff",
+                        "surface-container-low": "#f2f3ff",
+                        "outline-variant": "#bcc9c6",
+                        "secondary-fixed": "#a6f2d1",
+                        "surface-off-white": "#F8FAFC",
+                        "primary-fixed": "#89f5e7",
+                        "tertiary-container": "#b05e3d",
+                        "on-tertiary-container": "#fffbff",
+                        "outline": "#6d7a77",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "background": "#faf8ff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffdbce"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "container-max": "1200px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-lg": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #F8FAFC;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .status-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="flex flex-col h-screen py-6 px-4 fixed left-0 top-0 w-64 bg-surface-off-white border-r border-outline-variant z-50">
+<div class="mb-10 px-4">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">AdminConsole</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Internal Ops</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-sm text-body-sm">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-body-sm text-body-sm">Owners</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="label">label</span>
+<span class="font-body-sm text-body-sm">Tags</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-body-sm text-body-sm">Orders</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-sm text-body-sm">Users</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-sm text-body-sm">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-sm text-body-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary font-bold bg-secondary-container/30" href="#">
+<span class="material-symbols-outlined" data-icon="dns" style="font-variation-settings: 'FILL' 1;">dns</span>
+<span class="font-body-sm text-body-sm">Health &amp; Backups</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-body-sm text-body-sm">Audit Logs</span>
+</a>
+</nav>
+<div class="mt-auto px-4">
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low border border-outline-variant">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional headshot of a senior system administrator in a high-tech corporate environment. The man has a calm and authoritative expression, wearing a minimalist navy blue blazer. The background is a softly blurred office with cold blue and warm wood tones, reflecting a modern corporate minimalism aesthetic. Lighting is soft and even, creating a clean, professional atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDsWWt5JejRRIkpCsAOoJo5qaQyXbZ89wALdaBmmIKoYNCkT5AqOtEBfkPZ4LHQfABLOcC33vik1LfN2sPGvnyUodm6dxmv9HdaGw10zLsW6i4sLI7VIqDx_Rzec7KHkrrlfj-k_wq1qZ_K1xX2SJ-1g3jid1w6erw4qOVPRODa1avBv6hYBqYqyRrgL6FZHMnG0hiAtua4tlkqcbwDor_48IMQ0z5yyEgvswzL8ToqNOR13IVx1NFUBNbDBcvuybrdOlKFOupBkXA"/>
+<div>
+<p class="font-label-lg text-label-lg text-ink-slate">Admin Profile</p>
+<p class="text-[10px] uppercase tracking-wider text-outline">System Lead</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- Top Navigation -->
+<header class="flex justify-between items-center h-16 px-8 bg-surface border-b border-outline-variant sticky top-0 z-40 shadow-sm">
+<div class="flex items-center bg-surface-container-low rounded-full px-4 py-2 w-96 border border-outline-variant focus-within:border-primary transition-all">
+<span class="material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-label-lg font-label-lg placeholder:text-outline ml-2" placeholder="Search system logs..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-danger-red rounded-full"></span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-3">
+<span class="font-label-lg text-label-lg text-on-surface-variant">System Status: <span class="text-primary font-bold">Stable</span></span>
+<div class="w-3 h-3 bg-primary rounded-full status-pulse"></div>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="p-8 max-w-[1400px] mx-auto">
+<!-- Page Header -->
+<div class="mb-10">
+<h2 class="font-headline-lg text-headline-lg text-ink-slate">System Settings &amp; Health</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 max-w-2xl">
+                    Real-time monitoring of infrastructure components and global configuration management. Ensure system integrity through automated health checks.
+                </p>
+</div>
+<!-- Health Status Bento Grid -->
+<div class="bento-grid mb-10">
+<!-- API/Server Card -->
+<div class="col-span-12 md:col-span-4 bg-white p-6 rounded-2xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant flex flex-col justify-between transition-transform hover:scale-[1.01]">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-secondary-container/20 rounded-xl text-primary">
+<span class="material-symbols-outlined" data-icon="dns">dns</span>
+</div>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-widest">Active</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-ink-slate">API / Server</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Primary Node: 10.0.4.122</p>
+<div class="mt-4 flex items-baseline gap-2">
+<span class="text-3xl font-bold text-ink-slate">99.9%</span>
+<span class="text-primary text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="trending_up">trending_up</span> 0.2%
+                            </span>
+</div>
+</div>
+</div>
+<!-- Database Card -->
+<div class="col-span-12 md:col-span-4 bg-white p-6 rounded-2xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant flex flex-col justify-between transition-transform hover:scale-[1.01]">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-secondary-container/20 rounded-xl text-primary">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+</div>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-widest">Operational</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-ink-slate">Database</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">PostgreSQL v15 Cluster</p>
+<div class="mt-4 flex items-baseline gap-2">
+<span class="text-3xl font-bold text-ink-slate">12ms</span>
+<span class="text-on-surface-variant text-xs">Avg. Latency</span>
+</div>
+</div>
+</div>
+<!-- Backup Status Card -->
+<div class="col-span-12 md:col-span-4 bg-white p-6 rounded-2xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant flex flex-col justify-between transition-transform hover:scale-[1.01]">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-secondary-container/20 rounded-xl text-primary">
+<span class="material-symbols-outlined" data-icon="cloud_done">cloud_done</span>
+</div>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-[10px] font-bold uppercase tracking-widest">Synced</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-ink-slate">Backup Status</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Last backup: 4h 12m ago</p>
+<button class="mt-6 w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-xl font-label-lg text-label-lg hover:bg-primary-container transition-colors group">
+<span class="material-symbols-outlined text-lg group-active:rotate-180 transition-transform" data-icon="backup">backup</span>
+                            Run Manual Backup
+                        </button>
+</div>
+</div>
+</div>
+<!-- Warning Alert Section -->
+<div class="mb-10">
+<div class="bg-error-container/40 border border-error-container p-6 rounded-2xl flex items-center gap-6">
+<div class="bg-error text-white p-4 rounded-full">
+<span class="material-symbols-outlined" data-icon="error">error</span>
+</div>
+<div class="flex-1">
+<h4 class="font-headline-md text-headline-md text-on-error-container">Unreachable Component Detected</h4>
+<p class="font-body-md text-body-md text-on-error-container mt-1">
+                            The secondary analytics node (us-west-2b) is currently unresponsive. This may result in delayed report generation.
+                        </p>
+</div>
+<button class="px-6 py-2 bg-error text-white rounded-lg font-label-lg text-label-lg hover:brightness-110 transition-all">
+                        Investigate Node
+                    </button>
+</div>
+</div>
+<!-- Global Settings Section -->
+<div class="bg-white rounded-2xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] border border-outline-variant overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center bg-surface-off-white">
+<h3 class="font-headline-md text-headline-md text-ink-slate">Global Settings</h3>
+<button class="text-primary font-label-lg text-label-lg hover:underline">Reset to Default</button>
+</div>
+<div class="divide-y divide-outline-variant/30">
+<!-- Setting Item 1 -->
+<div class="p-8 grid grid-cols-12 gap-8 items-center">
+<div class="col-span-12 md:col-span-4">
+<label class="font-label-lg text-label-lg text-ink-slate block">System Identifier</label>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Unique name for this environment instance.</p>
+</div>
+<div class="col-span-12 md:col-span-8">
+<input class="w-full max-w-md rounded-lg border-outline-variant bg-surface-off-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all text-body-md" type="text" value="PROD-ENV-OMEGA-01"/>
+</div>
+</div>
+<!-- Setting Item 2 -->
+<div class="p-8 grid grid-cols-12 gap-8 items-center">
+<div class="col-span-12 md:col-span-4">
+<label class="font-label-lg text-label-lg text-ink-slate block">Maintenance Window</label>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Automated updates schedule (UTC).</p>
+</div>
+<div class="col-span-12 md:col-span-8 flex items-center gap-4">
+<select class="rounded-lg border-outline-variant bg-surface-off-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all text-body-md px-4 py-2 min-w-[200px]">
+<option>00:00 - 04:00</option>
+<option>04:00 - 08:00</option>
+<option>08:00 - 12:00</option>
+<option>Weekend Only</option>
+</select>
+<span class="text-on-surface-variant font-body-sm">Next: Sun, 12 Oct</span>
+</div>
+</div>
+<!-- Setting Item 3 -->
+<div class="p-8 grid grid-cols-12 gap-8 items-center">
+<div class="col-span-12 md:col-span-4">
+<label class="font-label-lg text-label-lg text-ink-slate block">Security Hardening</label>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Enforce strict SSH and 2FA policies across all nodes.</p>
+</div>
+<div class="col-span-12 md:col-span-8">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+<span class="ml-3 font-body-md text-body-md text-on-surface">Enabled</span>
+</label>
+</div>
+</div>
+</div>
+<!-- Footer Action -->
+<div class="p-8 bg-surface-container-low border-t border-outline-variant flex justify-end gap-4">
+<button class="px-6 py-2 border border-outline-variant text-ink-slate rounded-lg font-label-lg text-label-lg hover:bg-surface-variant transition-all">Cancel Changes</button>
+<button class="px-8 py-2 bg-primary text-white rounded-lg font-label-lg text-label-lg hover:bg-primary-container shadow-md transition-all">Save System Config</button>
+</div>
+</div>
+<!-- Footer Meta -->
+<div class="mt-12 mb-8 flex justify-between items-center text-on-surface-variant font-label-sm text-label-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="update">update</span>
+                    Last System Sync: Just Now
+                </div>
+<div class="flex items-center gap-6">
+<a class="hover:text-primary transition-colors" href="#">Documentation</a>
+<a class="hover:text-primary transition-colors" href="#">API Keys</a>
+<a class="hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interaction for "Run Manual Backup"
+        const backupBtn = document.querySelector('button.group');
+        if (backupBtn) {
+            backupBtn.addEventListener('click', function() {
+                const icon = this.querySelector('.material-symbols-outlined');
+                const originalText = this.innerHTML;
+                
+                this.innerHTML = `
+                    <span class="material-symbols-outlined text-lg animate-spin" data-icon="sync">sync</span>
+                    Processing Backup...
+                `;
+                this.classList.add('opacity-75', 'cursor-not-allowed');
+                
+                setTimeout(() => {
+                    this.innerHTML = `
+                        <span class="material-symbols-outlined text-lg" data-icon="check_circle">check_circle</span>
+                        Backup Successful
+                    `;
+                    this.classList.replace('bg-primary', 'bg-secondary');
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.classList.replace('bg-secondary', 'bg-primary');
+                        this.classList.remove('opacity-75', 'cursor-not-allowed');
+                    }, 3000);
+                }, 2000);
+            });
+        }
+    </script>
+</body></html>

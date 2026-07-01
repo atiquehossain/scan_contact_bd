@@ -1,4 +1,4 @@
-# Backup and Restore Guide
+# NoNumQR Backup and Restore Guide
 
 These scripts are meant for a Linux VPS or a container image that has Bash plus the PostgreSQL client tools installed. They fail fast, write temporary files first, and only publish a final backup file after the command succeeds.
 
@@ -6,7 +6,7 @@ These scripts are meant for a Linux VPS or a container image that has Bash plus 
 
 ```bash
 DATABASE_URL='postgresql://user:pass@host:5432/db?schema=public' \
-BACKUP_DIR=/srv/scancontact/backups/postgres \
+BACKUP_DIR=/srv/nonumqr/backups/postgres \
 RETENTION_DAYS=14 \
 ./infra/scripts/backup-postgres.sh
 ```
@@ -24,25 +24,25 @@ The backup script:
 - Uses `set -Eeuo pipefail`, so a failed `pg_dump`, `gzip`, or encryption command fails the whole run.
 - Writes to hidden temporary files in `BACKUP_DIR` and renames the final `.sql.gz` or `.sql.gz.enc` only after success.
 - Uses `BACKUP_ENCRYPTION_PASSWORD` through OpenSSL's environment password source instead of putting the password directly in the command arguments.
-- Deletes only matching `scancontact-*.sql.gz` and `scancontact-*.sql.gz.enc` files older than `RETENTION_DAYS`.
+- Deletes only matching `nonumqr-*.sql.gz` and `nonumqr-*.sql.gz.enc` files older than `RETENTION_DAYS`.
 
 ## Database Restore
 
-Restore is intentionally strict. It refuses to run unless `RESTORE_CONFIRM=scancontact-restore` is set.
+Restore is intentionally strict. It refuses to run unless `RESTORE_CONFIRM=nonumqr-restore` is set.
 
 ```bash
-RESTORE_CONFIRM=scancontact-restore \
+RESTORE_CONFIRM=nonumqr-restore \
 DATABASE_URL='postgresql://user:pass@host:5432/db?schema=public' \
-./infra/scripts/restore-postgres.sh ./backups/postgres/scancontact-20260507-020000.sql.gz
+./infra/scripts/restore-postgres.sh ./backups/postgres/nonumqr-20260507-020000.sql.gz
 ```
 
 Encrypted restore:
 
 ```bash
-RESTORE_CONFIRM=scancontact-restore \
+RESTORE_CONFIRM=nonumqr-restore \
 BACKUP_ENCRYPTION_PASSWORD='strong-password' \
 DATABASE_URL='postgresql://user:pass@host:5432/db?schema=public' \
-./infra/scripts/restore-postgres.sh ./backups/postgres/scancontact-20260507-020000.sql.gz.enc
+./infra/scripts/restore-postgres.sh ./backups/postgres/nonumqr-20260507-020000.sql.gz.enc
 ```
 
 Before restoring production data:
@@ -59,8 +59,8 @@ The restore script validates the gzip archive before restoring, decrypts encrypt
 For host-visible local storage:
 
 ```bash
-LOCAL_STORAGE_PATH=/srv/scancontact/uploads \
-BACKUP_DIR=/srv/scancontact/backups/files \
+LOCAL_STORAGE_PATH=/srv/nonumqr/uploads \
+BACKUP_DIR=/srv/nonumqr/backups/files \
 RETENTION_DAYS=14 \
 ./infra/scripts/backup-files.sh
 ```
@@ -68,13 +68,13 @@ RETENTION_DAYS=14 \
 You may also set `SOURCE_DIR` directly:
 
 ```bash
-SOURCE_DIR=/srv/scancontact/uploads ./infra/scripts/backup-files.sh
+SOURCE_DIR=/srv/nonumqr/uploads ./infra/scripts/backup-files.sh
 ```
 
-The script archives the source directory by basename, so restoring `/srv/scancontact/uploads` should extract into `/srv/scancontact`:
+The script archives the source directory by basename, so restoring `/srv/nonumqr/uploads` should extract into `/srv/nonumqr`:
 
 ```bash
-tar -xzf ./backups/files/files-20260507-020000.tar.gz -C /srv/scancontact
+tar -xzf ./backups/files/files-20260507-020000.tar.gz -C /srv/nonumqr
 ```
 
 ## Docker Volume File Backups

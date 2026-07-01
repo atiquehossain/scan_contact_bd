@@ -5,7 +5,7 @@ const products = [
   {
     slug: "car-qr-sticker",
     type: ProductType.CAR_STICKER,
-    name: "Car QR Sticker",
+    name: "NoNumQR Car Sticker",
     description: "Private QR contact sticker for cars and parking issues.",
     priceBdt: 199,
     metadata: {
@@ -17,7 +17,7 @@ const products = [
       seoDescription:
         "Buy a private QR contact sticker for your car in Bangladesh. Let people message you when your car is blocking without seeing your phone number.",
       faq: [
-        { question: "Will my phone number be inside the QR?", answer: "No. The QR contains only a public ScanContact URL." },
+        { question: "Will my phone number be inside the QR?", answer: "No. The QR contains only a public NoNumQR URL." },
         { question: "Can the scanner message me without an app?", answer: "Yes. The scanner uses a mobile browser." }
       ]
     }
@@ -25,7 +25,7 @@ const products = [
   {
     slug: "bike-qr-sticker",
     type: ProductType.BIKE_STICKER,
-    name: "Bike QR Sticker",
+    name: "NoNumQR Bike Sticker",
     description: "Private QR contact sticker for motorcycles and delivery bikes.",
     priceBdt: 199,
     metadata: {
@@ -44,7 +44,7 @@ const products = [
   {
     slug: "lost-item-qr-tag",
     type: ProductType.LOST_AND_FOUND_STICKER,
-    name: "Lost Item QR Tag",
+    name: "NoNumQR Lost Item Tag",
     description: "Private lost-and-found QR tag for bags, keys, wallets, documents, and equipment.",
     priceBdt: 149,
     metadata: {
@@ -63,7 +63,7 @@ const products = [
   {
     slug: "business-qr-card",
     type: ProductType.BUSINESS_QR_CARD,
-    name: "Business QR Contact Card",
+    name: "NoNumQR Business QR Card",
     description: "Private QR contact card for professionals, freelancers, and small businesses.",
     priceBdt: 249,
     metadata: {
@@ -82,7 +82,7 @@ const products = [
   {
     slug: "apartment-parking-qr",
     type: ProductType.APARTMENT_PARKING_QR,
-    name: "Apartment Parking QR Sticker",
+    name: "NoNumQR Apartment Parking QR",
     description: "Private QR sticker for apartment, office, and society parking contact.",
     priceBdt: 249,
     metadata: {
@@ -101,7 +101,7 @@ const products = [
   {
     slug: "shop-qr-contact-sticker",
     type: ProductType.BUSINESS_QR_CARD,
-    name: "Shop QR Contact Sticker",
+    name: "NoNumQR Shop QR Sticker",
     description: "Private QR contact sticker for shops, counters, and service desks.",
     priceBdt: 249,
     metadata: {
@@ -142,7 +142,7 @@ async function main() {
       }
     });
   }
-  console.info(`Seeded ${products.length} ScanContact BD public products.`);
+  console.info(`Seeded ${products.length} NoNumQR public products.`);
 }
 
 main()

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>QR Tag Shop - NoNumQR</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#006f66",
+                    "tertiary-fixed": "#dbe1ff",
+                    "surface-tint": "#1b6b51",
+                    "surface-container-highest": "#d8e3fb",
+                    "secondary-container": "#86f2e4",
+                    "on-surface-variant": "#3f4944",
+                    "on-primary-container": "#8bd6b7",
+                    "tertiary": "#003491",
+                    "outline-variant": "#bec9c2",
+                    "on-primary-fixed-variant": "#00513b",
+                    "inverse-primary": "#8bd6b6",
+                    "on-tertiary-container": "#b5c6ff",
+                    "surface-dim": "#cfdaf2",
+                    "primary-fixed-dim": "#8bd6b6",
+                    "on-secondary-fixed": "#00201d",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#002116",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "background": "#f9f9ff",
+                    "primary-container": "#065f46",
+                    "surface": "#f9f9ff",
+                    "surface-container-high": "#dee8ff",
+                    "primary": "#004532",
+                    "surface-variant": "#d8e3fb",
+                    "outline": "#6f7973",
+                    "on-background": "#111c2d",
+                    "on-tertiary-fixed": "#00174b",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "surface-container": "#e7eeff",
+                    "secondary-fixed": "#89f5e7",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#005049",
+                    "tertiary-container": "#0049c3",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "on-surface": "#111c2d",
+                    "inverse-surface": "#263143",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed-variant": "#003ea8",
+                    "surface-container-low": "#f0f3ff",
+                    "secondary": "#006a61",
+                    "inverse-on-surface": "#ecf1ff",
+                    "primary-fixed": "#a6f2d1",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f9f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter-mobile": "12px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "xs": "4px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .active-tab { font-variation-settings: 'FILL' 1; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl shadow-sm flex items-center justify-between px-margin-mobile h-16 w-full">
+<div class="flex items-center gap-3">
+<button class="active:scale-95 duration-150 text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md-mobile font-bold text-primary dark:text-primary-fixed-dim">QR Tag Shop</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="active:scale-95 duration-150 text-primary">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-20 pb-24 px-margin-mobile">
+<!-- Category Filter Chips -->
+<div class="flex overflow-x-auto no-scrollbar gap-sm py-4 -mx-margin-mobile px-margin-mobile">
+<button class="px-5 py-2 rounded-full bg-secondary text-on-secondary font-label-md text-label-md whitespace-nowrap shadow-sm">All</button>
+<button class="px-5 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap border border-outline-variant/30 hover:bg-surface-container-high transition-colors">Vehicle</button>
+<button class="px-5 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap border border-outline-variant/30 hover:bg-surface-container-high transition-colors">Lost Item</button>
+<button class="px-5 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap border border-outline-variant/30 hover:bg-surface-container-high transition-colors">Business</button>
+<button class="px-5 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap border border-outline-variant/30 hover:bg-surface-container-high transition-colors">Apartment</button>
+<button class="px-5 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap border border-outline-variant/30 hover:bg-surface-container-high transition-colors">Shop</button>
+</div>
+<!-- Product Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-md mt-4">
+<!-- Card: NoNumQR Car Sticker -->
+<div class="bg-surface-container-lowest rounded-xl p-sm shadow-[0px_4px_12px_rgba(0,0,0,0.03)] border border-outline-variant/20 flex flex-col group overflow-hidden">
+<div class="aspect-square rounded-lg overflow-hidden bg-surface relative">
+<img alt="Car Window QR" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A premium close-up photo of a sleek, minimalist QR code sticker applied perfectly to a modern electric car's windshield. The scene is bright and airy with high-key lighting, emphasizing a clean and professional automotive aesthetic. Soft teal and deep emerald accents reflect in the glass, maintaining a sophisticated and secure atmosphere. The focus is sharp on the decal, showing high-quality texture against a blurred luxury vehicle background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT8Tn9lIC_eXlr6-ZBlA5Ln-RBykDNr47YFzFmDG6fv0BCBPevy1GBcUq3U5x056u9m02so07ODW59QWraxl9yW0iAvIGyzsvlREjAbOFvanqo2SJ3-mjirETfSgp-hUCeG8hBLoVHewAcNLeeipNdXZnOSNnNKaILCzqf05Rcw4IUeF8aQrh7YVwHuh34DLZWzeKuGkimey7ucAWrVpCFcAyPya0l8Yyc_7V1goM-NPgRddAkkpN4IVb03Gi1GPStO0nZnFEks-U"/>
+<div class="absolute top-2 right-2 px-2 py-1 rounded-full bg-on-secondary-container/10 backdrop-blur-md text-on-secondary-container font-label-sm text-label-sm">
+                        COD Available
+                    </div>
+</div>
+<div class="p-2 pt-4 flex flex-col flex-grow">
+<h3 class="font-title-lg text-title-lg text-primary">NoNumQR Car Sticker</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Privacy-first car contact</p>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<span class="font-headline-sm text-headline-md text-primary">$12.99</span>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label-lg text-label-lg active:scale-95 transition-transform">Buy</button>
+</div>
+<div class="mt-3 py-2 border-t border-outline-variant/10">
+<p class="font-label-sm text-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">shield_person</span>
+                            No phone number printed or encoded.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Card: NoNumQR Bike Sticker -->
+<div class="bg-surface-container-lowest rounded-xl p-sm shadow-[0px_4px_12px_rgba(0,0,0,0.03)] border border-outline-variant/20 flex flex-col group overflow-hidden">
+<div class="aspect-square rounded-lg overflow-hidden bg-surface relative">
+<img alt="Bike Frame QR" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A professional product shot of a small, weather-resistant QR code decal positioned on a high-end matte black bicycle frame. The lighting is crisp and cool, highlighting the metallic textures of the bike and the high-contrast black and white QR code. The overall mood is modern, sporty, and reliable, utilizing a palette of slate greys and vibrant teal highlights. The setting suggests a premium urban environment with soft bokeh of city architecture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMsXo9OVUaf00tA05XhFncWkclVBvM_UHVbwtXBbc8UA51MoMKrnXGpETOOPbHsloagGq-gERKmup2Z86sHKjxaiZceUN_soGncsI_eBU3Ch4udFgXQ3iJdsGLWlu6-bCtEPpPDeeCKpVQY1N-B17FRuxOkv2JdcP-wkHoKXm22HWVgwWaAqj7s_u4qJAN4oE1xyinQCrUwRv6H_t2Wei5-iacqsq2jLRjXqIxyYL6n_lKNEsizJYUMOODR4E9Mmg2F0IcNYkTxHo"/>
+<div class="absolute top-2 right-2 px-2 py-1 rounded-full bg-on-secondary-container/10 backdrop-blur-md text-on-secondary-container font-label-sm text-label-sm">
+                        COD Available
+                    </div>
+</div>
+<div class="p-2 pt-4 flex flex-col flex-grow">
+<h3 class="font-title-lg text-title-lg text-primary">NoNumQR Bike Sticker</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Secure bike owner tag</p>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<span class="font-headline-sm text-headline-md text-primary">$9.99</span>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label-lg text-label-lg active:scale-95 transition-transform">Buy</button>
+</div>
+<div class="mt-3 py-2 border-t border-outline-variant/10">
+<p class="font-label-sm text-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">shield_person</span>
+                            No phone number printed or encoded.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Card: NoNumQR Lost Item Tag -->
+<div class="bg-surface-container-lowest rounded-xl p-sm shadow-[0px_4px_12px_rgba(0,0,0,0.03)] border border-outline-variant/20 flex flex-col group overflow-hidden">
+<div class="aspect-square rounded-lg overflow-hidden bg-surface relative">
+<img alt="Lost Item Tag" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A sophisticated lifestyle photograph of a premium keychain tag featuring a unique QR code, attached to a designer leather bag. The lighting is warm and inviting, like a high-end boutique, creating soft shadows and elegant highlights on the hardware. The color palette features rich tan leathers, crisp whites, and deep emerald green details. The mood conveys trust and safety for personal belongings through a minimalist and professional design lens." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbV4wIFwJbK6OzmmjLiaydhec51COX2r3_eQJAdxKmrkmDfCWJoH6WZXmBfoeiODfWuBJRwweCMm1j716_dv2CGqeBZXcPq6Ye7HJjYqlvaJVzKdElkB871J171x7WI-Vy-4wxEOPjyTEGQkRAk_RgR9mNUKL97CF6nHljz9FRdMK4JYr-e9yTNCyAM5m5aV2E2IPGpZVi1E-H1EkR8Tsn29Z12AdvpH0PBYFPJA3PrQisDI0TdQYSoJDetxUSes-cR46eXo8HtDI"/>
+<div class="absolute top-2 right-2 px-2 py-1 rounded-full bg-on-secondary-container/10 backdrop-blur-md text-on-secondary-container font-label-sm text-label-sm">
+                        COD Available
+                    </div>
+</div>
+<div class="p-2 pt-4 flex flex-col flex-grow">
+<h3 class="font-title-lg text-title-lg text-primary">NoNumQR Lost Item Tag</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Keys &amp; bag protection</p>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<span class="font-headline-sm text-headline-md text-primary">$7.50</span>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label-lg text-label-lg active:scale-95 transition-transform">Buy</button>
+</div>
+<div class="mt-3 py-2 border-t border-outline-variant/10">
+<p class="font-label-sm text-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">shield_person</span>
+                            No phone number printed or encoded.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Card: NoNumQR Business QR Card -->
+<div class="bg-surface-container-lowest rounded-xl p-sm shadow-[0px_4px_12px_rgba(0,0,0,0.03)] border border-outline-variant/20 flex flex-col group overflow-hidden">
+<div class="aspect-square rounded-lg overflow-hidden bg-surface relative">
+<img alt="Business QR Card" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A minimalist business setting showing a premium, thick card-stock business card with a centered, sharp QR code lying on a clean white desk. The lighting is soft and professional office light mode, with subtle shadows from a nearby plant. The aesthetic is extremely clean and organized, focusing on authority and reliability. A palette of white, cool grey, and deep emerald green creates a high-end SaaS professional feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuADw1grba5VLtFLQ-QFkkaUYUWyYlIveJYMQAf1JC7YUin8JNgmnGTZEWrejaNBD2ZfCfLc195FphX4x2Vcp6-L1wYTWRJIa0SQRo7oVPPt4WCEf7WEKk6PRt57cC9XG5mERgR62AGpGWaCXRb8QLLPhJrVCs22766zU4XdTN28u_H2pZ3XVn0hN0ID8hW2SXMBG3gArY6AGY-B6QCwzRo0PjQMABbdyPLBmfbod8G8sE4w4xYiHTunTHTVH5ZumJpzBTJllcOvPs8"/>
+</div>
+<div class="p-2 pt-4 flex flex-col flex-grow">
+<h3 class="font-title-lg text-title-lg text-primary">NoNumQR Business Card</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Professional contact sharing</p>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<span class="font-headline-sm text-headline-md text-primary">$15.00</span>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label-lg text-label-lg active:scale-95 transition-transform">Buy</button>
+</div>
+<div class="mt-3 py-2 border-t border-outline-variant/10">
+<p class="font-label-sm text-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">shield_person</span>
+                            No phone number printed or encoded.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Card: NoNumQR Apartment Parking QR -->
+<div class="bg-surface-container-lowest rounded-xl p-sm shadow-[0px_4px_12px_rgba(0,0,0,0.03)] border border-outline-variant/20 flex flex-col group overflow-hidden">
+<div class="aspect-square rounded-lg overflow-hidden bg-surface relative">
+<img alt="Parking QR" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A high-contrast photo of a parking permit card with a prominent QR code hanging from a rearview mirror of a modern car. The lighting is bright daylight, showing the vibrant colors of the permit and the clear structure of the QR code. The style is efficient and utility-focused, with a clean and airy feeling. Tones of sky blue and primary emerald dominate the color palette, suggesting order and modern apartment living security." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxXEuTmxk5hrw3LuQlOZ5ucXUVGN8oc5pmFV7iggwipVJaxchCwvChPaHoLiFNfJ2YDgeoFbRVwF9X7PkpISLWg8WUmM9GmwhZel2ray8f24gfvizYmtEMPZLYNOPJuE8kULKW7PnlAEovfO5GQjXd4fArwe_dkgtiPSjX0XHsA36bVCVaPG_YcJEq8XV5TN_fr0vwqK2tGvcbsOJmF8V8CJLQEtkM5l_Q2saMSyQhykG8sugQjzDz-ivH1YIU2aO_GpcEY3IT8i8"/>
+</div>
+<div class="p-2 pt-4 flex flex-col flex-grow">
+<h3 class="font-title-lg text-title-lg text-primary">NoNumQR Parking QR</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Efficient parking management</p>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<span class="font-headline-sm text-headline-md text-primary">$5.00</span>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label-lg text-label-lg active:scale-95 transition-transform">Buy</button>
+</div>
+<div class="mt-3 py-2 border-t border-outline-variant/10">
+<p class="font-label-sm text-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">shield_person</span>
+                            No phone number printed or encoded.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Card: NoNumQR Shop QR Sticker -->
+<div class="bg-surface-container-lowest rounded-xl p-sm shadow-[0px_4px_12px_rgba(0,0,0,0.03)] border border-outline-variant/20 flex flex-col group overflow-hidden">
+<div class="aspect-square rounded-lg overflow-hidden bg-surface relative">
+<img alt="Shop Counter QR" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A clean and minimal photo of a small acrylic stand on a wooden cafe counter, holding a QR code for contactless interaction. The lighting is warm and natural, coming from a large window, creating a cozy yet professional shop atmosphere. The image is composed with a focus on ease of use and modern retail technology. Palette includes natural wood textures, soft whites, and emerald green brand accents for a premium commerce feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzc0P2WEWzj7BypzewD8O3SehGt-LKnabJQFVxl9Y_FB5IvwG6Tc0n1IA6LGy1j5m1TLYf73XhWt12zb6ssFmfJjAmLN-1sqDaEwRNrW_6ty68FYDfFUpFBv8vdvCHwJ29H27kriskSejohIojhDqH0vtnTs8hNLaaWTynldxbxZ8D87WUbfMGVuHjLF3MOkdJmREE4s1tmc1nf0EsACh9-JSCicxc4OUcEkCl0zTlxa4RmoTGVrAb8XaTXuViXzWb5d35y8JTz4E"/>
+<div class="absolute top-2 right-2 px-2 py-1 rounded-full bg-on-secondary-container/10 backdrop-blur-md text-on-secondary-container font-label-sm text-label-sm">
+                        COD Available
+                    </div>
+</div>
+<div class="p-2 pt-4 flex flex-col flex-grow">
+<h3 class="font-title-lg text-title-lg text-primary">NoNumQR Shop Sticker</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Direct shop customer link</p>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<span class="font-headline-sm text-headline-md text-primary">$18.99</span>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label-lg text-label-lg active:scale-95 transition-transform">Buy</button>
+</div>
+<div class="mt-3 py-2 border-t border-outline-variant/10">
+<p class="font-label-sm text-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">shield_person</span>
+                            No phone number printed or encoded.
+                        </p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-xl border-t border-outline-variant dark:border-outline shadow-lg flex justify-around items-center h-20 w-full px-xs">
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline-variant" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-container text-on-secondary-container dark:text-secondary-container rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined active-tab">sell</span>
+<span class="font-label-sm text-label-sm">Tags</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline-variant" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-sm text-label-sm">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline-variant" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Account</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for category selection
+        const filterButtons = document.querySelectorAll('.whitespace-nowrap');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => {
+                    b.classList.remove('bg-secondary', 'text-on-secondary');
+                    b.classList.add('bg-surface-container', 'text-on-surface-variant');
+                });
+                btn.classList.add('bg-secondary', 'text-on-secondary');
+                btn.classList.remove('bg-surface-container', 'text-on-surface-variant');
+            });
+        });
+
+        // Simple buy button interaction
+        const buyButtons = document.querySelectorAll('button:contains("Buy")');
+        // Since :contains isn't standard vanilla JS for all browsers, using alternative:
+        document.querySelectorAll('button').forEach(btn => {
+            if(btn.textContent === 'Buy') {
+                btn.addEventListener('click', () => {
+                    btn.classList.add('scale-90');
+                    setTimeout(() => btn.classList.remove('scale-90'), 100);
+                    // Feedback logic could go here
+                });
+            }
+        });
+    </script>
+</body></html>

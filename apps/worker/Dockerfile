@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 COPY apps/worker/package.json apps/worker/package.json
 COPY apps/api/package.json apps/api/package.json
-RUN npm install --workspace @scancontact/worker --workspace @scancontact/api --include-workspace-root
+RUN npm install --workspace @nonumqr/worker --workspace @nonumqr/api --include-workspace-root
 
 FROM node:22-alpine AS builder
 WORKDIR /app

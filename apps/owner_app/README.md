@@ -1,4 +1,4 @@
-# ScanContact Owner App
+# NoNumQR Owner App
 
 Separate Flutter app for QR owners.
 
@@ -19,19 +19,19 @@ Separate Flutter app for QR owners.
 For Android emulator:
 
 ```powershell
-flutter run --dart-define=APP_NAME="ScanContact Owner" --dart-define=API_BASE_URL=http://10.0.2.2:4000
+flutter run --dart-define=APP_NAME="NoNumQR Owner" --dart-define=API_BASE_URL=http://10.0.2.2:4000
 ```
 
 For a physical phone on the same Wi-Fi:
 
 ```powershell
-flutter run --dart-define=APP_NAME="ScanContact Owner" --dart-define=API_BASE_URL=http://192.168.0.131:4000
+flutter run --dart-define=APP_NAME="NoNumQR Owner" --dart-define=API_BASE_URL=http://192.168.0.131:4000
 ```
 
 ## Build Debug APK
 
 ```powershell
-flutter build apk --debug --dart-define=APP_NAME="ScanContact Owner" --dart-define=API_BASE_URL=http://192.168.0.131:4000
+flutter build apk --debug --dart-define=APP_NAME="NoNumQR Owner" --dart-define=API_BASE_URL=http://192.168.0.131:4000
 ```
 
 Output:

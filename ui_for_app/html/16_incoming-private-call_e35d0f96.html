@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Incoming Call - NoNumQR Owner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#d8e3fb",
+                        "primary-container": "#065f46",
+                        "tertiary-container": "#0049c3",
+                        "on-surface-variant": "#3f4944",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#8bd6b7",
+                        "inverse-on-surface": "#ecf1ff",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "outline-variant": "#bec9c2",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "on-error-container": "#93000a",
+                        "outline": "#6f7973",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#b5c6ff",
+                        "on-secondary-fixed": "#00201d",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d8e3fb",
+                        "on-background": "#111c2d",
+                        "surface-tint": "#1b6b51",
+                        "surface-dim": "#cfdaf2",
+                        "surface-container-low": "#f0f3ff",
+                        "on-secondary-container": "#006f66",
+                        "inverse-primary": "#8bd6b6",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#89f5e7",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#e7eeff",
+                        "primary": "#004532",
+                        "background": "#f9f9ff",
+                        "surface-bright": "#f9f9ff",
+                        "secondary": "#006a61",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#a6f2d1",
+                        "on-surface": "#111c2d",
+                        "on-secondary-fixed-variant": "#005049",
+                        "tertiary": "#003491",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "surface-container-high": "#dee8ff",
+                        "surface": "#f9f9ff",
+                        "tertiary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#00174b",
+                        "secondary-container": "#86f2e4",
+                        "inverse-surface": "#263143",
+                        "on-primary-fixed": "#002116",
+                        "on-primary-fixed-variant": "#00513b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "gutter-mobile": "12px",
+                        "sm": "8px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pulse-animation {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 0.2; }
+            100% { transform: scale(0.95); opacity: 0.5; }
+        }
+        .vibrate {
+            animation: vibrate 0.3s linear infinite;
+        }
+        @keyframes vibrate {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-lg min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="bg-surface/80 backdrop-blur-xl docked full-width top-0 sticky z-50 shadow-sm flex justify-between items-center px-margin-mobile h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary" data-icon="security">security</span>
+<h1 class="font-display-sm text-display-sm font-bold text-primary">NoNumQR Owner</h1>
+</div>
+<button class="text-on-surface-variant hover:bg-surface-variant/50 p-2 rounded-full transition-transform active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<main class="flex-1 flex flex-col items-center justify-between py-xl px-margin-mobile max-w-lg mx-auto w-full">
+<!-- Caller Identity Section -->
+<section class="flex flex-col items-center gap-lg mt-8 text-center">
+<div class="relative">
+<!-- Animated Pulse Rings -->
+<div class="absolute inset-0 rounded-full bg-secondary-container pulse-animation scale-125 opacity-20"></div>
+<div class="absolute inset-0 rounded-full bg-secondary-container pulse-animation scale-150 opacity-10"></div>
+<!-- Avatar -->
+<div class="relative w-32 h-32 bg-surface-container-high rounded-full flex items-center justify-center border-4 border-surface-container-lowest shadow-sm overflow-hidden">
+<img alt="Private Caller Avatar" class="w-full h-full object-cover" data-alt="A professional, clean studio portrait of a friendly-looking middle-aged man with a kind expression. The lighting is soft and high-key, creating a bright and trustworthy atmosphere. The background is a solid, neutral light grey, maintaining a minimalist and focused aesthetic. The image is framed as a circular profile picture, conveying a sense of premium professional service." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCADe4RH0f7NtFIqR-A4irwHlagOZazfa5NGgMfeGibsHG5zNK2tqC4gk_J749moLRnmOyPH8-3WB5PvjB04NuQfo9lMwMBmcF5J8ZNGqw6GVkYshlP-QQAh2qK6fn9_zq3zjHJVfN4yhxrl5ki4PozNa24Wn6q61Ysa71jSDhmonAPxE6qi44DiuvnA3UQsKq_oSnan7rbZLQkE202evz5avDh0NISp7G34sXRm4BI1H4G6XhNqICvsAlxCr6zzTjjZP7k6sMau8s"/>
+<div class="absolute inset-0 bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-5xl" data-icon="shield_person">shield_person</span>
+</div>
+</div>
+</div>
+<div class="space-y-xs">
+<p class="font-label-lg text-label-lg text-secondary uppercase tracking-widest">Incoming Call</p>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Private Caller</h2>
+<div class="flex items-center justify-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-label-md text-label-md">Verified NoNumQR Identity</span>
+</div>
+</div>
+</section>
+<!-- Context Card -->
+<section class="w-full bg-surface-container-lowest rounded-xl p-lg border border-outline-variant/30 shadow-sm space-y-md">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Linked Asset</p>
+<h3 class="font-title-lg text-title-lg text-primary">Toyota Corolla (A-123)</h3>
+</div>
+<div class="bg-primary-fixed text-on-primary-fixed px-3 py-1 rounded-full font-label-sm text-label-sm">
+                    Active Tag
+                </div>
+</div>
+<div class="h-px bg-outline-variant/20"></div>
+<div class="space-y-2">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+<p class="font-body-md text-body-md">Reported Reason:</p>
+</div>
+<div class="bg-error-container/20 text-on-error-container p-md rounded-lg flex items-center gap-md">
+<span class="material-symbols-outlined text-error" data-icon="block">block</span>
+<p class="font-title-lg text-title-lg font-bold">Vehicle Blocking</p>
+</div>
+</div>
+</section>
+<!-- Privacy Footer Text -->
+<section class="w-full text-center space-y-xl">
+<div class="flex items-center justify-center gap-sm bg-surface-container-low py-sm px-md rounded-full border border-outline-variant/10">
+<span class="material-symbols-outlined text-secondary" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+<p class="font-body-md text-body-md text-on-surface-variant">Your phone number is not shown to the scanner.</p>
+</div>
+<!-- Action Buttons -->
+<div class="flex gap-lg w-full">
+<!-- Decline Button -->
+<button class="flex-1 flex flex-col items-center gap-sm group" onclick="handleCall('declined')">
+<div class="w-20 h-20 rounded-full bg-error flex items-center justify-center text-on-error shadow-lg transition-transform active:scale-90 duration-200 group-hover:brightness-110">
+<span class="material-symbols-outlined text-4xl" data-icon="call_end">call_end</span>
+</div>
+<span class="font-label-lg text-label-lg text-on-surface-variant">Decline</span>
+</button>
+<!-- Accept Button -->
+<button class="flex-1 flex flex-col items-center gap-sm group" onclick="handleCall('accepted')">
+<div class="w-20 h-20 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container shadow-lg transition-transform active:scale-90 duration-200 group-hover:brightness-110 vibrate">
+<span class="material-symbols-outlined text-4xl" data-icon="call">call</span>
+</div>
+<span class="font-label-lg text-label-lg text-on-surface-variant">Accept</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Success/Interaction Overlay (Hidden by default) -->
+<div class="fixed inset-0 bg-surface/90 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-xl text-center" id="callOverlay">
+<div class="w-24 h-24 rounded-full flex items-center justify-center mb-lg" id="overlayIcon"></div>
+<h2 class="font-headline-lg text-headline-lg mb-sm" id="overlayTitle"></h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant" id="overlayMessage"></p>
+<button class="mt-xl text-primary font-label-lg uppercase tracking-wider" onclick="resetCall()">Back to Dashboard</button>
+</div>
+<script>
+        function handleCall(action) {
+            const overlay = document.getElementById('callOverlay');
+            const icon = document.getElementById('overlayIcon');
+            const title = document.getElementById('overlayTitle');
+            const message = document.getElementById('overlayMessage');
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+
+            if (action === 'accepted') {
+                icon.className = "w-24 h-24 rounded-full bg-primary-container flex items-center justify-center mb-lg text-on-primary-container";
+                icon.innerHTML = '<span class="material-symbols-outlined text-5xl" data-icon="call">call</span>';
+                title.innerText = "Connecting...";
+                message.innerText = "Securing your private bridge to the scanner.";
+            } else {
+                icon.className = "w-24 h-24 rounded-full bg-error-container flex items-center justify-center mb-lg text-on-error-container";
+                icon.innerHTML = '<span class="material-symbols-outlined text-5xl" data-icon="call_end">call_end</span>';
+                title.innerText = "Call Declined";
+                message.innerText = "The caller has been notified that you are unavailable.";
+            }
+        }
+
+        function resetCall() {
+            document.getElementById('callOverlay').classList.add('hidden');
+            document.getElementById('callOverlay').classList.remove('flex');
+        }
+    </script>
+</body></html>

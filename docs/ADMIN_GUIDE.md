@@ -1,4 +1,4 @@
-# Admin Guide
+# NoNumQR Admin Guide
 
 Admins can manage users, QR tags, orders, payments, products, reseller applications, societies, abuse reports, CMS pages, settings, emergency numbers, cities/districts, audit logs, health, and backup status.
 

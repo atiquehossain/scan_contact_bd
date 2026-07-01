@@ -1,9 +1,9 @@
 {
-  "name": "@scancontact/web",
+  "name": "@nonumqr/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev --webpack -p 3000",
     "build": "next build",
     "start": "node -e \"console.log('Static export is served by Caddy. Use npm run dev for local development or npm run docker:lean from the repo root.')\"",
     "lint": "eslint ."

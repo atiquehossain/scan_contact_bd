@@ -1,5 +1,5 @@
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "ScanContact BD";
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "NoNumQR";
 
 const isClient = typeof window !== "undefined";
 
@@ -30,7 +30,7 @@ export function clientDebugLog(area: string, fields: Record<string, unknown> = {
       return `${key}=${JSON.stringify(value)}`;
     })
     .join(" ");
-  console.info(`[ScanContact Web] ${area}${details ? ` ${details}` : ""}`);
+  console.info(`[NoNumQR Web] ${area}${details ? ` ${details}` : ""}`);
 }
 
 function responseErrorMessage(data: Record<string, unknown>) {

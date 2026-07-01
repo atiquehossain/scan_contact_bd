@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>My Orders - SecureTags</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#003ea8",
+                    "on-primary-container": "#8bd6b7",
+                    "background": "#f9f9ff",
+                    "surface-container-low": "#f0f3ff",
+                    "on-background": "#111c2d",
+                    "inverse-primary": "#8bd6b6",
+                    "tertiary": "#003491",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "primary": "#004532",
+                    "surface-tint": "#1b6b51",
+                    "secondary-container": "#86f2e4",
+                    "surface-dim": "#cfdaf2",
+                    "inverse-on-surface": "#ecf1ff",
+                    "tertiary-fixed": "#dbe1ff",
+                    "surface-container-highest": "#d8e3fb",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#00513b",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "on-secondary-fixed": "#00201d",
+                    "surface-container-high": "#dee8ff",
+                    "surface-variant": "#d8e3fb",
+                    "on-primary": "#ffffff",
+                    "inverse-surface": "#263143",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#f9f9ff",
+                    "secondary-fixed": "#89f5e7",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed": "#002116",
+                    "on-tertiary-fixed": "#00174b",
+                    "surface-container": "#e7eeff",
+                    "secondary": "#006a61",
+                    "on-secondary-container": "#006f66",
+                    "outline": "#6f7973",
+                    "tertiary-container": "#0049c3",
+                    "surface": "#f9f9ff",
+                    "primary-fixed-dim": "#8bd6b6",
+                    "on-surface-variant": "#3f4944",
+                    "on-surface": "#111c2d",
+                    "on-tertiary-container": "#b5c6ff",
+                    "primary-fixed": "#a6f2d1",
+                    "outline-variant": "#bec9c2",
+                    "on-secondary": "#ffffff",
+                    "primary-container": "#065f46",
+                    "on-secondary-fixed-variant": "#005049"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "lg": "24px",
+                    "md": "16px",
+                    "gutter-mobile": "12px",
+                    "xl": "32px",
+                    "sm": "8px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "title-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "label-sm-mobile": ["10px", {"lineHeight": "14px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab-indicator {
+            view-transition-name: active-tab;
+        }
+        body {
+            background-color: #f9f9ff;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-sm">
+<div class="flex items-center justify-between px-md py-sm w-full max-w-full mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="shield_lock">shield_lock</span>
+<h1 class="font-display-sm text-headline-md font-bold text-primary">SecureTags</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="shopping_bag">shopping_bag</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-20 pb-32 px-md max-w-2xl mx-auto min-h-screen">
+<!-- Header Section -->
+<div class="mb-6">
+<h2 class="font-headline-lg text-headline-lg text-on-background">My Orders</h2>
+<p class="font-body-md text-on-surface-variant mt-xs">Track and manage your QR tag purchases</p>
+</div>
+<!-- Tab Filters -->
+<div class="flex bg-surface-container-low rounded-xl p-1 mb-8">
+<button class="flex-1 py-2 rounded-lg font-label-lg text-secondary bg-white shadow-sm transition-all duration-300" onclick="switchTab(this, 'all')">All</button>
+<button class="flex-1 py-2 rounded-lg font-label-lg text-on-surface-variant hover:text-secondary transition-all duration-300" onclick="switchTab(this, 'active')">Active</button>
+<button class="flex-1 py-2 rounded-lg font-label-lg text-on-surface-variant hover:text-secondary transition-all duration-300" onclick="switchTab(this, 'delivered')">Delivered</button>
+</div>
+<!-- Orders List Container -->
+<div class="space-y-4" id="orders-container">
+<!-- Order Card 1 -->
+<div class="bg-surface shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-outline-variant/30 rounded-xl p-md flex flex-col gap-4 active:scale-[0.98] transition-transform duration-200">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-on-surface-variant tracking-wider uppercase">Order NNQR-2026-4829</span>
+<h3 class="font-title-lg text-on-background">NoNumQR Car Sticker (x1)</h3>
+<span class="font-body-md text-on-surface-variant">Oct 24, 2023</span>
+</div>
+<div class="h-12 w-12 bg-secondary-container/20 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="qr_code_2">qr_code_2</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant rounded-full">
+<span class="material-symbols-outlined text-[14px]" data-icon="local_shipping">local_shipping</span>
+<span class="font-label-sm">In Transit</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-error-container text-on-error-container rounded-full">
+<span class="material-symbols-outlined text-[14px]" data-icon="payments">payments</span>
+<span class="font-label-sm">Pending COD</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-outline-variant/20">
+<div>
+<span class="font-label-md text-on-surface-variant">Total Amount</span>
+<p class="font-headline-md text-primary">$12.99</p>
+</div>
+<button class="flex items-center gap-1 text-secondary font-label-lg hover:underline">
+                        View Details
+                        <span class="material-symbols-outlined text-md" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Empty State (Hidden by default, shown via toggle for demo) -->
+<div class="hidden flex flex-col items-center justify-center py-16 px-lg text-center bg-white/50 border-2 border-dashed border-outline-variant/20 rounded-3xl" id="empty-state">
+<div class="w-24 h-24 bg-surface-container rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[48px] text-outline-variant" data-icon="shopping_cart_off">shopping_cart_off</span>
+</div>
+<h3 class="font-headline-md text-on-background mb-2">No orders yet</h3>
+<p class="font-body-md text-on-surface-variant mb-8 max-w-[240px]">You haven't ordered any SecureTags yet. Get your first one to secure your property.</p>
+<button class="w-full bg-primary text-on-primary py-3 px-8 rounded-full font-label-lg shadow-lg active:scale-95 transition-all hover:bg-primary/90">
+                    Buy QR Tag
+                </button>
+</div>
+</div>
+<!-- Decorative toggle for demonstration purposes -->
+<div class="mt-12 flex justify-center">
+<button class="text-label-sm text-outline-variant hover:text-secondary underline decoration-dotted" onclick="toggleEmptyState()">Toggle Empty State Demo</button>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_-4px_12px_rgba(0,0,0,0.03)] flex justify-around items-center px-4 pb-safe pt-2 rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-outline transition-all duration-300 ease-out hover:bg-secondary-container/20 rounded-full p-2" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm-mobile mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary font-bold transition-all duration-300 ease-out hover:bg-secondary-container/20 rounded-full p-2" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_2" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+<span class="font-label-sm-mobile mt-1">Tags</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline transition-all duration-300 ease-out hover:bg-secondary-container/20 rounded-full p-2" href="#">
+<span class="material-symbols-outlined" data-icon="import_contacts">import_contacts</span>
+<span class="font-label-sm-mobile mt-1">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline transition-all duration-300 ease-out hover:bg-secondary-container/20 rounded-full p-2" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-sm-mobile mt-1">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline transition-all duration-300 ease-out hover:bg-secondary-container/20 rounded-full p-2" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm-mobile mt-1">Account</span>
+</a>
+</nav>
+<script>
+        function switchTab(el, type) {
+            // Update UI for buttons
+            const buttons = el.parentElement.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-white', 'shadow-sm', 'text-secondary');
+                btn.classList.add('text-on-surface-variant');
+            });
+            el.classList.add('bg-white', 'shadow-sm', 'text-secondary');
+            el.classList.remove('text-on-surface-variant');
+
+            // Simple filter logic simulation
+            const orders = document.querySelectorAll('#orders-container > div:not(#empty-state)');
+            if (type === 'delivered') {
+                orders.forEach(o => o.style.display = 'none');
+                document.getElementById('empty-state').classList.remove('hidden');
+                document.getElementById('empty-state').classList.add('flex');
+            } else {
+                orders.forEach(o => o.style.display = 'flex');
+                document.getElementById('empty-state').classList.add('hidden');
+                document.getElementById('empty-state').classList.remove('flex');
+            }
+        }
+
+        function toggleEmptyState() {
+            const orders = document.querySelectorAll('#orders-container > div:not(#empty-state)');
+            const empty = document.getElementById('empty-state');
+            
+            if (empty.classList.contains('hidden')) {
+                orders.forEach(o => o.style.display = 'none');
+                empty.classList.remove('hidden');
+                empty.classList.add('flex');
+            } else {
+                orders.forEach(o => o.style.display = 'flex');
+                empty.classList.add('hidden');
+                empty.classList.remove('flex');
+            }
+        }
+    </script>
+</body></html>

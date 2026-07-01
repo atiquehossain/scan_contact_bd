@@ -1,5 +1,5 @@
 {
-  "name": "@scancontact/worker",
+  "name": "@nonumqr/worker",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/worker.js",

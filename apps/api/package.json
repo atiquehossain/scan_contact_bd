@@ -1,5 +1,5 @@
 {
-  "name": "@scancontact/api",
+  "name": "@nonumqr/api",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/server.js",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.14.0",
-    "@scancontact/shared": "file:../../packages/shared",
+    "@nonumqr/shared": "file:../../packages/shared",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",

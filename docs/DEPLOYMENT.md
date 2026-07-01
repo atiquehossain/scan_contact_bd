@@ -1,4 +1,4 @@
-# VPS Deployment Guide
+# NoNumQR VPS Deployment Guide
 
 ## Single VPS Layout
 
@@ -30,28 +30,30 @@ cp apps/web/.env.example apps/web/.env
 Root `.env` controls Docker Compose defaults, published ports, Caddy site address, and static web build-time values. For one-domain production, set:
 
 ```env
-CADDY_SITE_ADDRESS=yourdomain.com
+CADDY_SITE_ADDRESS=nonumqr.com
 WEB_HTTP_PORT=80
 WEB_HTTPS_PORT=443
-APP_URL=https://yourdomain.com
-API_URL=https://yourdomain.com/api
-NEXT_PUBLIC_APP_URL=https://yourdomain.com
+APP_URL=https://nonumqr.com
+API_URL=https://nonumqr.com/api
+NEXT_PUBLIC_APP_URL=https://nonumqr.com
 NEXT_PUBLIC_API_URL=/api
 STATIC_NEXT_PUBLIC_API_URL=/api
-CORS_ORIGINS=https://yourdomain.com
+CORS_ORIGINS=https://nonumqr.com
 ```
+
+If the API runs on a separate public host, use `API_URL=https://api.nonumqr.com` and configure DNS/CORS for that host.
 
 `apps/api/.env` controls API runtime and the admin seed. Production must not use the development defaults:
 
 ```env
 NODE_ENV=production
-DATABASE_URL=postgresql://scancontact:<strong-db-password>@postgres:5432/scancontact?schema=public
+DATABASE_URL=postgresql://nonumqr:<strong-db-password>@postgres:5432/nonumqr?schema=public
 JWT_SECRET=<long-random-secret>
 JWT_REFRESH_SECRET=<different-long-random-secret>
 OTP_SECRET=<different-long-random-secret>
-APP_URL=https://yourdomain.com
-API_URL=https://yourdomain.com/api
-CORS_ORIGINS=https://yourdomain.com
+APP_URL=https://nonumqr.com
+API_URL=https://nonumqr.com/api
+CORS_ORIGINS=https://nonumqr.com
 OTP_PROVIDER=<production-sms-otp-provider>
 SMS_PROVIDER=<production-sms-provider>
 STORAGE_PROVIDER=local
@@ -62,7 +64,7 @@ ADMIN_PASSWORD=<temporary-strong-password>
 
 Important:
 
-- Do not deploy with `scancontact_local_password`, `replace-with-*`, `admin@example.com`, or `OTP_PROVIDER=dev-log`.
+- Do not deploy with `nonumqr_local_password`, `replace-with-*`, `admin@example.com`, or `OTP_PROVIDER=dev-log`.
 - Keep `NODE_ENV=production` so development OTP values are not returned or logged.
 - Treat `ADMIN_EMAIL` and `ADMIN_PASSWORD` as production secrets. The seed command creates the first super admin from these values, so set them before seeding and rotate the admin password immediately after first login.
 - `NEXT_PUBLIC_*` and `STATIC_NEXT_PUBLIC_*` values are compiled into the static web files inside the Caddy image. Rebuild Caddy after changing them:
@@ -106,7 +108,7 @@ This starts `postgres`, the migration job, `api`, `worker`, and `caddy`. Caddy c
 
 9. Verify production:
 
-- `https://yourdomain.com/api/health` returns healthy.
+- `https://nonumqr.com/api/health` returns healthy.
 - `/admin` loads over HTTPS.
 - Admin login works with the seeded admin, then the initial password is rotated.
 - Owner OTP uses the production provider and does not expose OTP values in responses or logs.
@@ -119,7 +121,7 @@ Browser microphone access requires HTTPS in production. WebRTC also needs TURN f
 Recommended low-cost setup:
 
 1. Run `coturn` on the same VPS or a small separate VPS.
-2. Point `turn.yourdomain.com` to that server.
+2. Point `turn.nonumqr.com` to that server.
 3. Open firewall ports:
    - `3478/tcp`
    - `3478/udp`
@@ -133,7 +135,7 @@ listening-port=3478
 fingerprint
 use-auth-secret
 static-auth-secret=<long-random-turn-secret>
-realm=turn.yourdomain.com
+realm=turn.nonumqr.com
 no-multicast-peers
 no-cli
 min-port=49160
@@ -144,7 +146,7 @@ Example API environment:
 
 ```env
 WEBRTC_STUN_URLS=stun:stun.l.google.com:19302
-WEBRTC_TURN_URLS=turn:turn.yourdomain.com:3478?transport=udp,turn:turn.yourdomain.com:3478?transport=tcp
+WEBRTC_TURN_URLS=turn:turn.nonumqr.com:3478?transport=udp,turn:turn.nonumqr.com:3478?transport=tcp
 WEBRTC_TURN_SHARED_SECRET=<same-long-random-turn-secret>
 WEBRTC_TURN_TTL_SECONDS=3600
 ```
@@ -157,8 +159,8 @@ Configure external encrypted backups before accepting real users. At minimum:
 
 ```bash
 BACKUP_ENCRYPTION_PASSWORD='<strong-backup-password>' \
-DATABASE_URL='postgresql://scancontact:<strong-db-password>@postgres:5432/scancontact?schema=public' \
-BACKUP_DIR=/srv/scancontact/backups/postgres \
+DATABASE_URL='postgresql://nonumqr:<strong-db-password>@postgres:5432/nonumqr?schema=public' \
+BACKUP_DIR=/srv/nonumqr/backups/postgres \
 RETENTION_DAYS=14 \
 ./infra/scripts/backup-postgres.sh
 ```

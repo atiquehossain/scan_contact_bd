@@ -1,7 +1,7 @@
 class AppConfig {
   static const appName = String.fromEnvironment(
     'APP_NAME',
-    defaultValue: 'ScanContact BD',
+    defaultValue: 'NoNumQR Owner',
   );
   static const _apiBaseUrl = String.fromEnvironment('API_BASE_URL');
   static const _webBaseUrl = String.fromEnvironment('WEB_BASE_URL');

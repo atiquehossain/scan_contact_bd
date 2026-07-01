@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>How It Works - NoNumQR</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#924628",
+                    "secondary-container": "#a6f2d1",
+                    "surface-container-low": "#f2f3ff",
+                    "inverse-surface": "#283044",
+                    "background": "#faf8ff",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "surface-tint": "#006a61",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#faf8ff",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#131b2e",
+                    "inverse-on-surface": "#eef0ff",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#6bd8cb",
+                    "on-tertiary-container": "#fffbff",
+                    "secondary": "#1b6b51",
+                    "on-tertiary-fixed": "#370e00",
+                    "on-secondary-container": "#237157",
+                    "on-error": "#ffffff",
+                    "info-blue": "#2563EB",
+                    "surface-container": "#eaedff",
+                    "tertiary-container": "#b05e3d",
+                    "tertiary-fixed": "#ffdbce",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#ffb59a",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed": "#002116",
+                    "warning-amber": "#D97706",
+                    "secondary-fixed-dim": "#8bd6b6",
+                    "on-error-container": "#93000a",
+                    "surface": "#faf8ff",
+                    "outline-variant": "#bcc9c6",
+                    "surface-variant": "#dae2fd",
+                    "on-primary-container": "#f4fffc",
+                    "surface-off-white": "#F8FAFC",
+                    "on-secondary-fixed-variant": "#00513b",
+                    "surface-dim": "#d2d9f4",
+                    "primary": "#00685f",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#a6f2d1",
+                    "primary-fixed": "#89f5e7",
+                    "on-surface": "#131b2e",
+                    "danger-red": "#DC2626",
+                    "surface-container-highest": "#dae2fd",
+                    "primary-container": "#008378",
+                    "on-surface-variant": "#3d4947",
+                    "surface-container-high": "#e2e7ff",
+                    "on-primary-fixed-variant": "#005049",
+                    "on-primary-fixed": "#00201d",
+                    "outline": "#6d7a77",
+                    "on-tertiary-fixed-variant": "#773215",
+                    "ink-slate": "#1E293B"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "1200px",
+                    "stack-lg": "32px",
+                    "unit": "4px",
+                    "stack-md": "16px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "stack-sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        /* Soft ambient shadow utility */
+        .ambient-shadow {
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
+        .qr-shimmer {
+            animation: shimmer 2s infinite linear;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="antialiased font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar from JSON Component -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-gutter h-16 bg-surface shadow-sm">
+<div class="font-headline-md text-headline-md font-bold text-primary">NoNumQR</div>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="text-on-surface-variant font-label-lg text-label-lg hover:text-primary transition-colors" href="#">Features</a>
+<a class="text-primary font-bold border-b-2 border-primary font-label-lg text-label-lg hover:text-primary transition-colors" href="#">How It Works</a>
+<a class="text-on-surface-variant font-label-lg text-label-lg hover:text-primary transition-colors" href="#">Pricing</a>
+</nav>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors" data-icon="help">help</span>
+<button class="bg-[#0D9488] text-white px-4 py-2 rounded-lg font-label-lg text-label-lg hover:opacity-90 transition-opacity hidden md:block">Log In</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-stack-lg px-margin-mobile md:px-gutter max-w-container-max mx-auto w-full">
+<!-- Hero Section -->
+<section class="flex flex-col md:flex-row gap-stack-lg items-center mb-16 mt-8">
+<div class="flex-1 space-y-stack-md">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background">Security through Serenity</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                    Your contact information should never be public property. NoNumQR facilitates instant, secure communication without ever exposing your personal details.
+                </p>
+<div class="pt-4">
+<button class="bg-[#0D9488] text-white px-6 py-3 rounded-lg font-label-lg text-label-lg hover:opacity-90 transition-opacity">Buy QR Tag</button>
+</div>
+</div>
+<div class="flex-1 w-full relative">
+<div class="rounded-xl overflow-hidden ambient-shadow relative w-full aspect-[1.79]">
+<img alt="Premium hero image for NoNumQR" class="w-full h-full object-cover rounded-xl" src="https://lh3.googleusercontent.com/aida/ADBb0ugPqkWsUd8OVJ1WrQiat9G1hTL4r_Bbf6YgZxjjoUYl6QznEzrWjN4DO7Yy21035MbkxT4FWGnXFqCBUvYstm-URRUQX4t1N9OOK0j_lmGXF7NlocmgTQcQ-L6KdcDhquiF22L8p3a4JVGatvLj-3AxGeebT9Z-yRRqD0ae1ThctGMfcSN_n8bAGWbIBNdBG4r-fxTPChep6_YEJ85hfm9mjtTfedsdHnVaYZWgnByt-JRzrpMB0tdJrZqV"/>
+</div>
+</div>
+</section>
+<!-- What's Inside Section (Bento Grid) -->
+<section class="mb-16">
+<div class="text-center mb-stack-lg">
+<h2 class="font-headline-md text-headline-md mb-2">The Anatomy of Privacy</h2>
+<p class="text-on-surface-variant font-body-md">What happens when someone scans your code.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Card 1: What IS inside -->
+<div class="bg-surface-off-white rounded-xl p-6 ambient-shadow border border-outline-variant/20 flex flex-col items-center text-center">
+<div class="w-16 h-16 bg-secondary-container rounded-full flex items-center justify-center mb-4 text-on-secondary-container">
+<span class="material-symbols-outlined text-[32px]" data-icon="link" data-weight="fill" style="font-variation-settings: 'FILL' 1;">link</span>
+</div>
+<h3 class="font-label-lg text-label-lg text-on-background mb-2">What's Inside</h3>
+<p class="text-primary font-bold mb-2">Only a public URL is inside the QR.</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">The QR code merely directs the scanner to a secure, temporary web page hosted on our servers.</p>
+</div>
+<!-- Card 2: What IS NOT inside -->
+<div class="bg-surface-off-white rounded-xl p-6 ambient-shadow border border-outline-variant/20 flex flex-col items-center text-center">
+<div class="w-16 h-16 bg-error-container rounded-full flex items-center justify-center mb-4 text-on-error-container">
+<span class="material-symbols-outlined text-[32px]" data-icon="phone_disabled" data-weight="fill" style="font-variation-settings: 'FILL' 1;">phone_disabled</span>
+</div>
+<h3 class="font-label-lg text-label-lg text-on-background mb-2">What's Excluded</h3>
+<p class="text-danger-red font-bold mb-2">Your phone number stays private.</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">No name, no phone number, no email address is encoded in the QR or visible on the landing page.</p>
+</div>
+<!-- Card 3: The Connection -->
+<div class="bg-surface-off-white rounded-xl p-6 ambient-shadow border border-outline-variant/20 flex flex-col items-center text-center">
+<div class="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-4 text-primary">
+<span class="material-symbols-outlined text-[32px]" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<h3 class="font-label-lg text-label-lg text-on-background mb-2">The Bridge</h3>
+<p class="font-bold mb-2 text-ink-slate">Secure Tokens</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">We act as a secure proxy, routing messages to your device via push notifications without revealing your identity.</p>
+</div>
+</div>
+</section>
+<!-- Step-by-Step Layout -->
+<section class="mb-16">
+<h2 class="font-headline-md text-headline-md text-center mb-stack-lg">Two Perspectives, One Secure Process</h2>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-stack-lg">
+<!-- Owner Flow -->
+<div class="bg-[#FFFFFF] rounded-xl p-8 ambient-shadow relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-[#0D9488]"></div>
+<h3 class="font-label-lg text-label-lg text-on-background mb-6 uppercase tracking-wider">For Owners</h3>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface flex items-center justify-center font-bold flex-shrink-0">1</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-background mb-1">Place Your Tag</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Adhere the premium NoNumQR sticker to your car windshield, luggage, or property.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface flex items-center justify-center font-bold flex-shrink-0">2</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-background mb-1">Link in App</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Scan the code yourself once to link it to your account via the dashboard.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface flex items-center justify-center font-bold flex-shrink-0">3</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-background mb-1">Receive Alerts</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Get anonymous push notifications when someone needs to reach you.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Scanner Flow -->
+<div class="bg-[#FFFFFF] rounded-xl p-8 ambient-shadow relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-ink-slate"></div>
+<h3 class="font-label-lg text-label-lg text-on-background mb-6 uppercase tracking-wider">For Scanners</h3>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface flex items-center justify-center font-bold flex-shrink-0">1</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-background mb-1">Scan Code</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Use any standard smartphone camera. No app download required for the scanner.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface flex items-center justify-center font-bold flex-shrink-0">2</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-background mb-1">Type Message</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">A simple, clean webpage opens allowing them to type a quick message.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface flex items-center justify-center font-bold flex-shrink-0">3</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-background mb-1">Temporary Chat</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Engage in a secure chat that expires automatically after 24 hours.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Deep Dive: Chat Features -->
+<section class="bg-surface-off-white rounded-xl p-8 ambient-shadow border border-outline-variant/20 mb-16">
+<h2 class="font-headline-md text-headline-md mb-6 text-center">Engineered for Discretion</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+<div class="space-y-4">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-1" data-icon="timer">timer</span>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-background">Conversation Expiration</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">All communication channels self-destruct after a period of inactivity to ensure no lingering connection remains.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-1" data-icon="forum">forum</span>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-background">Private Chat UI</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Both parties use a clean, web-based chat interface. Incoming messages are styled neutral slate; outgoing are teal. No phone numbers are exchanged.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-1" data-icon="block">block</span>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-background">Instant Blocking</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Owners can terminate a chat session or block a specific temporary token immediately from their dashboard.</p>
+</div>
+</div>
+</div>
+<!-- Mockup of Chat Bubble -->
+<div class="bg-[#FFFFFF] p-6 rounded-xl ambient-shadow border border-surface-variant">
+<div class="flex flex-col gap-4">
+<div class="self-start bg-surface-variant text-on-surface p-3 rounded-lg rounded-tl-none max-w-[80%] font-body-sm">
+                            Hi, I think your car is blocking the exit.
+                        </div>
+<div class="self-end bg-[#0D9488] text-white p-3 rounded-lg rounded-tr-none max-w-[80%] font-body-sm">
+                            Apologies, I'll be down in two minutes.
+                        </div>
+<div class="text-center mt-2">
+<span class="text-[10px] text-outline uppercase tracking-widest font-semibold bg-surface-off-white px-2 py-1 rounded-full border border-outline-variant/30">Connection Secure</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="text-center py-stack-lg">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-4">Ready to upgrade your privacy?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-8 max-w-2xl mx-auto">Join thousands who have secured their assets without compromising their personal contact information.</p>
+<button class="bg-[#0D9488] text-white px-8 py-4 rounded-lg font-label-lg text-label-lg hover:opacity-90 transition-opacity shadow-md">Buy QR Tag</button>
+</section>
+</main>
+<!-- Footer Space -->
+<footer class="mt-auto py-8 text-center text-on-surface-variant font-body-sm border-t border-outline-variant/20">
+        © 2024 NoNumQR. All rights reserved. Secure by design.
+    </footer>
+</body></html>

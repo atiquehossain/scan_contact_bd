@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NoNumQR Admin Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-container": "#a6f2d1",
+                      "on-tertiary-container": "#fffbff",
+                      "on-secondary-container": "#237157",
+                      "primary-fixed": "#89f5e7",
+                      "on-primary-container": "#f4fffc",
+                      "inverse-on-surface": "#eef0ff",
+                      "secondary-fixed": "#a6f2d1",
+                      "on-primary": "#ffffff",
+                      "surface-container-highest": "#dae2fd",
+                      "on-error-container": "#93000a",
+                      "on-surface-variant": "#3d4947",
+                      "on-surface": "#131b2e",
+                      "outline": "#6d7a77",
+                      "secondary": "#1b6b51",
+                      "surface-dim": "#d2d9f4",
+                      "tertiary-container": "#b05e3d",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-fixed": "#370e00",
+                      "warning-amber": "#D97706",
+                      "error-container": "#ffdad6",
+                      "primary-container": "#008378",
+                      "on-tertiary-fixed-variant": "#773215",
+                      "surface-tint": "#006a61",
+                      "surface-variant": "#dae2fd",
+                      "surface-container-lowest": "#ffffff",
+                      "surface": "#faf8ff",
+                      "surface-container": "#eaedff",
+                      "surface-off-white": "#F8FAFC",
+                      "surface-container-low": "#f2f3ff",
+                      "danger-red": "#DC2626",
+                      "on-error": "#ffffff",
+                      "tertiary": "#924628"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "stack-md": "16px",
+                      "stack-lg": "32px",
+                      "stack-sm": "8px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "container-max": "1200px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"]
+              },
+              "fontSize": {
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .qr-pattern {
+            background-color: #faf8ff;
+            background-image: radial-gradient(#00685f 0.5px, transparent 0.5px), radial-gradient(#00685f 0.5px, #faf8ff 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            opacity: 0.03;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        @keyframes subtle-float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-animation {
+            animation: subtle-float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface min-h-screen flex items-center justify-center overflow-hidden">
+<!-- Background Decoration -->
+<div class="fixed inset-0 qr-pattern pointer-events-none"></div>
+<div class="fixed top-[-10%] right-[-5%] w-[400px] h-[400px] bg-primary-fixed opacity-20 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="fixed bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-secondary-container opacity-20 rounded-full blur-[120px] pointer-events-none"></div>
+<main class="relative z-10 w-full max-w-[440px] px-margin-mobile">
+<!-- Branding Header -->
+<div class="text-center mb-stack-lg">
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-primary text-on-primary mb-4 shadow-lg float-animation">
+<span class="material-symbols-outlined !text-[32px]" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">NoNumQR</h1>
+<p class="font-label-lg text-label-lg text-outline uppercase tracking-[0.2em] mt-1">Admin Console</p>
+</div>
+<!-- Login Card -->
+<div class="glass-card rounded-[24px] p-stack-lg shadow-[0_8px_32px_rgba(19,27,46,0.08)] border border-outline-variant/30">
+<!-- Error State (Hidden by default) -->
+<div class="hidden flex items-center gap-3 p-4 mb-6 rounded-lg bg-error-container text-on-error-container border border-error/20 animate-in fade-in slide-in-from-top-2 duration-300" id="errorAlert">
+<span class="material-symbols-outlined text-error">report</span>
+<p class="font-label-lg text-label-lg">Invalid credentials. Please try again.</p>
+</div>
+<form class="space-y-stack-md" id="loginForm" onsubmit="handleLogin(event)">
+<!-- Identity Field -->
+<div class="space-y-2">
+<label class="font-label-lg text-label-lg text-on-surface-variant block ml-1" for="identity">Email or Phone</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">person</span>
+<input class="w-full pl-12 pr-4 py-3 bg-white/50 border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-body-md placeholder:text-outline-variant" id="identity" name="identity" placeholder="admin@nonumqr.com" required="" type="text"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-center ml-1">
+<label class="font-label-lg text-label-lg text-on-surface-variant" for="password">Password</label>
+<a class="font-label-sm text-label-sm text-primary hover:underline" href="#">Forgot?</a>
+</div>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">lock</span>
+<input class="w-full pl-12 pr-12 py-3 bg-white/50 border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-body-md placeholder:text-outline-variant" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- Security Notice -->
+<div class="flex items-start gap-2 py-2 px-1">
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">Admin access is protected and monitored.</p>
+</div>
+<!-- Action Button -->
+<button class="group relative w-full bg-primary hover:bg-surface-tint text-on-primary font-label-lg text-label-lg py-4 rounded-xl transition-all duration-300 transform active:scale-[0.98] shadow-md hover:shadow-xl flex items-center justify-center overflow-hidden" id="submitBtn" type="submit">
+<span class="relative z-10 flex items-center gap-2" id="btnText">
+                        Login to Console
+                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</span>
+<!-- Loading Spinner (Hidden) -->
+<div class="hidden absolute inset-0 items-center justify-center bg-primary" id="btnLoader">
+<svg class="animate-spin h-6 w-6 text-white" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+</div>
+</button>
+</form>
+</div>
+<!-- Footer Info -->
+<footer class="mt-stack-lg text-center">
+<p class="font-label-sm text-label-sm text-outline">
+                © 2024 NoNumQR Security Systems. <br/> 
+                Unauthorized access is strictly prohibited.
+            </p>
+</footer>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            const errorAlert = document.getElementById('errorAlert');
+
+            // Reset states
+            errorAlert.classList.add('hidden');
+            
+            // Show Loading State
+            btnText.classList.add('opacity-0');
+            btnLoader.classList.remove('hidden');
+            btnLoader.classList.add('flex');
+            btn.disabled = true;
+
+            // Simulate Network Request
+            setTimeout(() => {
+                const identity = document.getElementById('identity').value;
+                
+                if (identity === 'error@admin.com') {
+                    // Show Error State
+                    btnText.classList.remove('opacity-0');
+                    btnLoader.classList.add('hidden');
+                    btnLoader.classList.remove('flex');
+                    btn.disabled = false;
+                    errorAlert.classList.remove('hidden');
+                } else {
+                    // Success Simulation (Visual Feedback)
+                    btnLoader.innerHTML = `<span class="material-symbols-outlined text-[32px] animate-in zoom-in duration-300">check_circle</span>`;
+                    setTimeout(() => {
+                        window.location.href = '#'; // Redirect in real app
+                        alert('Login Successful (Simulated)');
+                        // Reset for demo purposes
+                        location.reload();
+                    }, 1000);
+                }
+            }, 1500);
+        }
+
+        // Focus state visual refinement for labels
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.previousElementSibling.classList.add('text-primary');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.previousElementSibling.classList.remove('text-primary');
+            });
+        });
+    </script>
+</body></html>

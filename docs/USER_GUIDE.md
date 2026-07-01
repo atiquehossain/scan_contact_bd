@@ -1,6 +1,6 @@
-# User Guide
+# NoNumQR User Guide
 
-1. Install/open the separate ScanContact Owner Flutter app.
+1. Install/open the separate NoNumQR Owner Flutter app.
 2. Login or sign up with your Bangladesh mobile number and OTP.
 3. If admin already created a QR tag for this phone number, it appears in the app.
 4. If no QR tag is assigned yet, use the app's Buy QR Code flow and place a COD order.

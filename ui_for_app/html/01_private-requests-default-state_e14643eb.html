@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Private Requests Inbox - NoNumQR</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed-variant": "#003ea8",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "tertiary-container": "#0049c3",
+                    "outline": "#6f7973",
+                    "tertiary-fixed": "#dbe1ff",
+                    "on-surface-variant": "#3f4944",
+                    "on-error": "#ffffff",
+                    "surface-container-high": "#dee8ff",
+                    "on-primary-fixed": "#002116",
+                    "surface-container": "#e7eeff",
+                    "on-primary-fixed-variant": "#00513b",
+                    "primary-container": "#065f46",
+                    "secondary": "#006a61",
+                    "on-tertiary-fixed": "#00174b",
+                    "on-secondary-container": "#006f66",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#89f5e7",
+                    "inverse-primary": "#8bd6b6",
+                    "primary-fixed": "#a6f2d1",
+                    "on-surface": "#111c2d",
+                    "surface-container-highest": "#d8e3fb",
+                    "on-tertiary-container": "#b5c6ff",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#111c2d",
+                    "on-primary-container": "#8bd6b7",
+                    "on-secondary-fixed-variant": "#005049",
+                    "surface-dim": "#cfdaf2",
+                    "primary": "#004532",
+                    "inverse-on-surface": "#ecf1ff",
+                    "error": "#ba1a1a",
+                    "surface": "#f9f9ff",
+                    "surface-container-low": "#f0f3ff",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#263143",
+                    "background": "#f9f9ff",
+                    "surface-tint": "#1b6b51",
+                    "primary-fixed-dim": "#8bd6b6",
+                    "surface-bright": "#f9f9ff",
+                    "outline-variant": "#bec9c2",
+                    "on-secondary": "#ffffff",
+                    "surface-variant": "#d8e3fb",
+                    "tertiary": "#003491",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed": "#00201d",
+                    "secondary-container": "#86f2e4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "sm": "8px",
+                    "gutter-mobile": "12px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "title-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-sm": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F8FAFC;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .safe-pb {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .active-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #3b82f6;
+            border-radius: 50%;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface antialiased">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-xl shadow-sm h-16">
+<div class="flex items-center justify-between px-md h-full w-full max-w-md mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="security">security</span>
+<h1 class="font-title-lg text-title-lg text-on-surface">Private Requests</h1>
+</div>
+<button class="active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-20 pb-24 px-md max-w-md mx-auto min-h-screen">
+<!-- Filter Chips -->
+<div class="flex gap-sm overflow-x-auto pb-md no-scrollbar">
+<button class="px-lg py-2 rounded-full bg-primary text-on-primary font-label-md transition-colors">All</button>
+<button class="px-lg py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md hover:bg-surface-variant transition-colors">Unread</button>
+<button class="px-lg py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md hover:bg-surface-variant transition-colors">Open</button>
+<button class="px-lg py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md hover:bg-surface-variant transition-colors">Closed</button>
+</div>
+<!-- Privacy Banner -->
+<div class="bg-primary-container/10 border border-primary-container/20 rounded-xl p-md mb-lg flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+<div>
+<p class="font-label-lg text-primary font-semibold">Reply privately</p>
+<p class="font-body-md text-on-primary-fixed-variant">Your phone number stays hidden during every interaction.</p>
+</div>
+</div>
+<!-- Request List -->
+<div class="space-y-md">
+<!-- Card 1 (Unread) -->
+<div class="bg-white rounded-xl p-md shadow-[0px_4px_12px_rgba(0,0,0,0.03)] border border-slate-100 relative active:scale-[0.98] transition-transform cursor-pointer">
+<div class="absolute right-4 top-4 active-dot"></div>
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm uppercase tracking-wide">Vehicle blocking</span>
+<span class="text-on-surface-variant font-label-sm">2m ago</span>
+</div>
+<h3 class="font-title-lg text-title-lg mb-1">Toyota Corolla (A-123)</h3>
+<p class="text-on-surface-variant font-body-md line-clamp-2 mb-3">Please move your car, it's blocking the gate.</p>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md">Open</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white rounded-xl p-md shadow-[0px_4px_12px_rgba(0,0,0,0.03)] border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm uppercase tracking-wide">Delivery contact</span>
+<span class="text-on-surface-variant font-label-sm">1h ago</span>
+</div>
+<h3 class="font-title-lg text-title-lg mb-1">Apartment B-102</h3>
+<p class="text-on-surface-variant font-body-md line-clamp-2 mb-3">I've left your package at the side gate as requested.</p>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md">Open</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-white rounded-xl p-md shadow-[0px_4px_12px_rgba(0,0,0,0.03)] border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed-variant font-label-sm uppercase tracking-wide">Found item</span>
+<span class="text-on-surface-variant font-label-sm">3h ago</span>
+</div>
+<h3 class="font-title-lg text-title-lg mb-1">Office Bag Tag</h3>
+<p class="text-on-surface-variant font-body-md line-clamp-2 mb-3">I found your bag in the cafe. Where can I return it?</p>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md">Open</span>
+</div>
+</div>
+<!-- Card 4 (Closed) -->
+<div class="bg-white/60 rounded-xl p-md shadow-sm border border-slate-100 active:scale-[0.98] transition-transform cursor-pointer grayscale-[0.3]">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-label-sm uppercase tracking-wide">Business inquiry</span>
+<span class="text-on-surface-variant font-label-sm">Yesterday</span>
+</div>
+<h3 class="font-title-lg text-title-lg mb-1 opacity-70">Shop Front QR</h3>
+<p class="text-on-surface-variant/70 font-body-md line-clamp-2 mb-3">Are you open on Fridays?</p>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-md">Closed</span>
+</div>
+</div>
+</div>
+<!-- Secondary Visual Element (Empty State illustration placeholder - invisible but descriptively ready) -->
+<div class="mt-xl flex flex-col items-center opacity-40">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-sm">
+<span class="material-symbols-outlined text-outline" data-icon="archive">archive</span>
+</div>
+<p class="font-label-md text-on-surface-variant">Archived requests appear in Account settings</p>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-xl shadow-lg pb-safe">
+<div class="flex justify-around items-center h-20 w-full max-w-md mx-auto px-sm">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-primary-container/10 rounded-full transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-primary-container/10 rounded-full transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_2">qr_code_2</span>
+<span class="font-label-sm text-label-sm">Tags</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold hover:bg-primary-container/10 rounded-full transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="pending_actions" style="font-variation-settings: 'FILL' 1;">pending_actions</span>
+<span class="font-label-sm text-label-sm">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-primary-container/10 rounded-full transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-primary-container/10 rounded-full transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-label-sm text-label-sm">Account</span>
+</a>
+</div>
+</nav>
+<script>
+        // Micro-interaction for filter chips
+        const chips = document.querySelectorAll('.no-scrollbar button');
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => {
+                    c.classList.remove('bg-primary', 'text-on-primary');
+                    c.classList.add('bg-surface-container', 'text-on-surface-variant');
+                });
+                chip.classList.remove('bg-surface-container', 'text-on-surface-variant');
+                chip.classList.add('bg-primary', 'text-on-primary');
+            });
+        });
+
+        // Simple haptic feedback simulation
+        const cards = document.querySelectorAll('.bg-white');
+        cards.forEach(card => {
+            card.addEventListener('mousedown', () => {
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(5);
+                }
+            });
+        });
+    </script>
+</body></html>

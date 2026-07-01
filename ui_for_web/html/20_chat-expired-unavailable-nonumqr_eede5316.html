@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>NoNumQR | Conversation State</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-highest": "#dae2fd",
+                      "surface-variant": "#dae2fd",
+                      "on-background": "#131b2e",
+                      "secondary-fixed": "#a6f2d1",
+                      "surface-dim": "#d2d9f4",
+                      "on-error": "#ffffff",
+                      "background": "#faf8ff",
+                      "info-blue": "#2563EB",
+                      "on-primary-container": "#f4fffc",
+                      "warning-amber": "#D97706",
+                      "secondary-container": "#a6f2d1",
+                      "outline-variant": "#bcc9c6",
+                      "on-tertiary-container": "#fffbff",
+                      "surface": "#faf8ff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed": "#00201d",
+                      "on-error-container": "#93000a",
+                      "inverse-surface": "#283044",
+                      "on-secondary-container": "#237157",
+                      "primary-fixed": "#89f5e7",
+                      "surface-off-white": "#F8FAFC",
+                      "on-secondary-fixed-variant": "#00513b",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed-dim": "#ffb59a",
+                      "primary-container": "#008378",
+                      "secondary": "#1b6b51",
+                      "on-primary-fixed-variant": "#005049",
+                      "surface-container": "#eaedff",
+                      "inverse-primary": "#6bd8cb",
+                      "ink-slate": "#1E293B",
+                      "on-primary": "#ffffff",
+                      "surface-bright": "#faf8ff",
+                      "surface-tint": "#006a61",
+                      "surface-container-low": "#f2f3ff",
+                      "inverse-on-surface": "#eef0ff",
+                      "tertiary": "#924628",
+                      "on-surface": "#131b2e",
+                      "tertiary-container": "#b05e3d",
+                      "secondary-fixed-dim": "#8bd6b6",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#ffdbce",
+                      "on-surface-variant": "#3d4947",
+                      "on-tertiary-fixed-variant": "#773215",
+                      "outline": "#6d7a77",
+                      "surface-container-high": "#e2e7ff",
+                      "on-tertiary": "#ffffff",
+                      "danger-red": "#DC2626",
+                      "on-secondary": "#ffffff",
+                      "primary": "#00685f",
+                      "on-tertiary-fixed": "#370e00",
+                      "on-secondary-fixed": "#002116"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "container-max": "1200px",
+                      "stack-sm": "8px",
+                      "stack-lg": "32px",
+                      "margin-mobile": "16px",
+                      "unit": "4px",
+                      "stack-md": "16px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .chat-bubble-in {
+            border-bottom-left-radius: 4px;
+        }
+        .chat-bubble-out {
+            border-bottom-right-radius: 4px;
+        }
+        body {
+            background-color: #faf8ff;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-mobile h-16 bg-surface dark:bg-on-background shadow-[0_4px_20px_rgba(15,23,42,0.05)]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="shield">shield</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">NoNumQR</h1>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity" data-icon="more_vert">more_vert</button>
+</header>
+<main class="pt-20 pb-32 px-margin-mobile max-w-lg mx-auto min-h-screen flex flex-col">
+<!-- Toggle Demo States (For Preview Purposes) -->
+<div class="mb-stack-lg flex gap-2 justify-center">
+<button class="px-4 py-2 rounded-full text-label-sm font-label-sm bg-secondary-container text-on-secondary-container border border-outline-variant/30" onclick="toggleState('expired')">View Expired</button>
+<button class="px-4 py-2 rounded-full text-label-sm font-label-sm bg-surface-container-high text-on-surface-variant border border-outline-variant/30" onclick="toggleState('unavailable')">View Unavailable</button>
+</div>
+<!-- EXPIRED STATE SECTION -->
+<section class="flex flex-col flex-grow" id="state-expired">
+<!-- Chat History (Read Only) -->
+<div class="flex flex-col gap-stack-md flex-grow mb-stack-lg opacity-60 grayscale-[0.2]">
+<div class="flex justify-center mb-stack-sm">
+<span class="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-label-sm font-label-sm">Yesterday, 4:20 PM</span>
+</div>
+<!-- Incoming -->
+<div class="flex flex-col items-start max-w-[85%]">
+<div class="bg-surface-container-high text-on-surface p-4 rounded-xl chat-bubble-in shadow-sm">
+<p class="text-body-md font-body-md">Hello, I noticed your car's lights are still on in the parking garage.</p>
+</div>
+</div>
+<!-- Outgoing -->
+<div class="flex flex-col items-end self-end max-w-[85%]">
+<div class="bg-primary text-on-primary p-4 rounded-xl chat-bubble-out shadow-sm">
+<p class="text-body-md font-body-md">Oh! Thank you so much for letting me know. I'll head down now.</p>
+</div>
+</div>
+<!-- Incoming -->
+<div class="flex flex-col items-start max-w-[85%]">
+<div class="bg-surface-container-high text-on-surface p-4 rounded-xl chat-bubble-in shadow-sm">
+<p class="text-body-md font-body-md">No problem at all. Have a great evening!</p>
+</div>
+</div>
+</div>
+<!-- Expired Overlay/Notice -->
+<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-6 shadow-[0_4px_20px_rgba(15,23,42,0.05)] text-center">
+<div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-surface-container mb-4">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="timer_off">timer_off</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">This conversation has expired.</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">For your security, conversations are automatically closed 24 hours after the last message. You can still view the history for your records.</p>
+<button class="w-full bg-primary text-on-primary font-label-lg text-label-lg py-3 rounded-xl hover:opacity-90 active:scale-95 transition-all">
+                    Start New Request
+                </button>
+</div>
+</section>
+<!-- UNAVAILABLE STATE SECTION -->
+<section class="hidden flex-col items-center justify-center flex-grow py-stack-lg text-center" id="state-unavailable">
+<div class="relative w-full aspect-square max-w-[280px] mb-stack-lg">
+<div class="absolute inset-0 bg-secondary-container/20 rounded-full blur-3xl"></div>
+<img class="w-full h-full object-cover rounded-full border-4 border-surface shadow-lg relative z-10" data-alt="A clean and modern high-end architectural shot of an empty, minimalist corridor with soft teal and slate lighting. The perspective leads to a vanishing point, emphasizing a sense of space and silence. The overall mood is calm, professional, and secure, utilizing a bright light-mode aesthetic with gentle shadows and pristine white surfaces." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYAQiIUx0khn4NgK479aOMCn3jASl5MAq49RWjFg81KcAXWNrLGcIi8ppePfIE2gt5H9IKqOhdpFNTuq8AWqw5F3wja7jqoXg9PVlpNoEB44WteCxUNGdkPEhcwrbTFBgMHA1_lLMKFnOZPNOoA5l6QuNKMsCeGDj87Ezcvr7PG3dmeK0wY7iKYu43tw83tsJVorZ1AcI7Nsy0KA5hrbvYOJM6fJt7G_tgv62g2igwlj1asvYPLmuwyXz8aveYZC-HhMycmA4qySc0"/>
+<div class="absolute -bottom-2 -right-2 bg-white p-3 rounded-full shadow-md z-20">
+<span class="material-symbols-outlined text-danger-red text-[32px]" data-icon="block">block</span>
+</div>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-stack-sm">This conversation is no longer available.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-sm mb-stack-lg">The secure link has been deactivated by the owner or the session has been terminated for privacy reasons.</p>
+<div class="grid grid-cols-1 gap-3 w-full max-w-xs">
+<a class="flex items-center justify-center gap-2 bg-primary text-on-primary font-label-lg text-label-lg py-4 rounded-xl hover:opacity-90 active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+                    Back to Home
+                </a>
+<a class="flex items-center justify-center gap-2 border border-outline text-on-surface-variant font-label-lg text-label-lg py-4 rounded-xl hover:bg-surface-container-low transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help_center">help_center</span>
+                    Help Center
+                </a>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Shell (Filtered to History Active) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface-container-lowest dark:bg-on-background border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(15,23,42,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-1 hover:bg-surface-variant/50 transition-colors rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label-sm text-label-sm">Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-1 hover:bg-surface-variant/50 transition-colors rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="lock">lock</span>
+<span class="font-label-sm text-label-sm">Security</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-container text-on-secondary-container dark:text-secondary-fixed rounded-full px-5 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="history" style="font-variation-settings: 'FILL' 1;">history</span>
+<span class="font-label-sm text-label-sm">History</span>
+</a>
+</nav>
+<script>
+        function toggleState(state) {
+            const expired = document.getElementById('state-expired');
+            const unavailable = document.getElementById('state-unavailable');
+            
+            if (state === 'expired') {
+                expired.classList.remove('hidden');
+                expired.classList.add('flex');
+                unavailable.classList.add('hidden');
+                unavailable.classList.remove('flex');
+            } else {
+                expired.classList.add('hidden');
+                expired.classList.remove('flex');
+                unavailable.classList.remove('hidden');
+                unavailable.classList.add('flex');
+            }
+        }
+
+        // Pulse effect for the unavailable icon
+        const blockIcon = document.querySelector('[data-icon="block"]');
+        if (blockIcon) {
+            setInterval(() => {
+                blockIcon.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    blockIcon.style.transform = 'scale(1)';
+                }, 200);
+            }, 3000);
+        }
+    </script>
+</body></html>

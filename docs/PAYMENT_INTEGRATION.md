@@ -1,4 +1,4 @@
-# Payment Integration Guide
+# NoNumQR Payment Integration Guide
 
 The MVP includes:
 

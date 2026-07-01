@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Owner Details | AdminConsole</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(241, 245, 249, 1);
+        }
+        .tab-active {
+            border-bottom: 2px solid #00685f;
+            color: #00685f;
+        }
+        .sidebar-scroller::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-scroller::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#00201d",
+                        "on-primary-fixed-variant": "#005049",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#002116",
+                        "primary": "#00685f",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#006a61",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#131b2e",
+                        "surface-container": "#eaedff",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "surface-variant": "#dae2fd",
+                        "danger-red": "#DC2626",
+                        "surface-dim": "#d2d9f4",
+                        "on-primary-container": "#f4fffc",
+                        "on-tertiary-fixed-variant": "#773215",
+                        "secondary-container": "#a6f2d1",
+                        "warning-amber": "#D97706",
+                        "secondary-fixed-dim": "#8bd6b6",
+                        "primary-container": "#008378",
+                        "on-secondary-fixed-variant": "#00513b",
+                        "tertiary": "#924628",
+                        "on-tertiary-fixed": "#370e00",
+                        "on-surface-variant": "#3d4947",
+                        "ink-slate": "#1E293B",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "inverse-on-surface": "#eef0ff",
+                        "on-secondary-container": "#237157",
+                        "inverse-primary": "#6bd8cb",
+                        "surface-container-highest": "#dae2fd",
+                        "on-error": "#ffffff",
+                        "info-blue": "#2563EB",
+                        "on-background": "#131b2e",
+                        "surface": "#faf8ff",
+                        "inverse-surface": "#283044",
+                        "on-error-container": "#93000a",
+                        "secondary": "#1b6b51",
+                        "surface-container-high": "#e2e7ff",
+                        "surface-container-low": "#f2f3ff",
+                        "outline-variant": "#bcc9c6",
+                        "secondary-fixed": "#a6f2d1",
+                        "surface-off-white": "#F8FAFC",
+                        "primary-fixed": "#89f5e7",
+                        "tertiary-container": "#b05e3d",
+                        "on-tertiary-container": "#fffbff",
+                        "outline": "#6d7a77",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "background": "#faf8ff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffdbce"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "container-max": "1200px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                        "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-off-white text-on-surface">
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface-off-white border-r border-outline-variant flex flex-col py-6 px-4 z-50">
+<div class="flex items-center gap-3 px-2 mb-10">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">AdminConsole</h1>
+<p class="text-[10px] uppercase tracking-widest text-outline">Internal Ops</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1 sidebar-scroller overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg font-body-sm text-body-sm group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Overview
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-primary font-bold bg-secondary-container/30 transition-colors rounded-lg font-body-sm text-body-sm group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+                Owners
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg font-body-sm text-body-sm group" href="#">
+<span class="material-symbols-outlined">label</span>
+                Tags
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg font-body-sm text-body-sm group" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+                Orders
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg font-body-sm text-body-sm group" href="#">
+<span class="material-symbols-outlined">group</span>
+                Users
+            </a>
+<div class="pt-4 pb-2 px-3">
+<span class="text-[10px] font-bold text-outline uppercase tracking-wider">System</span>
+</div>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg font-body-sm text-body-sm group" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                Reports
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg font-body-sm text-body-sm group" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg font-body-sm text-body-sm group" href="#">
+<span class="material-symbols-outlined">dns</span>
+                Health &amp; Backups
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg font-body-sm text-body-sm group" href="#">
+<span class="material-symbols-outlined">history</span>
+                Audit Logs
+            </a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-6 px-2">
+<div class="flex items-center gap-3">
+<img alt="Administrator Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-surface-container" data-alt="A professional portrait of a senior systems administrator in a modern office. He has a friendly but authoritative expression, short-cropped hair, and is wearing a dark navy corporate shirt. The lighting is soft and cinematic, with a blurred high-tech background featuring minimalist data screens and warm ambient highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3nnL-qBeQbX-tGUb_WiGV-j5t5L1fkKusE64hi1gudheh6h36cyTBTR0z3Hzwyt45811fNxZRCy_0oC7ZZrUQpk46mYNPRM90-Oyh_tG2HPe-K6YdHJuLEwpy54QmA9jktWIrc9G7qUviXnNHcC0AXFeO-CjDg1IdEffbg71YY-ztiRCHoqZb1Ac2anw3bCpeCwhZVyuuCLhivb8uWC3JqhM_KcB9QQshHHidY0TAxSJ7wl6NJKWI3qmVMHv1od0Ri_rMhf1amoX7"/>
+<div>
+<p class="font-label-lg text-label-lg text-ink-slate">Admin Profile</p>
+<p class="text-xs text-outline">Super Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="h-16 px-8 flex justify-between items-center bg-surface border-b border-outline-variant sticky top-0 z-40 shadow-sm">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-body-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search for owners, tags, or orders..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-danger-red rounded-full border-2 border-surface"></span>
+</button>
+<div class="h-8 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="font-label-lg text-label-lg">Owner Details</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="font-label-lg text-label-lg text-primary">OW-88219</span>
+</div>
+</div>
+</header>
+<div class="p-8 max-w-[1400px] mx-auto space-y-8">
+<!-- Owner Profile Summary Header Card -->
+<section class="glass-card rounded-2xl p-8 flex flex-col md:flex-row items-start gap-8 shadow-sm">
+<div class="relative">
+<img alt="Owner Profile" class="w-32 h-32 rounded-2xl object-cover shadow-lg border-4 border-white" data-alt="Close up portrait of a professional-looking man in his 40s with a kind, confident smile. He is set against a clean, out-of-focus urban environment with soft afternoon sunlight. The image is crisp, modern, and has a high-end editorial feel with a balanced teal and slate color grade to match the UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmrhGwq72nwzBQFDsWe5FxzIoEoMIl8UmJJ1Kd9uMqeeES42cNX2qSsFaVtSYzz3t2a2Q9ZfzBn2wlZxbsX-mYRAuRpfAouVRU0cc8g-5F-W3a4gf2r4f6ZnegzrpOHhUHGkDpnqlKv_1-ee7wuh2gELp9PwWEh3RD8E4axm8Wl-Nc3zg_h0C0PlBTYk6d8EHbDvRXBArnpEMqUFLMhX1OsLBFAs3oUljgC-Tx7t-DZa1AhhWOXcScue-miJQ4ae139MUSfwMyBNoG"/>
+<span class="absolute -bottom-2 -right-2 bg-teal-500 text-white p-1.5 rounded-full border-4 border-white">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">verified</span>
+</span>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex items-center gap-3">
+<h2 class="font-headline-lg text-headline-lg text-ink-slate">Alexander Pierce</h2>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-label-sm font-bold">PREMIUM MEMBER</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">mail</span>
+                        a.pierce@example.com
+                        <span class="mx-2 text-outline-variant">•</span>
+<span class="material-symbols-outlined text-outline">call</span>
+                        +1 (555) 902-8834
+                    </p>
+<div class="flex gap-6 mt-4">
+<div class="bg-surface-container-low px-4 py-3 rounded-xl border border-outline-variant/30">
+<p class="text-label-sm text-outline uppercase tracking-wider mb-1">Total Tags</p>
+<p class="font-headline-md text-headline-md text-ink-slate">12 <span class="text-sm font-normal text-outline">Active</span></p>
+</div>
+<div class="bg-surface-container-low px-4 py-3 rounded-xl border border-outline-variant/30">
+<p class="text-label-sm text-outline uppercase tracking-wider mb-1">Scan Traffic</p>
+<p class="font-headline-md text-headline-md text-ink-slate">142 <span class="text-sm font-normal text-teal-600">↑ 12%</span></p>
+</div>
+<div class="bg-surface-container-low px-4 py-3 rounded-xl border border-outline-variant/30">
+<p class="text-label-sm text-outline uppercase tracking-wider mb-1">Account Since</p>
+<p class="font-headline-md text-headline-md text-ink-slate">Oct 2022</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3 w-full md:w-auto">
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-label-lg text-label-lg shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">edit</span>
+                        Edit Profile
+                    </button>
+<button class="bg-white border border-outline-variant text-ink-slate px-6 py-2.5 rounded-lg font-label-lg text-label-lg hover:bg-surface-container-low transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Export Data
+                    </button>
+</div>
+</section>
+<div class="flex flex-col lg:flex-row gap-8">
+<!-- Tabbed Content Section -->
+<div class="flex-1 space-y-6">
+<div class="flex border-b border-outline-variant gap-8 overflow-x-auto scrollbar-hide">
+<button class="tab-active pb-4 px-1 font-label-lg text-label-lg transition-all flex items-center gap-2" id="tab-tags" onclick="switchTab('tags')">
+<span class="material-symbols-outlined text-[20px]">qr_code_2</span>
+                            QR Tags
+                        </button>
+<button class="pb-4 px-1 font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-all flex items-center gap-2" id="tab-orders" onclick="switchTab('orders')">
+<span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+                            Orders
+                        </button>
+<button class="pb-4 px-1 font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-all flex items-center gap-2" id="tab-requests" onclick="switchTab('requests')">
+<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+                            Contact Requests
+                        </button>
+<button class="pb-4 px-1 font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-all flex items-center gap-2" id="tab-activity" onclick="switchTab('activity')">
+<span class="material-symbols-outlined text-[20px]">notifications_active</span>
+                            Alerts/Activity
+                        </button>
+</div>
+<!-- Tags Table Content -->
+<div class="block space-y-4" id="content-tags">
+<div class="flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-ink-slate">Assigned Tags</h3>
+<button class="text-primary font-label-lg text-label-lg flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-sm">add</span>
+                                Add New Tag
+                            </button>
+</div>
+<div class="bg-white rounded-2xl border border-outline-variant overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-6 py-4 font-label-lg text-label-lg text-outline">Tag ID</th>
+<th class="px-6 py-4 font-label-lg text-label-lg text-outline">Type</th>
+<th class="px-6 py-4 font-label-lg text-label-lg text-outline">Label</th>
+<th class="px-6 py-4 font-label-lg text-label-lg text-outline">Status</th>
+<th class="px-6 py-4 font-label-lg text-label-lg text-outline">Last Scanned</th>
+<th class="px-6 py-4"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-body-sm text-body-sm font-bold">#QR-9902</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-2 font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-lg">directions_car</span>
+                                                Vehicle
+                                            </span>
+</td>
+<td class="px-6 py-4 font-body-sm text-body-sm">Tesla Model 3 - Red</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold">ACTIVE</span>
+</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">2 hours ago</td>
+<td class="px-6 py-4 text-right">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-body-sm text-body-sm font-bold">#QR-8841</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-2 font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-lg">pets</span>
+                                                Pet Collar
+                                            </span>
+</td>
+<td class="px-6 py-4 font-body-sm text-body-sm">Buddy (Golden Retriever)</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold">ACTIVE</span>
+</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">May 12, 2024</td>
+<td class="px-6 py-4 text-right">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-body-sm text-body-sm font-bold">#QR-7721</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-2 font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-lg">work</span>
+                                                Luggage
+                                            </span>
+</td>
+<td class="px-6 py-4 font-body-sm text-body-sm">TUMI Carry-on</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[10px] font-bold">INACTIVE</span>
+</td>
+<td class="px-6 py-4 font-body-sm text-body-sm text-on-surface-variant">Never</td>
+<td class="px-6 py-4 text-right">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">more_vert</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Other Tab Content (Placeholders) -->
+<div class="hidden text-center py-20 bg-white rounded-2xl border border-outline-variant border-dashed" id="content-orders">
+<span class="material-symbols-outlined text-6xl text-outline-variant mb-4">receipt_long</span>
+<h4 class="font-headline-md text-headline-md text-ink-slate">No recent orders found</h4>
+<p class="text-on-surface-variant mt-2">The owner hasn't placed any new orders in the last 90 days.</p>
+</div>
+<div class="hidden space-y-4" id="content-requests">
+<!-- Example request items -->
+<div class="bg-white p-4 rounded-xl border border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">person_search</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg text-ink-slate">Anonymous Scan - Vehicle Tag</p>
+<p class="text-xs text-outline">San Francisco, CA • Yesterday, 4:32 PM</p>
+</div>
+</div>
+<span class="text-primary font-bold font-body-sm text-body-sm">Message Sent</span>
+</div>
+</div>
+<div class="hidden space-y-6" id="content-activity">
+<div class="relative pl-8 space-y-8 before:content-[''] before:absolute before:left-3 before:top-1 before:bottom-1 before:w-px before:bg-outline-variant">
+<div class="relative">
+<span class="absolute -left-[25px] top-1 w-4 h-4 rounded-full bg-teal-500 border-4 border-white ring-1 ring-teal-500"></span>
+<p class="text-xs text-outline font-bold uppercase mb-1">Today</p>
+<p class="font-body-md text-body-md text-ink-slate">Owner changed security pin for <span class="font-bold">#QR-9902</span></p>
+</div>
+<div class="relative">
+<span class="absolute -left-[25px] top-1 w-4 h-4 rounded-full bg-surface-container border-4 border-white ring-1 ring-outline-variant"></span>
+<p class="text-xs text-outline font-bold uppercase mb-1">May 14, 2024</p>
+<p class="font-body-md text-body-md text-ink-slate">Email address updated successfully</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Admin Actions -->
+<aside class="w-full lg:w-80 space-y-6">
+<div class="bg-white rounded-2xl border border-outline-variant p-6 shadow-sm">
+<h4 class="font-label-lg text-label-lg text-outline uppercase tracking-wider mb-6">Admin Quick Actions</h4>
+<div class="space-y-3">
+<button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-outline-variant hover:bg-surface-container-low transition-colors text-left group">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">lock_reset</span>
+<span class="font-body-sm text-body-sm font-medium">Reset Password</span>
+</button>
+<button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-outline-variant hover:bg-surface-container-low transition-colors text-left group">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">contact_support</span>
+<span class="font-body-sm text-body-sm font-medium">Impersonate User</span>
+</button>
+<button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-outline-variant hover:bg-surface-container-low transition-colors text-left group">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">security</span>
+<span class="font-body-sm text-body-sm font-medium">Two-Factor Audit</span>
+</button>
+<div class="pt-4 mt-4 border-t border-outline-variant">
+<button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-danger-red/20 bg-danger-red/5 hover:bg-danger-red/10 transition-colors text-left group">
+<span class="material-symbols-outlined text-danger-red">block</span>
+<span class="font-body-sm text-body-sm font-medium text-danger-red">Disable Account</span>
+</button>
+</div>
+</div>
+</div>
+<div class="bg-ink-slate rounded-2xl p-6 text-white overflow-hidden relative shadow-xl">
+<div class="relative z-10">
+<h4 class="font-label-lg text-label-lg text-teal-400 uppercase tracking-wider mb-2">Internal Note</h4>
+<p class="text-body-sm text-white/80 leading-relaxed italic">"High-value owner. Do not disable without prior consultation with the Account Manager (Sarah J.) Regarding frequent travel logs."</p>
+<p class="text-[10px] mt-4 text-white/40">- Added by Admin #104 on Jan 12</p>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-[100px]">sticky_note_2</span>
+</div>
+</div>
+<div class="bg-white rounded-2xl border border-outline-variant p-6 shadow-sm">
+<h4 class="font-label-lg text-label-lg text-outline uppercase tracking-wider mb-4">Location Data</h4>
+<div class="aspect-square bg-surface-container rounded-xl overflow-hidden mb-4 grayscale">
+<img alt="Map location" class="w-full h-full object-cover" data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpw8OR8mbNAcqWF3tsl_AcKnblEnXiQ1Wtr-Pm-F1Gs9IgpBJwR1bFwAPCbMeX7dP19o0QMa0G7sn1yB61lsM9MvIn8eq-VK6yqzqopCc2Zm0FOBP8BBa7h-oHdeVg350XkbGaO15emZSQGvFyl2fZh3hG5gGg1jq-iEn7iIBtsXgxE2RuHPa3eNhb2TDmfy5TZcU-Bf5IwvdLJ0BEA6ARrk_R06x5P_PFHfNzQ_J31SYMFfpz_9f9z7eOoum6b8ZHdIwguFQC0xOE"/>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-outline">location_on</span>
+                            Primary Address: Market St, San Francisco
+                        </p>
+</div>
+</aside>
+</div>
+</div>
+</main>
+<script>
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('[id^="content-"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[id^="content-"]').forEach(el => el.classList.remove('block'));
+            
+            // Show selected content
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            document.getElementById('content-' + tabId).classList.add('block');
+            
+            // Reset tab styles
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.classList.remove('tab-active');
+                el.classList.add('text-on-surface-variant');
+            });
+            
+            // Set active tab style
+            const activeTab = document.getElementById('tab-' + tabId);
+            activeTab.classList.add('tab-active');
+            activeTab.classList.remove('text-on-surface-variant');
+        }
+
+        // Add a simple animation to numbers on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const metrics = document.querySelectorAll('.font-headline-md');
+            metrics.forEach(metric => {
+                metric.style.transition = 'all 0.5s ease-out';
+                metric.style.opacity = '0';
+                metric.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    metric.style.opacity = '1';
+                    metric.style.transform = 'translateY(0)';
+                }, 200);
+            });
+        });
+    </script>
+</body></html>

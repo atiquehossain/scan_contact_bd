@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NoNumQR Admin - Create New Tag</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-fixed": "#370e00",
+            "inverse-on-surface": "#eef0ff",
+            "surface-container-lowest": "#ffffff",
+            "info-blue": "#2563EB",
+            "background": "#faf8ff",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#00513b",
+            "surface-container": "#eaedff",
+            "ink-slate": "#1E293B",
+            "outline": "#6d7a77",
+            "inverse-primary": "#6bd8cb",
+            "warning-amber": "#D97706",
+            "tertiary": "#924628",
+            "surface-dim": "#d2d9f4",
+            "error": "#ba1a1a",
+            "outline-variant": "#bcc9c6",
+            "surface-bright": "#faf8ff",
+            "on-primary": "#ffffff",
+            "surface-container-high": "#e2e7ff",
+            "surface-tint": "#006a61",
+            "secondary-container": "#a6f2d1",
+            "primary": "#00685f",
+            "surface-variant": "#dae2fd",
+            "tertiary-fixed-dim": "#ffb59a",
+            "tertiary-container": "#b05e3d",
+            "surface": "#faf8ff",
+            "on-tertiary-fixed-variant": "#773215",
+            "primary-fixed": "#89f5e7",
+            "on-primary-fixed": "#00201d",
+            "danger-red": "#DC2626",
+            "inverse-surface": "#283044",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#002116",
+            "primary-container": "#008378",
+            "tertiary-fixed": "#ffdbce",
+            "secondary-fixed": "#a6f2d1",
+            "on-surface-variant": "#3d4947",
+            "secondary-fixed-dim": "#8bd6b6",
+            "on-primary-container": "#f4fffc",
+            "on-error": "#ffffff",
+            "on-background": "#131b2e",
+            "on-secondary-container": "#237157",
+            "secondary": "#1b6b51",
+            "surface-off-white": "#F8FAFC",
+            "on-surface": "#131b2e",
+            "primary-fixed-dim": "#6bd8cb",
+            "on-secondary": "#ffffff",
+            "on-error-container": "#93000a",
+            "surface-container-highest": "#dae2fd",
+            "on-tertiary-container": "#fffbff",
+            "on-primary-fixed-variant": "#005049",
+            "surface-container-low": "#f2f3ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "unit": "4px",
+            "stack-sm": "8px",
+            "stack-md": "16px",
+            "gutter": "24px",
+            "container-max": "1200px",
+            "margin-mobile": "16px",
+            "stack-lg": "32px"
+          },
+          "fontFamily": {
+            "headline-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "label-lg": ["Inter"],
+            "label-sm": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "body-lg": ["Inter"]
+          },
+          "fontSize": {
+            "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+            "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .step-active { @apply text-primary font-bold; }
+    .step-inactive { @apply text-on-surface-variant opacity-50; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    /* Simple Success Transition */
+    #success-overlay.hidden { display: none; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex overflow-hidden">
+<!-- Side Navigation Bar -->
+<aside class="flex flex-col h-full border-r border-outline-variant bg-surface-container-low w-64 fixed left-0 top-0 z-20">
+<div class="px-6 py-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">NoNumQR</h1>
+<p class="font-body-md text-body-md opacity-70">Admin Console</p>
+</div>
+<nav class="flex-1 px-2 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+<span class="font-body-md">Owners</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold border-r-4 border-primary bg-surface-container-high" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_2">qr_code_2</span>
+<span class="font-body-md">Tags</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-body-md">Orders</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md">Users</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="font-body-md">Reports</span>
+</a>
+<div class="pt-4 mt-4 border-t border-outline-variant opacity-50"></div>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-body-md">Health &amp; Backups</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="font-body-md">Audit Logs</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-64 flex flex-col min-h-screen relative overflow-y-auto">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center px-8 py-4 w-full bg-surface border-b border-outline-variant sticky top-0 z-10">
+<div class="flex items-center gap-4">
+<h2 class="font-label-lg text-label-lg text-on-surface-variant">Tags / <span class="text-primary font-semibold">New QR Tag</span></h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-sm focus:ring-2 focus:ring-primary w-64 transition-all" placeholder="Search orders or tags..." type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</button>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Wizard Section -->
+<section class="p-8 max-w-5xl mx-auto w-full">
+<div class="mb-10 text-center">
+<h3 class="font-headline-lg text-headline-lg text-ink-slate mb-2">Issue New QR Tag</h3>
+<p class="font-body-md text-on-surface-variant">Configure a privacy-first contact tag for a client or asset.</p>
+</div>
+<!-- Stepper Indicator -->
+<div class="flex justify-between items-center mb-12 relative px-4">
+<div class="absolute top-1/2 left-0 w-full h-[2px] bg-outline-variant -translate-y-1/2 z-0"></div>
+<!-- Step 1 -->
+<div class="relative z-10 bg-surface px-4 flex flex-col items-center step-active" id="step-node-1">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold mb-2 shadow-lg shadow-primary/20">1</div>
+<span class="font-label-sm uppercase tracking-wider">Owner</span>
+</div>
+<!-- Step 2 -->
+<div class="relative z-10 bg-surface px-4 flex flex-col items-center step-inactive" id="step-node-2">
+<div class="w-10 h-10 rounded-full border-2 border-outline-variant flex items-center justify-center font-bold mb-2">2</div>
+<span class="font-label-sm uppercase tracking-wider">Tag Details</span>
+</div>
+<!-- Step 3 -->
+<div class="relative z-10 bg-surface px-4 flex flex-col items-center step-inactive" id="step-node-3">
+<div class="w-10 h-10 rounded-full border-2 border-outline-variant flex items-center justify-center font-bold mb-2">3</div>
+<span class="font-label-sm uppercase tracking-wider">Privacy</span>
+</div>
+<!-- Step 4 -->
+<div class="relative z-10 bg-surface px-4 flex flex-col items-center step-inactive" id="step-node-4">
+<div class="w-10 h-10 rounded-full border-2 border-outline-variant flex items-center justify-center font-bold mb-2">4</div>
+<span class="font-label-sm uppercase tracking-wider">Review</span>
+</div>
+</div>
+<!-- Form Canvas -->
+<div class="bg-white rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+<!-- Step 1 Content: Owner -->
+<div class="p-8" id="step-content-1">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div class="space-y-4">
+<h4 class="font-headline-md text-headline-md text-ink-slate">Primary Owner</h4>
+<p class="text-on-surface-variant font-body-sm">Link this tag to an existing owner or create a new profile instantly.</p>
+<div class="pt-4 space-y-stack-md">
+<div class="space-y-1">
+<label class="font-label-lg text-on-surface-variant">Owner Phone</label>
+<input class="w-full border-outline-variant rounded-lg focus:border-primary focus:ring-primary" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+<div class="space-y-1">
+<label class="font-label-lg text-on-surface-variant">Owner Name</label>
+<input class="w-full border-outline-variant rounded-lg focus:border-primary focus:ring-primary" placeholder="Full Legal Name" type="text"/>
+</div>
+<button class="w-full py-3 bg-secondary-container text-on-secondary-container font-semibold rounded-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+                  Lookup / Create Owner
+                </button>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-6 flex flex-col justify-center items-center text-center space-y-4">
+<div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="verified_user">verified_user</span>
+</div>
+<div>
+<p class="font-label-lg text-ink-slate">Profile Auto-Match</p>
+<p class="text-on-surface-variant text-sm mt-1">If the phone number exists, we'll pull the owner's preferred contact methods automatically.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 2 Content: Tag Details (Hidden Initially) -->
+<div class="p-8 hidden" id="step-content-2">
+<div class="space-y-stack-lg">
+<h4 class="font-headline-md text-headline-md text-ink-slate">Hardware &amp; Metadata</h4>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="space-y-1">
+<label class="font-label-lg text-on-surface-variant">Tag Type</label>
+<select class="w-full border-outline-variant rounded-lg focus:border-primary focus:ring-primary">
+<option>Windshield Sticker</option>
+<option>Metal Keychain</option>
+<option>Pet ID Tag</option>
+<option>Industrial Decal</option>
+</select>
+</div>
+<div class="space-y-1">
+<label class="font-label-lg text-on-surface-variant">Custom Label</label>
+<input class="w-full border-outline-variant rounded-lg focus:border-primary focus:ring-primary" placeholder="e.g. Tesla Model 3" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="font-label-lg text-on-surface-variant">Vehicle Number (Optional)</label>
+<input class="w-full border-outline-variant rounded-lg focus:border-primary focus:ring-primary" placeholder="ABC-1234" type="text"/>
+</div>
+</div>
+<div class="p-6 bg-surface-container rounded-lg flex items-start gap-4">
+<span class="material-symbols-outlined text-info-blue" data-icon="info">info</span>
+<div>
+<p class="font-label-lg text-ink-slate">Why labels matter?</p>
+<p class="text-on-surface-variant text-sm">Labels help owners identify multiple tags in their personal dashboard. They are not shown on the public contact page.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 3 Content: Privacy (Hidden Initially) -->
+<div class="p-8 hidden" id="step-content-3">
+<div class="max-w-2xl">
+<h4 class="font-headline-md text-headline-md text-ink-slate mb-6">Interaction Logic</h4>
+<div class="space-y-6">
+<!-- Toggle 1 -->
+<div class="flex items-center justify-between p-4 border border-outline-variant rounded-xl hover:border-primary transition-colors">
+<div class="space-y-1">
+<p class="font-label-lg text-ink-slate">Private by default</p>
+<p class="text-xs text-on-surface-variant">Scanners must request connection before seeing owner name.</p>
+</div>
+<div class="w-12 h-6 bg-primary rounded-full relative cursor-pointer">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+<!-- Toggle 2 -->
+<div class="flex items-center justify-between p-4 border border-outline-variant rounded-xl hover:border-primary transition-colors">
+<div class="space-y-1">
+<p class="font-label-lg text-ink-slate">Contact reasons enabled</p>
+<p class="text-xs text-on-surface-variant">Show pre-defined options like "Blocked Car" or "Lights On".</p>
+</div>
+<div class="w-12 h-6 bg-primary rounded-full relative cursor-pointer">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+<!-- Note -->
+<div class="flex gap-4 items-center p-4 bg-surface-off-white rounded-xl">
+<span class="material-symbols-outlined text-warning-amber" data-icon="timer_off">timer_off</span>
+<div>
+<p class="font-label-lg text-ink-slate">Conversation Expiry</p>
+<p class="text-xs text-on-surface-variant">Anonymous chat links expire automatically after 24 hours of inactivity to ensure long-term privacy.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 4 Content: Review (Hidden Initially) -->
+<div class="p-8 hidden" id="step-content-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div class="space-y-6">
+<h4 class="font-headline-md text-headline-md text-ink-slate">Final Review</h4>
+<dl class="space-y-4">
+<div class="flex justify-between border-b border-outline-variant pb-2">
+<dt class="text-on-surface-variant font-label-lg">Owner</dt>
+<dd class="text-ink-slate font-semibold">Jonathan Doe</dd>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-2">
+<dt class="text-on-surface-variant font-label-lg">Tag Type</dt>
+<dd class="text-ink-slate font-semibold">Windshield Sticker</dd>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-2">
+<dt class="text-on-surface-variant font-label-lg">Asset ID</dt>
+<dd class="text-ink-slate font-semibold">Tesla (NY-8822)</dd>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-2">
+<dt class="text-on-surface-variant font-label-lg">Privacy</dt>
+<dd class="text-primary font-semibold">Strict (High-Anonymity)</dd>
+</div>
+</dl>
+<div class="bg-error-container p-4 rounded-lg flex gap-3 border border-error/20">
+<span class="material-symbols-outlined text-error" data-icon="gpp_maybe">gpp_maybe</span>
+<p class="text-on-error-container text-sm leading-relaxed">
+<strong>Privacy Warning:</strong> The QR will contain only a public URL. Do not show or encode private owner details in any visual or digital field on the tag itself.
+                </p>
+</div>
+</div>
+<div class="flex items-center justify-center border-l border-outline-variant pl-8">
+<div class="text-center">
+<div class="p-4 bg-white border border-outline-variant rounded-2xl shadow-sm mb-4 inline-block">
+<img alt="QR Code" class="w-40 h-40" data-alt="A clean, high-contrast QR code centered on a crisp white square background with soft rounded corners. The lighting is bright and professional, creating a sterile yet premium technological aesthetic. The palette is strictly black and white, symbolizing security, precision, and modern corporate minimalism. The mood is authoritative and functional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGSr8d-P8k44xmbXfH6e9u8AB5lZZYrp_MbBe1ScuMkGv3uTK5J0UXGRfJohgrNXzzgEs-S9_GHf1teu21eDAVd2kkPvt6KWzRk1V2Tsi3k56dKGyXGj7XqtAix56otX6t2EN7Judwx-r6wfeBEKRuahz1xkqa7RtZYLWLf_ltUv1ImFnpHMTjkn1z2lN4BjBA2OnMKM7-SqEaWQy7ngBRYRINQBwm9rgYrbTzOFkeXxvqkRgZVs0PBGdHoo2AcW74RnHxL9V_Yq8i"/>
+</div>
+<p class="text-on-surface-variant text-xs">Preview of generated vector</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Wizard Navigation Footer -->
+<div class="px-8 py-6 bg-surface-container-low border-t border-outline-variant flex justify-between items-center">
+<button class="px-6 py-2 text-on-surface-variant font-semibold hover:bg-surface-container-high rounded-lg transition-colors invisible" id="prev-btn">Back</button>
+<div class="flex gap-4">
+<button class="px-6 py-2 text-on-surface-variant font-semibold hover:bg-surface-container-high rounded-lg transition-colors">Save Draft</button>
+<button class="px-8 py-2 bg-primary text-white font-bold rounded-lg shadow-md hover:bg-primary-container transition-all" id="next-btn">Next Step</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Success State Overlay (Hidden by Default) -->
+<div class="fixed inset-0 z-50 bg-on-background/80 flex items-center justify-center p-4 hidden" id="success-overlay">
+<div class="bg-white rounded-2xl max-w-2xl w-full p-8 shadow-2xl scale-in transform transition-all">
+<div class="flex flex-col items-center text-center space-y-6">
+<div class="w-20 h-20 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl" data-icon="check_circle">check_circle</span>
+</div>
+<div>
+<h3 class="font-headline-lg text-headline-lg text-ink-slate">QR Tag Created Successfully</h3>
+<p class="text-on-surface-variant mt-2">The privacy-locked tag is now active and ready for use.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full p-6 bg-surface-container-lowest border border-outline-variant rounded-2xl">
+<div class="flex flex-col items-center justify-center space-y-4">
+<div class="p-2 bg-white border border-outline-variant rounded-xl shadow-sm">
+<img alt="Active QR" class="w-32 h-32" data-alt="A bold, stylized QR code displayed on a modern, high-gloss digital surface. The design emphasizes clean lines and sharp contrast with deep teal accents in the corner markers, matching the brand identity. The lighting is diffused, giving it a premium, floating appearance against a minimalist white background. The atmosphere is professional and secure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcUDKRoGva5G6C_YgoGtxijmHyMNRE0cyjo0depzDlELWvcc3sR8DlMKNfn0UqQceY2v2PvDhCpPf5DVtLYZBwy-skSttcAnpoCPH2ARyJk6O6jAjDd438pkf_q2eN6ETx8Z-kpPtGL_2bjxnNf1K69bcMrHjHLl-zfdxtqeW2lXibXvrTVHxLpvsatMR4jsCYRokqB_rUn2_PcU68m67S2j7uIUV3pNQUr85gCaW5YgzaKvQr7OvDBj-9k2nnyeKUgDi6cSKsKuU3"/>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-primary hover:bg-primary-container/10 rounded-full border border-primary/20 transition-all">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+<button class="p-2 text-primary hover:bg-primary-container/10 rounded-full border border-primary/20 transition-all">
+<span class="material-symbols-outlined" data-icon="print">print</span>
+</button>
+<button class="p-2 text-primary hover:bg-primary-container/10 rounded-full border border-primary/20 transition-all">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</div>
+<div class="text-left flex flex-col justify-center space-y-4">
+<div>
+<p class="font-label-sm uppercase text-on-surface-variant tracking-wider">Public URL</p>
+<p class="text-primary font-mono text-sm truncate">nonumqr.com/p/t_4k89z2_x</p>
+</div>
+<div class="space-y-2">
+<a class="block w-full py-2 bg-primary text-white text-center rounded-lg font-bold hover:bg-primary-container transition-all" href="#">Open Public Page</a>
+<div class="grid grid-cols-2 gap-2">
+<a class="py-2 border border-outline-variant text-center rounded-lg text-sm font-semibold hover:bg-surface-container transition-colors" href="#">View Owner</a>
+<a class="py-2 border border-outline-variant text-center rounded-lg text-sm font-semibold hover:bg-surface-container transition-colors" href="#">Tag Detail</a>
+</div>
+</div>
+</div>
+</div>
+<button class="text-primary font-bold hover:underline" onclick="window.location.reload()">Create another tag</button>
+</div>
+</div>
+</div>
+</main>
+<script>
+    let currentStep = 1;
+    const totalSteps = 4;
+    
+    const nextBtn = document.getElementById('next-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const successOverlay = document.getElementById('success-overlay');
+
+    nextBtn.addEventListener('click', () => {
+      if (currentStep < totalSteps) {
+        document.getElementById(`step-content-${currentStep}`).classList.add('hidden');
+        document.getElementById(`step-node-${currentStep}`).classList.remove('step-active');
+        document.getElementById(`step-node-${currentStep}`).classList.add('step-inactive');
+        
+        currentStep++;
+        
+        document.getElementById(`step-content-${currentStep}`).classList.remove('hidden');
+        document.getElementById(`step-node-${currentStep}`).classList.remove('step-inactive');
+        document.getElementById(`step-node-${currentStep}`).classList.add('step-active');
+        
+        updateNav();
+      } else {
+        // Handle Final Submission
+        successOverlay.classList.remove('hidden');
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 1) {
+        document.getElementById(`step-content-${currentStep}`).classList.add('hidden');
+        document.getElementById(`step-node-${currentStep}`).classList.remove('step-active');
+        document.getElementById(`step-node-${currentStep}`).classList.add('step-inactive');
+        
+        currentStep--;
+        
+        document.getElementById(`step-content-${currentStep}`).classList.remove('hidden');
+        document.getElementById(`step-node-${currentStep}`).classList.remove('step-inactive');
+        document.getElementById(`step-node-${currentStep}`).classList.add('step-active');
+        
+        updateNav();
+      }
+    });
+
+    function updateNav() {
+      // Show/Hide Back Button
+      if (currentStep === 1) {
+        prevBtn.classList.add('invisible');
+      } else {
+        prevBtn.classList.remove('invisible');
+      }
+      
+      // Update Next Button Text
+      if (currentStep === totalSteps) {
+        nextBtn.innerText = 'Generate QR Tag';
+      } else {
+        nextBtn.innerText = 'Next Step';
+      }
+
+      // Update Node Visuals (Primary color for active and circles)
+      for(let i=1; i<=totalSteps; i++) {
+          const node = document.getElementById(`step-node-${i}`);
+          const circle = node.querySelector('div');
+          if(i === currentStep) {
+              circle.className = "w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold mb-2 shadow-lg shadow-primary/20";
+          } else if (i < currentStep) {
+              circle.className = "w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center font-bold mb-2";
+              circle.innerHTML = '<span class="material-symbols-outlined text-sm">check</span>';
+          } else {
+              circle.className = "w-10 h-10 rounded-full border-2 border-outline-variant flex items-center justify-center font-bold mb-2";
+              circle.innerText = i;
+          }
+      }
+    }
+  </script>
+</body></html>

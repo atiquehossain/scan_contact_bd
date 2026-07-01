@@ -174,7 +174,7 @@ class PushNotificationService {
 
 void _debugPush(String message) {
   if (!kDebugMode) return;
-  debugPrint('[ScanContact Push] $message');
+  debugPrint('[NoNumQR Push] $message');
 }
 
 String _shortToken(String token) {

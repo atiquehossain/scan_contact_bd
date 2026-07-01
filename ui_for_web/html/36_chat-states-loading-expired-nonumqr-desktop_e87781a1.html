@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+        @keyframes shimmer {
+            from { background-position: 200% 0; }
+            to { background-position: -200% 0; }
+        }
+        .glass-overlay {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "info-blue": "#2563EB",
+                        "surface-container": "#eaedff",
+                        "surface-bright": "#faf8ff",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "tertiary-fixed": "#ffdbce",
+                        "outline": "#6d7a77",
+                        "primary-fixed": "#89f5e7",
+                        "surface-off-white": "#F8FAFC",
+                        "outline-variant": "#bcc9c6",
+                        "tertiary": "#924628",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#8bd6b6",
+                        "on-surface-variant": "#3d4947",
+                        "on-tertiary-container": "#fffbff",
+                        "on-surface": "#131b2e",
+                        "surface-dim": "#d2d9f4",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#008378",
+                        "surface": "#faf8ff",
+                        "on-secondary-container": "#237157",
+                        "surface-container-high": "#e2e7ff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#006a61",
+                        "background": "#faf8ff",
+                        "warning-amber": "#D97706",
+                        "on-primary-fixed-variant": "#005049",
+                        "on-primary-fixed": "#00201d",
+                        "on-primary-container": "#f4fffc",
+                        "tertiary-container": "#b05e3d",
+                        "secondary-container": "#a6f2d1",
+                        "on-primary": "#ffffff",
+                        "danger-red": "#DC2626",
+                        "inverse-surface": "#283044",
+                        "surface-container-low": "#f2f3ff",
+                        "on-tertiary-fixed-variant": "#773215",
+                        "primary": "#00685f",
+                        "surface-container-highest": "#dae2fd",
+                        "ink-slate": "#1E293B",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "inverse-primary": "#6bd8cb",
+                        "on-background": "#131b2e",
+                        "on-secondary-fixed": "#002116",
+                        "secondary": "#1b6b51",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#00513b",
+                        "surface-variant": "#dae2fd",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#370e00",
+                        "secondary-fixed": "#a6f2d1",
+                        "inverse-on-surface": "#eef0ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "32px",
+                        "margin-mobile": "16px",
+                        "unit": "4px",
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "gutter": "24px",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface-off-white font-body-md text-ink-slate antialiased">
+<!-- Top Navigation -->
+<header class="bg-surface-off-white dark:bg-on-surface docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center w-full px-gutter py-stack-md max-w-container-max mx-auto">
+<div class="flex items-center gap-2">
+<span class="text-headline-md font-headline-md font-bold text-ink-slate dark:text-surface-off-white">NoNumQR</span>
+</div>
+<nav class="hidden md:flex items-center gap-stack-lg">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 text-label-lg font-label-lg" href="#">Conversations</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors duration-200 text-label-lg font-label-lg" href="#">My Devices</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors duration-200 text-label-lg font-label-lg" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-primary" data-icon="security">security</span>
+<span class="material-symbols-outlined text-primary" data-icon="verified_user">verified_user</span>
+</div>
+</div>
+</header>
+<main class="min-h-[calc(100vh-140px)] flex flex-col items-center justify-start py-stack-lg px-gutter">
+<!-- Toggle for Previewing States -->
+<div class="mb-stack-lg flex gap-stack-sm bg-white p-unit rounded-xl shadow-sm border border-outline-variant">
+<button class="px-gutter py-stack-sm rounded-lg text-label-lg font-label-lg transition-all bg-primary text-white" id="btn-loading" onclick="showState('loading')">Loading State</button>
+<button class="px-gutter py-stack-sm rounded-lg text-label-lg font-label-lg transition-all text-on-surface-variant hover:bg-surface-container" id="btn-expired" onclick="showState('expired')">Expired State</button>
+</div>
+<!-- Main Chat Container -->
+<div class="w-full max-w-[800px] bg-white rounded-xl shadow-[0_4px_20px_rgba(15,23,42,0.05)] flex flex-col h-[700px] overflow-hidden relative border border-outline-variant">
+<!-- Chat Header -->
+<div class="p-stack-md border-b border-outline-variant flex justify-between items-center bg-white z-10">
+<div class="flex items-center gap-stack-md">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="person">person</span>
+</div>
+<div>
+<h2 class="text-headline-md font-headline-md">Private Conversation</h2>
+<div class="flex items-center gap-unit" id="status-pill">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse" id="status-dot"></div>
+<span class="text-label-sm font-label-sm text-on-surface-variant" id="status-text">Active Connection</span>
+</div>
+</div>
+</div>
+<div class="flex gap-stack-sm">
+<button class="p-stack-sm hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="info">info</span>
+</button>
+</div>
+</div>
+<!-- Chat Body: Loading State -->
+<div class="flex-grow p-stack-lg space-y-stack-lg overflow-y-auto" id="state-loading">
+<div class="flex justify-center py-stack-md">
+<div class="flex flex-col items-center gap-stack-sm">
+<div class="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+<p class="text-label-lg font-label-lg text-primary">Securing your connection...</p>
+</div>
+</div>
+<!-- Skeleton Messages -->
+<div class="flex flex-col gap-stack-md">
+<!-- Received Skeleton -->
+<div class="flex items-end gap-stack-sm max-w-[70%]">
+<div class="w-8 h-8 rounded-full shimmer flex-shrink-0"></div>
+<div class="space-y-unit w-full">
+<div class="h-10 w-48 shimmer rounded-xl rounded-bl-none"></div>
+<div class="h-6 w-32 shimmer rounded-xl"></div>
+</div>
+</div>
+<!-- Sent Skeleton -->
+<div class="flex items-end gap-stack-sm max-w-[70%] self-end flex-row-reverse">
+<div class="w-8 h-8 rounded-full shimmer flex-shrink-0"></div>
+<div class="space-y-unit w-full flex flex-col items-end">
+<div class="h-12 w-56 shimmer rounded-xl rounded-br-none"></div>
+</div>
+</div>
+<!-- Received Skeleton -->
+<div class="flex items-end gap-stack-sm max-w-[70%]">
+<div class="w-8 h-8 rounded-full shimmer flex-shrink-0"></div>
+<div class="space-y-unit w-full">
+<div class="h-8 w-64 shimmer rounded-xl rounded-bl-none"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Body: Expired State -->
+<div class="hidden flex-grow relative overflow-hidden" id="state-expired">
+<!-- Obscured Mock Content -->
+<div class="p-stack-lg space-y-stack-lg opacity-40 select-none pointer-events-none">
+<div class="flex flex-col gap-stack-md">
+<div class="flex items-end gap-stack-sm max-w-[70%]">
+<div class="w-8 h-8 rounded-full bg-slate-200"></div>
+<div class="p-stack-md bg-slate-100 rounded-xl rounded-bl-none">
+<p class="text-body-sm font-body-sm">Hello, I've found your item near the park entrance. Please let me know how to return it.</p>
+</div>
+</div>
+<div class="flex items-end gap-stack-sm max-w-[70%] self-end flex-row-reverse">
+<div class="p-stack-md bg-primary-container text-white rounded-xl rounded-br-none">
+<p class="text-body-sm font-body-sm">Thank you so much! I am on my way now. Can we meet by the fountain?</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Expired Overlay -->
+<div class="absolute inset-0 glass-overlay flex items-center justify-center p-stack-lg">
+<div class="max-w-md w-full bg-white p-stack-lg rounded-xl shadow-xl border border-outline-variant text-center space-y-stack-md">
+<div class="w-16 h-16 bg-surface-container rounded-full flex items-center justify-center mx-auto mb-stack-md">
+<span class="material-symbols-outlined text-on-surface-variant text-[32px]" data-icon="history_toggle_off">history_toggle_off</span>
+</div>
+<h3 class="text-headline-md font-headline-md text-ink-slate">Conversation Expired</h3>
+<p class="text-body-md font-body-md text-on-surface-variant px-stack-md">
+                            This conversation has expired. For your security, conversations are automatically closed 24 hours after the last message.
+                        </p>
+<div class="pt-stack-md">
+<button class="w-full bg-primary text-white py-stack-md rounded-lg font-label-lg text-label-lg hover:opacity-90 transition-all flex items-center justify-center gap-stack-sm shadow-md">
+<span class="material-symbols-outlined" data-icon="add_comment">add_comment</span>
+                                Start New Request
+                            </button>
+<button class="w-full mt-stack-sm text-on-surface-variant py-stack-sm rounded-lg font-label-lg text-label-lg hover:bg-surface-container transition-all">
+                                View Security Policy
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Message Input Area (Footer) -->
+<div class="p-stack-md border-t border-outline-variant bg-surface-off-white">
+<div class="relative" id="input-container">
+<!-- Blur for Expired State -->
+<div class="hidden absolute inset-0 bg-white/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-lg" id="input-lock-overlay">
+<span class="material-symbols-outlined text-outline" data-icon="lock">lock</span>
+<span class="ml-stack-sm text-label-sm font-label-sm text-on-surface-variant">Read-only mode</span>
+</div>
+<div class="flex gap-stack-sm items-center">
+<button class="p-stack-sm hover:bg-surface-container rounded-full transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="attach_file">attach_file</span>
+</button>
+<div class="flex-grow bg-white border border-outline-variant rounded-full px-gutter py-stack-sm flex items-center">
+<input class="w-full bg-transparent border-none focus:ring-0 text-body-md font-body-md disabled:placeholder:text-outline-variant" disabled="" placeholder="Type a message..." type="text"/>
+</div>
+<button class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center opacity-50 cursor-not-allowed">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Security Features Notice -->
+<section class="mt-stack-lg grid grid-cols-1 md:grid-cols-3 gap-gutter max-w-[800px] w-full">
+<div class="flex items-start gap-stack-md p-stack-md rounded-xl bg-white border border-outline-variant">
+<span class="material-symbols-outlined text-primary" data-icon="verified_user">verified_user</span>
+<div>
+<p class="font-label-lg text-label-lg">Encrypted</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">End-to-end privacy</p>
+</div>
+</div>
+<div class="flex items-start gap-stack-md p-stack-md rounded-xl bg-white border border-outline-variant">
+<span class="material-symbols-outlined text-primary" data-icon="timer_off">timer_off</span>
+<div>
+<p class="font-label-lg text-label-lg">Auto-Delete</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">24h expiration cycle</p>
+</div>
+</div>
+<div class="flex items-start gap-stack-md p-stack-md rounded-xl bg-white border border-outline-variant">
+<span class="material-symbols-outlined text-primary" data-icon="no_accounts">no_accounts</span>
+<div>
+<p class="font-label-lg text-label-lg">Anonymous</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">No phone numbers leaked</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="border-t border-outline-variant dark:border-outline bg-surface-off-white dark:bg-on-surface mt-stack-lg">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-gutter py-stack-lg max-w-container-max mx-auto gap-stack-md">
+<div class="flex items-center gap-2">
+<span class="text-label-lg font-label-lg font-bold text-ink-slate dark:text-surface-off-white">NoNumQR</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant ml-2">© 2024 NoNumQR. All rights reserved.</span>
+</div>
+<div class="flex gap-gutter">
+<a class="text-label-sm font-label-sm text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors duration-200" href="#">Terms of Service</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors duration-200" href="#">Security Whitepaper</a>
+</div>
+</div>
+</footer>
+<script>
+        function showState(state) {
+            const loadingArea = document.getElementById('state-loading');
+            const expiredArea = document.getElementById('state-expired');
+            const inputOverlay = document.getElementById('input-lock-overlay');
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            const btnLoading = document.getElementById('btn-loading');
+            const btnExpired = document.getElementById('btn-expired');
+
+            if (state === 'loading') {
+                loadingArea.classList.remove('hidden');
+                expiredArea.classList.add('hidden');
+                inputOverlay.classList.add('hidden');
+                statusDot.className = 'w-2 h-2 rounded-full bg-primary animate-pulse';
+                statusText.innerText = 'Active Connection';
+                
+                btnLoading.className = 'px-gutter py-stack-sm rounded-lg text-label-lg font-label-lg transition-all bg-primary text-white';
+                btnExpired.className = 'px-gutter py-stack-sm rounded-lg text-label-lg font-label-lg transition-all text-on-surface-variant hover:bg-surface-container';
+            } else {
+                loadingArea.classList.add('hidden');
+                expiredArea.classList.remove('hidden');
+                inputOverlay.classList.remove('hidden');
+                statusDot.className = 'w-2 h-2 rounded-full bg-danger-red';
+                statusText.innerText = 'Session Closed';
+                
+                btnExpired.className = 'px-gutter py-stack-sm rounded-lg text-label-lg font-label-lg transition-all bg-primary text-white';
+                btnLoading.className = 'px-gutter py-stack-sm rounded-lg text-label-lg font-label-lg transition-all text-on-surface-variant hover:bg-surface-container';
+            }
+        }
+    </script>
+</body></html>

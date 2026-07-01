@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Private Chat | NoNumQR</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#dae2fd",
+                    "surface-variant": "#dae2fd",
+                    "on-background": "#131b2e",
+                    "secondary-fixed": "#a6f2d1",
+                    "surface-dim": "#d2d9f4",
+                    "on-error": "#ffffff",
+                    "background": "#faf8ff",
+                    "info-blue": "#2563EB",
+                    "on-primary-container": "#f4fffc",
+                    "warning-amber": "#D97706",
+                    "secondary-container": "#a6f2d1",
+                    "outline-variant": "#bcc9c6",
+                    "on-tertiary-container": "#fffbff",
+                    "surface": "#faf8ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#00201d",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#283044",
+                    "on-secondary-container": "#237157",
+                    "primary-fixed": "#89f5e7",
+                    "surface-off-white": "#F8FAFC",
+                    "on-secondary-fixed-variant": "#00513b",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#ffb59a",
+                    "primary-container": "#008378",
+                    "secondary": "#1b6b51",
+                    "on-primary-fixed-variant": "#005049",
+                    "surface-container": "#eaedff",
+                    "inverse-primary": "#6bd8cb",
+                    "ink-slate": "#1E293B",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#faf8ff",
+                    "surface-tint": "#006a61",
+                    "surface-container-low": "#f2f3ff",
+                    "inverse-on-surface": "#eef0ff",
+                    "tertiary": "#924628",
+                    "on-surface": "#131b2e",
+                    "tertiary-container": "#b05e3d",
+                    "secondary-fixed-dim": "#8bd6b6",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffdbce",
+                    "on-surface-variant": "#3d4947",
+                    "on-tertiary-fixed-variant": "#773215",
+                    "outline": "#6d7a77",
+                    "surface-container-high": "#e2e7ff",
+                    "on-tertiary": "#ffffff",
+                    "danger-red": "#DC2626",
+                    "on-secondary": "#ffffff",
+                    "primary": "#00685f",
+                    "on-tertiary-fixed": "#370e00",
+                    "on-secondary-fixed": "#002116"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "container-max": "1200px",
+                    "stack-sm": "8px",
+                    "stack-lg": "32px",
+                    "margin-mobile": "16px",
+                    "unit": "4px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-lg": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .chat-container {
+            height: calc(100vh - 128px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-dot {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed overflow-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-mobile h-16 bg-surface dark:bg-on-background shadow-[0_4px_20px_rgba(15,23,42,0.05)]">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center p-2 hover:bg-surface-variant/50 rounded-full transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">NoNumQR</h1>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-secondary-container/50 rounded-full">
+<span class="active-dot w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-label-sm font-label-sm text-on-secondary-container">Private Link Active</span>
+</div>
+</header>
+<main class="pt-16 pb-20 flex flex-col h-screen max-w-container-max mx-auto">
+<!-- Privacy Notice Banner -->
+<section class="px-margin-mobile py-stack-md">
+<div class="bg-surface-container border border-outline-variant/30 rounded-xl p-4 flex gap-3 items-start shadow-sm">
+<span class="material-symbols-outlined text-primary shrink-0" style="font-variation-settings: 'FILL' 1;">shield</span>
+<div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+<strong>Privacy notice:</strong> This private conversation is protected by your link. The owner’s phone number stays hidden.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Chat Area -->
+<section class="flex-1 overflow-y-auto px-margin-mobile space-y-stack-md py-4 scroll-smooth">
+<!-- Owner Message (Left) -->
+<div class="flex flex-col items-start max-w-[85%] group">
+<div class="bg-surface-container-highest text-on-surface px-4 py-3 rounded-2xl rounded-tl-none shadow-sm">
+<p class="text-body-md font-body-md">Hello! Thanks for reaching out. How can I help you regarding the item you scanned?</p>
+</div>
+<span class="mt-1 text-label-sm font-label-sm text-outline opacity-70 ml-1">10:42 AM</span>
+</div>
+<!-- Scanner Message (Right) -->
+<div class="flex flex-col items-end max-w-[85%] ml-auto group">
+<div class="bg-primary text-on-primary px-4 py-3 rounded-2xl rounded-tr-none shadow-md">
+<p class="text-body-md font-body-md">Hi, I found your bike near the main park entrance. It looks like the lock was tampered with.</p>
+</div>
+<span class="mt-1 text-label-sm font-label-sm text-outline opacity-70 mr-1 text-right">10:45 AM</span>
+</div>
+<!-- Owner Message (Left) -->
+<div class="flex flex-col items-start max-w-[85%] group">
+<div class="bg-surface-container-highest text-on-surface px-4 py-3 rounded-2xl rounded-tl-none shadow-sm">
+<p class="text-body-md font-body-md">Oh no! Thank you so much for letting me know. I'm heading there now. Could you stay with it for 5 minutes?</p>
+</div>
+<span class="mt-1 text-label-sm font-label-sm text-outline opacity-70 ml-1">10:46 AM</span>
+</div>
+<!-- Scanner Message (Right) -->
+<div class="flex flex-col items-end max-w-[85%] ml-auto group">
+<div class="bg-primary text-on-primary px-4 py-3 rounded-2xl rounded-tr-none shadow-md">
+<p class="text-body-md font-body-md">Yes, no problem. I'll wait right here until you arrive.</p>
+</div>
+<span class="mt-1 text-label-sm font-label-sm text-outline opacity-70 mr-1 text-right">10:47 AM</span>
+</div>
+<div class="flex justify-center py-4">
+<span class="bg-surface-container px-3 py-1 rounded-full text-label-sm font-label-sm text-on-surface-variant/70 uppercase tracking-widest">Today</span>
+</div>
+</section>
+<!-- Message Input Field -->
+<section class="fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-outline-variant/20 p-margin-mobile pb-safe z-50">
+<div class="max-w-container-max mx-auto flex items-end gap-3">
+<div class="flex-1 bg-surface-container-low rounded-2xl px-4 py-2 flex items-center border border-transparent focus-within:border-primary/30 focus-within:shadow-[0_0_0_4px_rgba(0,104,95,0.05)] transition-all">
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-body-md font-body-md py-1 resize-none placeholder:text-on-surface-variant/50 max-h-32" placeholder="Type a secure message..." rows="1"></textarea>
+<button class="p-2 text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">attach_file</span>
+</button>
+</div>
+<button class="bg-primary text-on-primary w-12 h-12 rounded-xl flex items-center justify-center shadow-md hover:opacity-90 active:scale-90 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+<div class="flex justify-center mt-3">
+<button class="flex items-center gap-1 text-label-sm font-label-sm text-on-surface-variant/60 hover:text-primary transition-colors py-1">
+<span class="material-symbols-outlined text-[16px]">qr_code_2</span>
+                    Back to QR
+                </button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Optional suppressed as per task instructions to focus on conversation, but keeping structural space for input) -->
+<!-- The input area serves as the primary action hub for this screen -->
+<script>
+        // Simple auto-resize for textarea
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Floating pill micro-interaction
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 10) {
+                header.classList.add('shadow-md');
+            } else {
+                header.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body></html>

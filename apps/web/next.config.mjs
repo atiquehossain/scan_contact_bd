@@ -1,5 +1,11 @@
+import os from "node:os";
+
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 const appHostname = new URL(appUrl).hostname;
+const localNetworkHosts = Object.values(os.networkInterfaces())
+  .flat()
+  .filter((entry) => entry && entry.family === "IPv4" && !entry.internal)
+  .map((entry) => entry.address);
 const extraAllowedDevOrigins = (process.env.NEXT_ALLOWED_DEV_ORIGINS || "")
   .split(",")
   .map((origin) => {
@@ -33,7 +39,7 @@ const nextConfig = {
       }
     ];
   },
-  allowedDevOrigins: Array.from(new Set([appHostname, ...extraAllowedDevOrigins]))
+  allowedDevOrigins: Array.from(new Set(["localhost", "127.0.0.1", appHostname, ...localNetworkHosts, ...extraAllowedDevOrigins]))
 };
 
 export default nextConfig;
